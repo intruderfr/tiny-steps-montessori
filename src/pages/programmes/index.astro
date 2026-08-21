@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
+import Photo from '../../components/Photo.astro';
 import { site } from '../../data/site';
 import { faqSchema } from '../../data/schema';
 
@@ -48,9 +49,15 @@ const faqs = [
     <div class="wrap plist">
       {programmes.map((p, i) => (
         <article class={`prow reveal d${(i % 4) + 1}`} data-accent={p.data.accent}>
-          <div class="prow__mark" aria-hidden="true">
-            <span class="prow__icon">{p.data.icon}</span>
-          </div>
+          {p.data.photo ? (
+            <figure class="prow__photo">
+              <Photo slug={p.data.photo} widths={[180, 320]} sizes="150px" ratio="1:1" />
+            </figure>
+          ) : (
+            <div class="prow__mark" aria-hidden="true">
+              <span class="prow__icon">{p.data.icon}</span>
+            </div>
+          )}
           <div class="prow__body">
             <p class="prow__age">{p.data.ageLabel}</p>
             <h2 class="h3 prow__t">
@@ -108,7 +115,7 @@ const faqs = [
 
   .plist { display: grid; gap: var(--s-5); }
   .prow {
-    display: grid; grid-template-columns: 92px minmax(0, 1fr) 220px; gap: 1.8rem;
+    display: grid; grid-template-columns: 104px minmax(0, 1fr) 220px; gap: 1.8rem;
     background: var(--paper); border: 1px solid var(--line); border-left: 6px solid var(--ac, var(--yellow));
     border-radius: var(--r-lg); padding: clamp(1.3rem, 1rem + 1.5vw, 2rem);
     align-items: start; transition: box-shadow 0.3s var(--ease), transform 0.3s var(--ease);
@@ -124,6 +131,11 @@ const faqs = [
   .prow[data-accent='navy']  { --ac: var(--navy);  --soft: var(--navy-soft);  --ac-text: var(--navy-text);}
   .prow[data-accent='sky']   { --ac: var(--sky);   --soft: var(--sky-soft);  --ac-text: var(--sky-text);}
 
+  .prow__photo {
+    margin: 0; width: 92px; height: 92px; border-radius: var(--r-md);
+    overflow: hidden; box-shadow: var(--sh-sm);
+  }
+  .prow__photo :global(img) { width: 100%; height: 100%; display: block; }
   .prow__mark { width: 72px; height: 72px; display: grid; place-items: center; background: var(--soft); border-radius: var(--r-md); }
   .prow__icon { font-size: 2rem; }
   .prow__age { font-size: var(--t-xs); font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--ac-text); }

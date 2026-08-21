@@ -135,6 +135,7 @@ export const nav = [
     ],
   },
   { label: 'Admissions', href: '/admissions' },
+  { label: 'Gallery', href: '/gallery' },
   { label: 'News', href: '/news' },
   { label: 'Contact', href: '/contact' },
 ];

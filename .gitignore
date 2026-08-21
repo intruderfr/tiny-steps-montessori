@@ -12,6 +12,10 @@ public/icon-192.png
 public/icon-512.png
 public/apple-touch-icon.png
 
+# NOTE: src/assets/photos/ and public/videos/ ARE committed on purpose.
+# They are the school's own media and the CI build needs them — the deploy
+# workflow has no access to the original WhatsApp export folder.
+
 # env & local
 .env
 .env.production

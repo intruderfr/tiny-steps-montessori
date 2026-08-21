@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
+import Photo from '../components/Photo.astro';
 import { site } from '../data/site';
 import { faqSchema } from '../data/schema';
 
@@ -99,45 +100,36 @@ const day = [
         </ul>
       </div>
 
-      {/* Illustrated scene — inline SVG, so it costs no extra request and is
-          sharp on every screen. Purely decorative, hidden from screen readers. */}
-      <div class="hero__art" aria-hidden="true">
-        <svg viewBox="0 0 420 420" class="hero__svg">
-          <defs>
-            <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stop-color="#FDF2C9" />
-              <stop offset="100%" stop-color="#EEF5FA" />
-            </linearGradient>
-          </defs>
-          <circle cx="210" cy="210" r="200" fill="url(#sky)" />
-          {/* sun */}
-          <circle cx="318" cy="106" r="40" fill="var(--yellow)" opacity="0.9" class="float" />
-          {/* hills */}
-          <path d="M10 300c60-46 110-16 150-34s86-44 140-12 110 30 110 30v126H10Z" fill="var(--green)" opacity="0.32" />
-          <path d="M10 340c70-34 120 4 172-14s96-30 138 6v78H10Z" fill="var(--green)" opacity="0.55" />
-          {/* tree */}
-          <rect x="86" y="238" width="17" height="86" rx="8" fill="#8a6a4f" />
-          <circle cx="94" cy="222" r="54" fill="var(--teal)" opacity="0.9" />
-          <circle cx="60" cy="244" r="34" fill="var(--teal-deep)" opacity="0.75" />
-          <circle cx="128" cy="246" r="30" fill="var(--teal-deep)" opacity="0.65" />
-          {/* building blocks */}
-          <rect x="228" y="272" width="52" height="52" rx="12" fill="var(--red)" />
-          <rect x="286" y="272" width="52" height="52" rx="12" fill="var(--sky)" />
-          <rect x="257" y="216" width="52" height="52" rx="12" fill="var(--yellow)" />
-          <circle cx="283" cy="242" r="13" fill="var(--surface-1)" />
-          {/* child, mid-stride */}
-          <circle cx="180" cy="238" r="27" fill="#eec39b" />
-          <path d="M158 234a22 22 0 0 1 44 0Z" fill="#3a2c26" />
-          <rect x="163" y="266" width="35" height="46" rx="15" fill="var(--navy)" />
-          <rect x="167" y="310" width="12" height="30" rx="6" fill="#eec39b" />
-          <rect x="184" y="310" width="12" height="30" rx="6" fill="#eec39b" />
-          <circle cx="173" cy="344" r="9" fill="var(--ink)" />
-          <circle cx="190" cy="344" r="9" fill="var(--ink)" />
-          {/* little footprints trailing behind */}
-          <ellipse cx="122" cy="352" rx="8" ry="12" fill="var(--yellow-deep)" opacity="0.5" transform="rotate(-16 122 352)" />
-          <ellipse cx="142" cy="362" rx="8" ry="12" fill="var(--yellow-deep)" opacity="0.35" transform="rotate(-16 142 362)" />
-          <ellipse cx="98" cy="366" rx="8" ry="12" fill="var(--yellow-deep)" opacity="0.22" transform="rotate(-16 98 366)" />
-        </svg>
+      {/* Real photographs of the school, offset into a collage. These carry
+          meaning, so they keep their alt text rather than being aria-hidden. */}
+      <div class="hero__art">
+        <figure class="hero__pic hero__pic--main">
+          <Photo
+            slug="farm-visit-holding-chick"
+            loading="eager"
+            widths={[380, 620, 900]}
+            sizes="(max-width: 900px) 62vw, 32vw"
+            ratio="4:5"
+          />
+        </figure>
+        <figure class="hero__pic hero__pic--a">
+          <Photo
+            slug="nature-trip-muddy-child"
+            loading="eager"
+            widths={[220, 400]}
+            sizes="(max-width: 900px) 30vw, 170px"
+            ratio="1:1"
+          />
+        </figure>
+        <figure class="hero__pic hero__pic--b">
+          <Photo
+            slug="stem-club-building-circuits"
+            loading="eager"
+            widths={[240, 440]}
+            sizes="(max-width: 900px) 34vw, 200px"
+            ratio="4:3"
+          />
+        </figure>
       </div>
     </div>
   </section>
@@ -237,6 +229,36 @@ const day = [
           </li>
         ))}
       </ol>
+    </div>
+  </section>
+
+  {/* ============================================================== GALLERY */}
+  <section class="section gal">
+    <div class="wrap">
+      <header class="sec-head sec-head--row reveal">
+        <div>
+          <p class="eyebrow eyebrow--red">Real Photographs</p>
+          <h2 class="h2">Not stock photos. Our children, our rooms.</h2>
+        </div>
+        <a href="/gallery" class="btn btn--ghost">See the full gallery</a>
+      </header>
+    </div>
+
+    {/* Full-bleed strip: scrolls horizontally on small screens rather than
+        shrinking the photos into unreadable thumbnails. */}
+    <div class="gal__rail">
+      {[
+        'nature-trip-paddy-field',
+        'science-sink-and-float',
+        'international-day-asia',
+        'upcycling-painting-tyres',
+        'avurudu-new-year-group',
+        'art-fish-collage',
+      ].map((slug, i) => (
+        <a href="/gallery" class={`gal__item reveal d${(i % 6) + 1}`}>
+          <Photo slug={slug} widths={[280, 520]} sizes="(max-width: 700px) 62vw, 300px" ratio="4:5" />
+        </a>
+      ))}
     </div>
   </section>
 
@@ -397,7 +419,38 @@ const day = [
     padding: 0; margin: 2.2rem 0 0; font-size: var(--t-sm); color: var(--ink-2);
   }
   .hero__proof strong { display: block; font-family: var(--font-display); font-size: 1.5rem; color: var(--ink); line-height: 1.1; }
-  .hero__svg { width: 100%; height: auto; filter: drop-shadow(0 24px 50px rgba(43, 42, 95, 0.16)); }
+  /* Collage: one tall photo with two smaller ones tucked into its corners. */
+  .hero__art { position: relative; aspect-ratio: 1 / 1.06; }
+  .hero__pic { margin: 0; border-radius: var(--r-lg); overflow: hidden; background: var(--surface-2); }
+  .hero__pic :global(img) { width: 100%; height: 100%; display: block; }
+  .hero__pic--main {
+    width: 74%; margin-left: auto; box-shadow: var(--sh-lg);
+    border: 6px solid var(--paper); border-radius: var(--r-xl);
+  }
+  .hero__pic--a {
+    position: absolute; left: 0; top: 12%; width: 40%;
+    border: 5px solid var(--paper); box-shadow: var(--sh-md);
+    transform: rotate(-5deg);
+  }
+  .hero__pic--b {
+    position: absolute; left: 4%; bottom: 4%; width: 46%;
+    border: 5px solid var(--paper); box-shadow: var(--sh-md);
+    transform: rotate(4deg);
+  }
+  /* The shared float-y keyframes animate `transform`, which would wipe out the
+     static rotate() above. These keep the tilt inside the keyframes instead. */
+  @keyframes tilt-a {
+    0%, 100% { transform: rotate(-5deg) translateY(0); }
+    50%      { transform: rotate(-5deg) translateY(-14px); }
+  }
+  @keyframes tilt-b {
+    0%, 100% { transform: rotate(4deg) translateY(0); }
+    50%      { transform: rotate(4deg) translateY(12px); }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .hero__pic--a { animation: tilt-a 7s ease-in-out infinite; }
+    .hero__pic--b { animation: tilt-b 9s ease-in-out infinite; }
+  }
 
   /* floating decorative shapes */
   .hero__shapes { position: absolute; inset: 0; pointer-events: none; z-index: -1; }
@@ -486,6 +539,21 @@ const day = [
   .day__item[data-accent='sky']   { --dot: var(--sky); }
   .day__t { font-family: var(--font-display); font-size: 1.2rem; margin-bottom: 0.25rem; }
   .day__body p { font-size: var(--t-sm); color: var(--ink-2); }
+
+  /* ============================================================== GALLERY */
+  .gal { padding-bottom: clamp(2.5rem, 1rem + 4vw, 4rem); }
+  .gal__rail {
+    display: flex; gap: var(--s-4); overflow-x: auto; scroll-snap-type: x mandatory;
+    padding: 0.4rem var(--gutter) 1.2rem; -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+  }
+  .gal__item {
+    flex: 0 0 clamp(190px, 62vw, 300px); scroll-snap-align: start;
+    border-radius: var(--r-lg); overflow: hidden; box-shadow: var(--sh-sm);
+    line-height: 0; transition: transform 0.35s var(--ease), box-shadow 0.35s var(--ease);
+  }
+  .gal__item:hover { transform: translateY(-6px); box-shadow: var(--sh-lg); }
+  .gal__item :global(img) { width: 100%; height: 100%; display: block; }
 
   /* =========================================================== TESTIMONIAL */
   .quotes .h2 { color: #fff; }

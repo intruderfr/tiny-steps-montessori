@@ -113,11 +113,12 @@ for (const file of htmlFiles) {
   // Only <a href> — matching every href would also pick up <link rel=stylesheet>
   // and flag hashed asset bundles, which are not routes.
   const links = [...html.matchAll(/<a\b[^>]*\bhref="(\/[^"#?]*)"/g)].map((m) => m[1]);
-  const skip = /\.(xml|json|txt|jpg|png|svg|webmanifest|ico|css|js)$/;
   for (const l of new Set(links)) {
-    if (skip.test(l)) continue;
     const clean = stripBase(l).replace(/\/$/, '') || '/';
-    if (!routes.has(clean)) err(`internal link 404 → ${l}`);
+    // A link either resolves to a page route or to a real file in dist.
+    if (routes.has(clean)) continue;
+    if (existsSync(join(DIST, stripBase(l)))) continue;
+    err(`internal link 404 → ${l}`);
   }
 
   /* ----------------------------------------------------- content volume */

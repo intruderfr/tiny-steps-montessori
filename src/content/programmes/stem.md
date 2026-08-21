@@ -11,6 +11,7 @@ schedule: "Saturdays, 9:00 AM – 11:00 AM"
 ratio: "1 facilitator to 6 children"
 capacity: "18 children per session"
 targetKeyword: "STEM classes for kids Colombo"
+photo: "stem-club-building-circuits"
 highlights:
   - "Every session ends with something the child built, tested and can take home"
   - "Physical engineering and circuits before anything on a screen"

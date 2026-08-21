@@ -64,6 +64,8 @@ const programmes = defineCollection({
     ratio: z.string(),
     capacity: z.string(),
     highlights: z.array(z.string()).min(3),
+    /** Slug of a photo in src/assets/photos, e.g. "toddler-water-play". */
+    photo: z.string().optional(),
     image: z.string().optional(),
     targetKeyword: z.string().optional(),
   }),

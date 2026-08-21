@@ -7,13 +7,12 @@
  * The artwork is rebuilt from the real Tiny Steps logo — three footprints
  * around a navy globe, over a teal ribbon.
  *
- * ⚠️  The OG card is a generated placeholder. Once you have photographs,
- * replace public/images/og-default.jpg with a 1200x630 photo of the school. A
- * real classroom converts far better in a WhatsApp or Facebook share preview
- * than any generated card.
+ * The OG card pairs the wordmark and headline with a real photograph of the
+ * school — a share preview showing actual children converts far better than a
+ * purely typographic card.
  */
 import sharp from 'sharp';
-import { mkdirSync } from 'node:fs';
+import { mkdirSync, existsSync } from 'node:fs';
 
 // Straight from the logo.
 const RED = '#E1252B';
@@ -48,12 +47,11 @@ const mark = (x, y, scale) => `
 /* ------------------------------------------------------------ OG card ---- */
 const og = `
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
-  <rect width="1200" height="630" fill="${PAPER}"/>
+  
 
-  <!-- soft brand blooms, well clear of the text column -->
-  <circle cx="1075" cy="95"  r="200" fill="${TEAL}"   opacity="0.09"/>
-  <circle cx="1015" cy="520" r="150" fill="${YELLOW}" opacity="0.22"/>
-  <circle cx="95"   cy="575" r="120" fill="${GREEN}"  opacity="0.09"/>
+  <!-- soft brand blooms, kept left of the photo panel -->
+  <circle cx="95"  cy="575" r="120" fill="${GREEN}"  opacity="0.08"/>
+  <circle cx="640" cy="120" r="130" fill="${YELLOW}" opacity="0.14"/>
 
   <!-- lockup -->
   ${mark(96, 92, 3.4)}
@@ -61,22 +59,52 @@ const og = `
   <text x="166" y="114" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="600" letter-spacing="5" fill="${TEAL}">MONTESSORI</text>
 
   <!-- headline -->
-  <text x="90" y="288" font-family="Segoe UI, Arial, sans-serif" font-size="70" font-weight="800" fill="${NAVY}">Where little feet take</text>
-  <text x="90" y="368" font-family="Segoe UI, Arial, sans-serif" font-size="70" font-weight="800" fill="${NAVY}">their biggest steps.</text>
-  <rect x="90" y="388" width="410" height="13" rx="6.5" fill="${YELLOW}"/>
+  <text x="90" y="288" font-family="Segoe UI, Arial, sans-serif" font-size="62" font-weight="800" fill="${NAVY}">Where little feet</text>
+  <text x="90" y="368" font-family="Segoe UI, Arial, sans-serif" font-size="62" font-weight="800" fill="${NAVY}">take big steps.</text>
+  <rect x="90" y="386" width="330" height="13" rx="6.5" fill="${YELLOW}"/>
 
-  <text x="90" y="462" font-family="Segoe UI, Arial, sans-serif" font-size="29" fill="#4C4E66">Montessori preschool &amp; daycare in Dehiwala, Colombo</text>
+  <text x="90" y="462" font-family="Segoe UI, Arial, sans-serif" font-size="26" fill="#4C4E66">Montessori preschool &amp; daycare in Dehiwala</text>
 
   <!-- the school's own tagline, on the ribbon teal -->
-  <rect x="90" y="492" width="556" height="52" rx="26" fill="${TEAL}"/>
-  <text x="118" y="527" font-family="Segoe UI, Arial, sans-serif" font-size="23" font-weight="700" letter-spacing="1.4" fill="${PAPER}">STEPPING TOWARDS A BRIGHTER FUTURE</text>
+  <rect x="90" y="492" width="540" height="50" rx="25" fill="${TEAL}"/>
+  <text x="118" y="527" font-family="Segoe UI, Arial, sans-serif" font-size="22" font-weight="700" letter-spacing="1.2" fill="${PAPER}">STEPPING TOWARDS A BRIGHTER FUTURE</text>
 
-  <!-- a few footprints walking off toward the corner -->
-  ${mark(980, 300, 2.2)}
-  ${mark(1085, 385, 1.6)}
 </svg>`;
 
-await sharp(Buffer.from(og)).jpeg({ quality: 88, mozjpeg: true }).toFile('public/images/og-default.jpg');
+/**
+ * Composite the card over a real photo panel on the right-hand third.
+ * Falls back to the plain card if the photo has not been imported yet, so a
+ * fresh clone still builds.
+ */
+const OG_PHOTO = 'src/assets/photos/farm-visit-holding-chick.jpg';
+const PANEL_X = 760;
+const PANEL_W = 1200 - PANEL_X;
+
+const layers = [];
+if (existsSync(OG_PHOTO)) {
+  const panel = await sharp(OG_PHOTO)
+    .rotate()
+    .resize(PANEL_W, 630, { fit: 'cover', position: 'attention' })
+    .toBuffer();
+  layers.push({ input: panel, left: PANEL_X, top: 0 });
+  // Feather the seam so the photo does not collide with the headline.
+  const fade = `<svg width="120" height="630" xmlns="http://www.w3.org/2000/svg">
+      <defs><linearGradient id="f" x1="0" x2="1">
+        <stop offset="0%" stop-color="#fff" stop-opacity="1"/>
+        <stop offset="100%" stop-color="#fff" stop-opacity="0"/>
+      </linearGradient></defs>
+      <rect width="120" height="630" fill="url(#f)"/>
+    </svg>`;
+  layers.push({ input: Buffer.from(fade), left: PANEL_X, top: 0 });
+} else {
+  console.warn('  ! og photo missing — run scripts/import-photos.mjs for the photo version');
+}
+layers.push({ input: Buffer.from(og) });
+
+await sharp({ create: { width: 1200, height: 630, channels: 3, background: PAPER } })
+  .composite(layers)
+  .jpeg({ quality: 86, mozjpeg: true })
+  .toFile('public/images/og-default.jpg');
 
 /* -------------------------------------------------------------- icons ---- */
 // White ground, because the mark's own three colours are the identity — a

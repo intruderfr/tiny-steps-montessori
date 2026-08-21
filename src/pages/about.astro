@@ -1,5 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
+import Photo from '../components/Photo.astro';
 import { site } from '../data/site';
 
 /**
@@ -55,18 +56,15 @@ const values = [
           and we would rather tell you something awkward than manage you.
         </p>
       </div>
-      <div class="ahead__art" aria-hidden="true">
-        <svg viewBox="0 0 300 300">
-          <circle cx="150" cy="150" r="140" fill="var(--teal-soft)" />
-          <path d="M40 210c40-30 70-10 100-25s60-30 100-8v103H40Z" fill="var(--green)" opacity="0.45" />
-          <rect x="120" y="120" width="60" height="60" rx="14" fill="var(--yellow)" />
-          <rect x="70" y="155" width="45" height="45" rx="11" fill="var(--red)" />
-          <rect x="185" y="155" width="45" height="45" rx="11" fill="var(--sky)" />
-          <circle cx="150" cy="150" r="16" fill="var(--surface-1)" />
-          <circle cx="92" cy="177" r="11" fill="var(--surface-1)" />
-          <circle cx="207" cy="177" r="11" fill="var(--surface-1)" />
-        </svg>
-      </div>
+      <figure class="ahead__art">
+        <Photo
+          slug="morning-assembly-classroom"
+          loading="eager"
+          widths={[360, 640, 900]}
+          sizes="(max-width: 850px) 88vw, 34vw"
+          ratio="1:1"
+        />
+      </figure>
     </div>
   </header>
 
@@ -137,6 +135,26 @@ const values = [
     </div>
   </section>
 
+  <section class="band">
+    <div class="wrap">
+      <div class="band__grid">
+        {[
+          { slug: 'practical-life-pouring', cap: 'Doing it themselves, slowly, properly' },
+          { slug: 'nature-trip-mud-play', cap: 'Outdoors every day, whatever that costs in laundry' },
+          { slug: 'stem-club-wiring-a-switch', cap: 'Real tools, real materials, real results' },
+        ].map((b, i) => (
+          <figure class={`band__item reveal d${i + 1}`}>
+            <Photo slug={b.slug} widths={[320, 600]} sizes="(max-width: 800px) 92vw, 32vw" ratio="4:3" />
+            <figcaption>{b.cap}</figcaption>
+          </figure>
+        ))}
+      </div>
+      <p class="band__more">
+        <a href="/gallery" class="btn btn--ghost">See all our photos &rarr;</a>
+      </p>
+    </div>
+  </section>
+
   {/* --------------------------------------------------------------- team */}
   <section class="section">
     <div class="wrap">
@@ -201,12 +219,28 @@ const values = [
 <style>
   .ahead { padding-block: clamp(1.6rem, 1rem + 3vw, 3rem) 0; }
   .ahead__inner { display: grid; grid-template-columns: minmax(0, 1.3fr) 300px; gap: clamp(2rem, 4vw, 3.5rem); align-items: center; }
-  @media (max-width: 850px) { .ahead__inner { grid-template-columns: 1fr; } .ahead__art { max-width: 240px; } }
+  @media (max-width: 850px) { .ahead__inner { grid-template-columns: 1fr; } .ahead__art { max-width: 320px; } }
+  .ahead__art {
+    margin: 0; border-radius: var(--r-2xl); overflow: hidden;
+    border: 7px solid var(--paper); box-shadow: var(--sh-lg);
+  }
+  .ahead__art :global(img) { width: 100%; display: block; }
   .ahead__t { font-size: var(--t-3xl); margin-block: 0.8rem 1rem; }
   .ahead .lede { max-width: 56ch; }
 
   .sec-head { margin-bottom: clamp(2rem, 1rem + 3vw, 3rem); max-width: 62ch; }
   .sec-head .h2 { margin-block: 0.6rem 0.8rem; }
+
+  .band { padding-block: var(--section-y); }
+  .band__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--s-5); }
+  .band__item { margin: 0; }
+  .band__item :global(img) {
+    width: 100%; display: block; border-radius: var(--r-lg); box-shadow: var(--sh-md);
+  }
+  .band__item figcaption {
+    font-size: var(--t-sm); color: var(--ink-2); margin-top: 0.8rem; line-height: 1.55;
+  }
+  .band__more { text-align: center; margin-top: 2.5rem; }
 
   .vgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(255px, 1fr)); gap: var(--s-5); }
   .vcard { background: var(--paper); border: 1px solid var(--line); border-radius: var(--r-lg); padding: 1.6rem; }

@@ -10,6 +10,37 @@ the real answers and I will — before you treat it as the live school website.
 
 ---
 
+## 🚨 Two things your photographs changed
+
+### 1. The class sizes on the site are probably wrong
+
+Your group photos show **50–80+ children**. The site currently claims 12 children
+in Playgroup, 24 in the Montessori classroom, and a 1:4 adult-to-child ratio —
+numbers I invented before I had seen the school.
+
+Those numbers are used as the site's main selling point, on the home page, every
+programme page, the FAQ and the location pages. **Send me your real per-room
+ratios and group sizes and I will correct every instance**, or tell me to remove
+the claims entirely.
+
+### 2. Parental consent for the photographs
+
+Every photo shows **clearly identifiable children's faces**. The site's own
+privacy policy promises:
+
+> We will not publish any photograph of your child on our website, on social
+> media, or in any printed material without your specific written consent.
+
+If these are already on your Facebook and Instagram you very likely hold that
+consent — but confirm it before the site goes on a public domain and gets
+indexed by Google. Search engines cache images, and a takedown later is much
+harder than a check now.
+
+If consent is partial, tell me which children to avoid and I will swap those
+photos out — there are 19 more in the folder I did not use.
+
+---
+
 ## 🔴 Blocking — these state things about the school that I invented
 
 These are **not obviously placeholders to a reader.** They look like facts.
@@ -48,6 +79,17 @@ These are **not obviously placeholders to a reader.** They look like facts.
 - **Rating**: `5.0` from `6` reviews. Update as reviews come in — a stale count in structured data is a quality signal against you.
 - **Ages 5+ and the STEM focus** came from your Instagram bio. Confirm.
 
+## 🟢 Now backed by your photographs
+
+These were assumptions before; the photos confirm them:
+
+- **STEM is real** — children are wiring actual battery-and-switch circuits
+- **Sink-and-float science** happens, exactly as described in the STEM article
+- **Outdoor and nature trips** — the paddy field, the farm visit, walking trips
+- **Practical life** — pouring, watering plants, washing, threading beads
+- **Celebrations** — International Day, Avurudu, Career Day, Cookery Day
+- **Trilingual environment** — Sinhala signage appears in the classroom photos
+
 ## 🟢 Real content, safe as written
 
 The eight articles in `src/content/news/` are general parenting and Montessori
@@ -78,8 +120,10 @@ A honeypot field is already in place either way.
 
 - [ ] Fix every 🔴 item above
 - [ ] Buy the domain and set `SITE_URL` (see `README.md` → Deploying)
-- [ ] Add real photographs — a real classroom beats any illustration for conversion
-- [ ] Replace `public/images/og-default.jpg` with a 1200×630 photo of the school
+- [x] ~~Add real photographs~~ — 38 photos and 2 videos are now live across the site
+- [x] ~~Replace the social card~~ — it now uses your farm-visit photo
+- [ ] Confirm photo consent (see the top of this file)
+- [ ] Correct the class sizes and ratios (see the top of this file)
 - [ ] Claim and complete your **Google Business Profile** — it is ~32% of local ranking
 - [ ] Submit `sitemap-index.xml` in Google Search Console
 - [ ] Run `npm run audit` one final time

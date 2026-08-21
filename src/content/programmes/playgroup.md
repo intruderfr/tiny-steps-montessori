@@ -12,6 +12,7 @@ schedule: "Mon–Fri, 8:30 AM – 11:30 AM"
 ratio: "1 adult to 4 children"
 capacity: "12 children per group"
 targetKeyword: "playgroup Dehiwala"
+photo: "toddler-water-play"
 highlights:
   - "Phased settling-in — parents stay for the first week"
   - "Sensory trays, water play, sand and dough every single day"

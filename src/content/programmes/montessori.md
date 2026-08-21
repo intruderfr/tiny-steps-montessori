@@ -11,6 +11,7 @@ schedule: "Mon–Fri, 8:00 AM – 12:30 PM"
 ratio: "1 guide to 8 children"
 capacity: "24 children per classroom"
 targetKeyword: "Montessori school Dehiwala"
+photo: "practical-life-pouring"
 highlights:
   - "The full three-hour uninterrupted work cycle — not a 20-minute token version"
   - "Mixed-age classroom, so children teach and learn from each other"

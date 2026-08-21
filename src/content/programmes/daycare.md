@@ -11,6 +11,7 @@ schedule: "Mon–Fri, until 5:00 PM"
 ratio: "1 adult to 6 children"
 capacity: "20 places"
 targetKeyword: "daycare Dehiwala"
+photo: "classroom-free-play"
 highlights:
   - "Cover to 5:00 PM so a Colombo commute is not a daily crisis"
   - "Hot vegetarian lunch and an afternoon snack included"
