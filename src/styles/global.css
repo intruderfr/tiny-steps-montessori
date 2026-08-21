@@ -1,43 +1,72 @@
 /* ==========================================================================
    TINY STEPS MONTESSORI — DESIGN SYSTEM
-   Warm, playful and tactile for children; calm, legible and trustworthy for
-   the parent who is actually choosing the school. Ships as one stylesheet so
-   there is no render-blocking waterfall.
+   Built from the school's own logo: red, green and yellow footprints around a
+   navy globe, over a teal ribbon. Vivid and playful for the children; calm,
+   legible and trustworthy for the parent who is actually choosing the school.
+   Ships as one stylesheet so there is no render-blocking waterfall.
    ========================================================================== */
 
 /* ----------------------------------------------------------------- tokens */
 :root {
-  /* Brand — sampled from the Tiny Steps footprint logo, warmed up for screen */
-  --sun: #f4a340;
-  --sun-deep: #e08420;
-  --sun-soft: #ffe9c9;
-  --coral: #f2685c;
-  --coral-soft: #ffe0dc;
-  --teal: #2a9d8f;
-  --teal-deep: #1f7a6f;
-  --teal-soft: #d4f0eb;
-  --sky: #4ea8de;
-  --sky-soft: #d9edf9;
-  --sage: #7fb069;
-  --sage-soft: #e3f2da;
-  --plum: #7b5ea7;
-  --plum-soft: #ece4f7;
+  /* --------------------------------------------------------------- brand
+     Taken straight from the Tiny Steps logo: three footprints (red, green,
+     yellow) around a navy circle, over a teal ribbon. Those five are the
+     entire brand, and the whole site is built from them.
 
-  /* Neutrals — warm, never pure grey. Cold greys read clinical. */
-  --cream: #fffbf3;
-  --cream-2: #fff5e6;
+     The logo's yellow is a pale primrose that fails contrast as a UI colour,
+     so the token below is deepened to a marigold that carries navy text at
+     AA. --logo-yellow keeps the original for the mark itself. */
+  --red: #e1252b;
+  --red-deep: #b31a20;
+  --red-soft: #fde4e5;
+
+  --green: #3f8f3c;
+  --green-deep: #2e6b2c;
+  --green-soft: #e3f2e2;
+
+  --yellow: #f5c518;
+  --yellow-deep: #d3a406;
+  --yellow-soft: #fdf2c9;
+  --logo-yellow: #f7ef8a;
+
+  --navy: #2b2a5f;
+  --navy-deep: #1c1b42;
+  --navy-soft: #e4e3f2;
+
+  --teal: #1c9bc7;
+  --teal-deep: #146f92;
+  --teal-soft: #dcf0f9;
+
+  --sky: #5bbbdd;
+  --sky-deep: #2b7fa5;
+  --sky-soft: #e6f6fc;
+
+  /* Text-safe variants. The brand yellow and teal are vivid enough to fail
+     WCAG AA as *text* colours even though they are fine as fills. Anything
+     that renders as words uses these instead. */
+  --yellow-text: #8a6a00;
+  --red-text: var(--red-deep);
+  --green-text: var(--green-deep);
+  --teal-text: var(--teal-deep);
+  --navy-text: var(--navy);
+  --sky-text: var(--sky-deep);
+
+  /* Neutrals — very faintly cool, to sit under the vivid primaries without
+     the yellowing a warm cream would introduce next to the navy. */
+  --surface-1: #fbfcfd;
+  --surface-2: #eef5fa;
   --paper: #ffffff;
-  --ink: #2c2420;
-  --ink-2: #5a4a41;
-  --ink-3: #8b7a70;
-  --line: #efe3d3;
+  --ink: #1f2033;
+  --ink-2: #4c4e66;
+  --ink-3: #5f6278; /* clears 4.5:1 at small sizes on white AND on the soft tints */
+  --line: #dee6ee;
 
   /* Semantic */
-  --bg: var(--cream);
+  --bg: var(--surface-1);
   --surface: var(--paper);
   --text: var(--ink);
   --text-muted: var(--ink-2);
-  --brand: var(--sun);
+  --brand: var(--yellow);
 
   /* Type */
   --font-display: "Baloo 2", "Trebuchet MS", system-ui, sans-serif;
@@ -66,11 +95,11 @@
   --r-sm: 10px; --r-md: 16px; --r-lg: 24px; --r-xl: 34px; --r-2xl: 48px;
   --r-full: 999px;
 
-  /* Depth — warm-tinted shadows, never neutral black */
-  --sh-sm: 0 1px 2px rgba(88, 60, 30, 0.06), 0 2px 6px rgba(88, 60, 30, 0.05);
-  --sh-md: 0 4px 10px rgba(88, 60, 30, 0.07), 0 12px 28px rgba(88, 60, 30, 0.07);
-  --sh-lg: 0 10px 24px rgba(88, 60, 30, 0.09), 0 28px 60px rgba(88, 60, 30, 0.1);
-  --sh-brand: 0 10px 30px rgba(244, 163, 64, 0.35);
+  /* Depth — tinted with the brand navy, never neutral black */
+  --sh-sm: 0 1px 2px rgba(43, 42, 95, 0.06), 0 2px 6px rgba(43, 42, 95, 0.05);
+  --sh-md: 0 4px 10px rgba(43, 42, 95, 0.07), 0 12px 28px rgba(43, 42, 95, 0.08);
+  --sh-lg: 0 10px 24px rgba(43, 42, 95, 0.1), 0 28px 60px rgba(43, 42, 95, 0.12);
+  --sh-brand: 0 10px 30px rgba(245, 197, 24, 0.4);
 
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -106,7 +135,7 @@ h1, h2, h3, h4 {
 p, li { text-wrap: pretty; }
 a { color: inherit; text-decoration-color: color-mix(in srgb, currentColor 35%, transparent); text-underline-offset: 3px; }
 :focus-visible { outline: 3px solid var(--teal); outline-offset: 3px; border-radius: 4px; }
-::selection { background: var(--sun-soft); color: var(--ink); }
+::selection { background: var(--yellow-soft); color: var(--navy); }
 
 /* ---------------------------------------------------------------- layout */
 .wrap { width: 100%; max-width: var(--maxw); margin-inline: auto; padding-inline: var(--gutter); }
@@ -123,9 +152,9 @@ a { color: inherit; text-decoration-color: color-mix(in srgb, currentColor 35%, 
   text-transform: uppercase; color: var(--teal-deep);
   background: var(--teal-soft); padding: 0.4rem 0.9rem; border-radius: var(--r-full);
 }
-.eyebrow--sun { color: var(--sun-deep); background: var(--sun-soft); }
-.eyebrow--coral { color: #c9392c; background: var(--coral-soft); }
-.eyebrow--plum { color: var(--plum); background: var(--plum-soft); }
+.eyebrow--yellow { color: var(--yellow-text); background: var(--yellow-soft); }
+.eyebrow--red { color: var(--red-text); background: var(--red-soft); }
+.eyebrow--navy { color: var(--navy); background: var(--navy-soft); }
 
 /* -------------------------------------------------------------- headings */
 .h1 { font-size: var(--t-4xl); }
@@ -138,11 +167,11 @@ a { color: inherit; text-decoration-color: color-mix(in srgb, currentColor 35%, 
 .squiggle::after {
   content: ""; position: absolute; left: -2%; right: -2%; bottom: -0.12em; height: 0.42em;
   background: no-repeat center / 100% 100%;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 20' preserveAspectRatio='none'%3E%3Cpath d='M2 14C40 4 78 16 116 9s60-6 82 2' stroke='%23F4A340' stroke-width='7' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 20' preserveAspectRatio='none'%3E%3Cpath d='M2 14C40 4 78 16 116 9s60-6 82 2' stroke='%23F5C518' stroke-width='7' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
   z-index: -1; pointer-events: none;
 }
 .squiggle--teal::after {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 20' preserveAspectRatio='none'%3E%3Cpath d='M2 14C40 4 78 16 116 9s60-6 82 2' stroke='%232A9D8F' stroke-width='7' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 20' preserveAspectRatio='none'%3E%3Cpath d='M2 14C40 4 78 16 116 9s60-6 82 2' stroke='%231C9BC7' stroke-width='7' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
 }
 
 /* --------------------------------------------------------------- buttons */
@@ -155,12 +184,12 @@ a { color: inherit; text-decoration-color: color-mix(in srgb, currentColor 35%, 
 }
 .btn:hover { transform: translateY(-3px); }
 .btn:active { transform: translateY(-1px); }
-.btn--primary { background: var(--sun); color: var(--ink); box-shadow: var(--sh-brand); }
-.btn--primary:hover { background: var(--sun-deep); }
-.btn--teal { background: var(--teal); color: #fff; box-shadow: 0 10px 30px rgba(42, 157, 143, 0.32); }
-.btn--teal:hover { background: var(--teal-deep); }
+.btn--primary { background: var(--yellow); color: var(--navy); box-shadow: var(--sh-brand); }
+.btn--primary:hover { background: var(--yellow-deep); }
+.btn--teal { background: var(--teal-deep); color: #fff; box-shadow: 0 10px 30px rgba(28, 155, 199, 0.34); }
+.btn--teal:hover { background: #0f5c78; }
 .btn--ghost { background: transparent; color: var(--ink); box-shadow: inset 0 0 0 2px var(--line); }
-.btn--ghost:hover { background: var(--paper); box-shadow: inset 0 0 0 2px var(--sun); }
+.btn--ghost:hover { background: var(--paper); box-shadow: inset 0 0 0 2px var(--yellow); }
 .btn--white { background: #fff; color: var(--ink); box-shadow: var(--sh-md); }
 .btn--lg { padding: 1.05rem 2.1rem; font-size: var(--t-lg); }
 .btn--sm { padding: 0.55rem 1.1rem; font-size: var(--t-sm); }
@@ -174,10 +203,10 @@ a { color: inherit; text-decoration-color: color-mix(in srgb, currentColor 35%, 
 .card--lift:hover { transform: translateY(-6px); box-shadow: var(--sh-lg); }
 
 /* -------------------------------------------------------------- surfaces */
-.bg-cream { background: var(--cream-2); }
+.bg-soft { background: var(--surface-2); }
 .bg-paper { background: var(--paper); }
-.bg-teal  { background: var(--teal); color: #fff; }
-.bg-ink   { background: #35291f; color: var(--cream); }
+.bg-teal  { background: var(--teal-deep); color: #fff; }
+.bg-ink   { background: #22214a; color: var(--surface-1); }
 
 /* Organic top/bottom edge so sections feel cut from paper, not stacked boxes */
 .edge-top, .edge-bottom { position: relative; }
@@ -222,17 +251,17 @@ a { color: inherit; text-decoration-color: color-mix(in srgb, currentColor 35%, 
 .prose h3 { font-size: var(--t-xl); margin-top: 1.8em; }
 .prose ul, .prose ol { padding-left: 1.4em; }
 .prose li + li { margin-top: 0.45em; }
-.prose li::marker { color: var(--sun-deep); }
+.prose li::marker { color: var(--yellow-deep); }
 .prose a { color: var(--teal-deep); font-weight: 600; }
 .prose blockquote {
-  border-left: 5px solid var(--sun); padding: 0.4em 0 0.4em 1.3em;
+  border-left: 5px solid var(--yellow); padding: 0.4em 0 0.4em 1.3em;
   font-family: var(--font-display); font-size: 1.1em; color: var(--ink-2);
 }
 .prose img { border-radius: var(--r-lg); box-shadow: var(--sh-md); }
-.prose code { background: var(--cream-2); padding: 0.15em 0.4em; border-radius: 6px; font-size: 0.9em; }
+.prose code { background: var(--surface-2); padding: 0.15em 0.4em; border-radius: 6px; font-size: 0.9em; }
 .prose table { width: 100%; border-collapse: collapse; font-size: var(--t-base); }
 .prose th, .prose td { text-align: left; padding: 0.7em 0.9em; border-bottom: 1px solid var(--line); }
-.prose th { font-family: var(--font-display); background: var(--cream-2); }
+.prose th { font-family: var(--font-display); background: var(--surface-2); }
 .prose figcaption { font-size: var(--t-sm); color: var(--ink-3); margin-top: 0.6em; text-align: center; }
 
 /* ------------------------------------------------------------- utilities */

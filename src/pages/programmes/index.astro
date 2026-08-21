@@ -34,7 +34,7 @@ const faqs = [
 >
   <header class="phead">
     <div class="wrap">
-      <p class="eyebrow eyebrow--plum">Ages 1 to 8</p>
+      <p class="eyebrow eyebrow--navy">Ages 1 to 8</p>
       <h1 class="h1 phead__t">Four programmes, one idea: follow the child</h1>
       <p class="lede">
         Every programme is built around what a child of that age genuinely needs.
@@ -80,7 +80,7 @@ const faqs = [
     </div>
   </section>
 
-  <section class="section bg-cream edge-top">
+  <section class="section bg-soft edge-top">
     <div class="wrap wrap-narrow">
       <h2 class="h2 center" style="margin-bottom:2rem">Questions about programmes</h2>
       <div class="faq">
@@ -109,7 +109,7 @@ const faqs = [
   .plist { display: grid; gap: var(--s-5); }
   .prow {
     display: grid; grid-template-columns: 92px minmax(0, 1fr) 220px; gap: 1.8rem;
-    background: var(--paper); border: 1px solid var(--line); border-left: 6px solid var(--ac, var(--sun));
+    background: var(--paper); border: 1px solid var(--line); border-left: 6px solid var(--ac, var(--yellow));
     border-radius: var(--r-lg); padding: clamp(1.3rem, 1rem + 1.5vw, 2rem);
     align-items: start; transition: box-shadow 0.3s var(--ease), transform 0.3s var(--ease);
   }
@@ -117,25 +117,25 @@ const faqs = [
   @media (max-width: 900px) { .prow { grid-template-columns: 68px minmax(0, 1fr); } .prow__facts { grid-column: 1 / -1; } }
   @media (max-width: 520px) { .prow { grid-template-columns: 1fr; } }
 
-  .prow[data-accent='sun']   { --ac: var(--sun);   --soft: var(--sun-soft); }
-  .prow[data-accent='teal']  { --ac: var(--teal);  --soft: var(--teal-soft); }
-  .prow[data-accent='coral'] { --ac: var(--coral); --soft: var(--coral-soft); }
-  .prow[data-accent='sage']  { --ac: var(--sage);  --soft: var(--sage-soft); }
-  .prow[data-accent='plum']  { --ac: var(--plum);  --soft: var(--plum-soft); }
-  .prow[data-accent='sky']   { --ac: var(--sky);   --soft: var(--sky-soft); }
+  .prow[data-accent='yellow']   { --ac: var(--yellow);   --soft: var(--yellow-soft);  --ac-text: var(--yellow-text);}
+  .prow[data-accent='teal']  { --ac: var(--teal);  --soft: var(--teal-soft);  --ac-text: var(--teal-text);}
+  .prow[data-accent='red'] { --ac: var(--red); --soft: var(--red-soft);  --ac-text: var(--red-text);}
+  .prow[data-accent='green']  { --ac: var(--green);  --soft: var(--green-soft);  --ac-text: var(--green-text);}
+  .prow[data-accent='navy']  { --ac: var(--navy);  --soft: var(--navy-soft);  --ac-text: var(--navy-text);}
+  .prow[data-accent='sky']   { --ac: var(--sky);   --soft: var(--sky-soft);  --ac-text: var(--sky-text);}
 
   .prow__mark { width: 72px; height: 72px; display: grid; place-items: center; background: var(--soft); border-radius: var(--r-md); }
   .prow__icon { font-size: 2rem; }
-  .prow__age { font-size: var(--t-xs); font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--ac); }
+  .prow__age { font-size: var(--t-xs); font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--ac-text); }
   .prow__t { margin-block: 0.25rem 0.6rem; }
   .prow__t a { text-decoration: none; }
-  .prow__t a:hover { color: var(--ac); }
+  .prow__t a:hover { color: var(--ac-text); }
   .prow__d { color: var(--ink-2); font-size: var(--t-sm); line-height: 1.65; max-width: 62ch; }
   .prow__high { list-style: none; padding: 0; margin: 1.1rem 0 1.4rem; display: grid; gap: 0.5rem; }
   .prow__high li { display: flex; gap: 0.55rem; font-size: var(--t-sm); color: var(--ink-2); line-height: 1.5; }
   .prow__high svg { width: 17px; height: 17px; fill: var(--ac); flex: none; margin-top: 3px; }
 
-  .prow__facts { display: grid; gap: 0.85rem; background: var(--cream-2); padding: 1.1rem; border-radius: var(--r-md); }
+  .prow__facts { display: grid; gap: 0.85rem; background: var(--surface-2); padding: 1.1rem; border-radius: var(--r-md); }
   .prow__facts dt { font-size: var(--t-xs); text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-3); }
   .prow__facts dd { margin: 0.15rem 0 0; font-weight: 700; font-size: var(--t-sm); }
 
@@ -146,7 +146,7 @@ const faqs = [
     font-size: 1.05rem; list-style: none; display: flex; justify-content: space-between; gap: 1rem; align-items: center;
   }
   .faq__item summary::-webkit-details-marker { display: none; }
-  .faq__item summary::after { content: '+'; font-size: 1.5rem; color: var(--sun-deep); flex: none; transition: transform 0.25s; }
+  .faq__item summary::after { content: '+'; font-size: 1.5rem; color: var(--yellow-deep); flex: none; transition: transform 0.25s; }
   .faq__item[open] summary::after { transform: rotate(45deg); }
   .faq__item p { padding: 0 1.3rem 1.2rem; color: var(--ink-2); font-size: var(--t-sm); line-height: 1.7; }
 </style>

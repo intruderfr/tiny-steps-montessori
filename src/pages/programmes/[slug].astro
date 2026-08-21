@@ -87,7 +87,7 @@ const facts = [
       </aside>
     </div>
 
-    <section class="section bg-cream edge-top">
+    <section class="section bg-soft edge-top">
       <div class="wrap">
         <h2 class="h2 center" style="margin-bottom:2.2rem">Our other programmes</h2>
         <div class="others">
@@ -107,16 +107,16 @@ const facts = [
 </Base>
 
 <style>
-  .phead { padding-block: clamp(2rem, 1rem + 4vw, 3.5rem) clamp(2.5rem, 1rem + 5vw, 4rem); background: var(--tint, var(--sun-soft)); position: relative; }
-  .phead[data-accent='sun']   { --tint: var(--sun-soft);   --ac: var(--sun-deep); }
-  .phead[data-accent='teal']  { --tint: var(--teal-soft);  --ac: var(--teal-deep); }
-  .phead[data-accent='coral'] { --tint: var(--coral-soft); --ac: #c9392c; }
-  .phead[data-accent='sage']  { --tint: var(--sage-soft);  --ac: #4d7a38; }
-  .phead[data-accent='plum']  { --tint: var(--plum-soft);  --ac: var(--plum); }
-  .phead[data-accent='sky']   { --tint: var(--sky-soft);   --ac: #2b7bb0; }
+  .phead { padding-block: clamp(2rem, 1rem + 4vw, 3.5rem) clamp(2.5rem, 1rem + 5vw, 4rem); background: var(--tint, var(--yellow-soft)); position: relative; }
+  .phead[data-accent='yellow']   { --tint: var(--yellow-soft);   --ac: var(--yellow-deep);  --ac-text: var(--yellow-text);}
+  .phead[data-accent='teal']  { --tint: var(--teal-soft);  --ac: var(--teal-deep);  --ac-text: var(--teal-text);}
+  .phead[data-accent='red'] { --tint: var(--red-soft); --ac: var(--red-deep);  --ac-text: var(--red-text);}
+  .phead[data-accent='green']  { --tint: var(--green-soft);  --ac: #4d7a38;  --ac-text: var(--green-text);}
+  .phead[data-accent='navy']  { --tint: var(--navy-soft);  --ac: var(--navy);  --ac-text: var(--navy-text);}
+  .phead[data-accent='sky']   { --tint: var(--sky-soft);   --ac: #2b7bb0;  --ac-text: var(--sky-text);}
   .phead__inner { max-width: 780px; }
   .phead__icon { font-size: 2.6rem; display: block; margin-bottom: 0.7rem; }
-  .phead__age { font-family: var(--font-display); font-weight: 700; color: var(--ac); letter-spacing: 0.05em; text-transform: uppercase; font-size: var(--t-sm); }
+  .phead__age { font-family: var(--font-display); font-weight: 700; color: var(--ac-text); letter-spacing: 0.05em; text-transform: uppercase; font-size: var(--t-sm); }
   .phead__title { margin-block: 0.4rem 1rem; font-size: var(--t-3xl); }
   .phead__lede { color: var(--ink-2); }
 
@@ -131,7 +131,7 @@ const facts = [
   .side { display: grid; gap: 1.2rem; position: sticky; top: 6.5rem; }
   @media (max-width: 950px) { .side { position: static; } }
   .side__card { background: var(--paper); border: 1px solid var(--line); border-radius: var(--r-lg); padding: 1.5rem; }
-  .side__card--cta { background: var(--cream-2); border-color: var(--sun); }
+  .side__card--cta { background: var(--surface-2); border-color: var(--yellow); }
   .side__card--cta p { font-size: var(--t-sm); color: var(--ink-2); margin-block: 0.6rem 1.2rem; line-height: 1.6; }
   .side__h { font-family: var(--font-display); font-size: 1.15rem; }
   .side__list { list-style: none; padding: 0; margin: 1rem 0 0; display: grid; gap: 0.75rem; }
@@ -140,10 +140,10 @@ const facts = [
   .side__phone { display: block; margin-top: 0.9rem; font-size: var(--t-sm); color: var(--ink-2); text-align: center; }
 
   .others { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--s-4); }
-  .ocard { display: flex; align-items: center; gap: 1rem; text-decoration: none; border-left: 4px solid var(--ac2, var(--sun)); }
-  .ocard[data-accent='sun'] { --ac2: var(--sun); } .ocard[data-accent='teal'] { --ac2: var(--teal); }
-  .ocard[data-accent='coral'] { --ac2: var(--coral); } .ocard[data-accent='sage'] { --ac2: var(--sage); }
-  .ocard[data-accent='plum'] { --ac2: var(--plum); } .ocard[data-accent='sky'] { --ac2: var(--sky); }
+  .ocard { display: flex; align-items: center; gap: 1rem; text-decoration: none; border-left: 4px solid var(--ac2, var(--yellow)); }
+  .ocard[data-accent='yellow'] { --ac2: var(--yellow); } .ocard[data-accent='teal'] { --ac2: var(--teal); }
+  .ocard[data-accent='red'] { --ac2: var(--red); } .ocard[data-accent='green'] { --ac2: var(--green); }
+  .ocard[data-accent='navy'] { --ac2: var(--navy); } .ocard[data-accent='sky'] { --ac2: var(--sky); }
   .ocard__icon { font-size: 1.7rem; }
   .ocard__age { font-size: var(--t-xs); color: var(--ink-3); }
   .ocard__t { font-family: var(--font-display); font-size: 1.15rem; }

@@ -47,8 +47,8 @@ const fmt = (d: Date) => d.toLocaleDateString('en-GB', { day: 'numeric', month: 
         </div>
         <div class="feat__art" aria-hidden="true">
           <svg viewBox="0 0 200 200">
-            <circle cx="100" cy="100" r="86" fill="var(--sun-soft)" />
-            <circle cx="100" cy="100" r="58" fill="var(--sun)" opacity="0.55" />
+            <circle cx="100" cy="100" r="86" fill="var(--yellow-soft)" />
+            <circle cx="100" cy="100" r="58" fill="var(--yellow)" opacity="0.55" />
             <path d="M62 118c0-22 17-40 38-40s38 18 38 40" fill="none" stroke="var(--ink)" stroke-width="7" stroke-linecap="round" />
             <circle cx="82" cy="86" r="7" fill="var(--ink)" />
             <circle cx="118" cy="86" r="7" fill="var(--ink)" />
@@ -118,7 +118,7 @@ const fmt = (d: Date) => d.toLocaleDateString('en-GB', { day: 'numeric', month: 
   .feat:hover { transform: translateY(-5px); box-shadow: var(--sh-lg); }
   @media (max-width: 800px) { .feat { grid-template-columns: 1fr; } .feat__art { display: none; } }
   .feat__badge {
-    display: inline-block; background: var(--coral); color: #fff; font-size: var(--t-xs);
+    display: inline-block; background: var(--red); color: #fff; font-size: var(--t-xs);
     font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em;
     padding: 0.25rem 0.7rem; border-radius: var(--r-full); margin-bottom: 0.9rem;
   }
@@ -126,7 +126,7 @@ const fmt = (d: Date) => d.toLocaleDateString('en-GB', { day: 'numeric', month: 
   .feat__t { font-size: var(--t-2xl); margin-block: 0.4rem 0.8rem; }
   .feat__d { color: var(--ink-2); font-size: var(--t-base); line-height: 1.7; }
   .feat__meta { font-size: var(--t-xs); color: var(--ink-3); margin-top: 1rem; display: flex; gap: 0.35rem; }
-  .feat__link { display: inline-block; margin-top: 1.2rem; font-family: var(--font-display); font-weight: 700; color: var(--sun-deep); }
+  .feat__link { display: inline-block; margin-top: 1.2rem; font-family: var(--font-display); font-weight: 700; color: var(--yellow-text); }
   .feat__art svg { width: 100%; max-width: 240px; margin-inline: auto; }
 
   .filters { display: flex; flex-wrap: wrap; gap: 0.55rem; margin-bottom: 2rem; }
@@ -135,7 +135,7 @@ const fmt = (d: Date) => d.toLocaleDateString('en-GB', { day: 'numeric', month: 
     padding: 0.5rem 1.05rem; border-radius: var(--r-full); cursor: pointer;
     font-weight: 600; font-size: var(--t-sm); transition: all 0.2s;
   }
-  .chip:hover { border-color: var(--sun); }
+  .chip:hover { border-color: var(--yellow); }
   .chip.is-on { background: var(--ink); color: #fff; border-color: var(--ink); }
 
   .nlist { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: var(--s-5); }
@@ -148,7 +148,7 @@ const fmt = (d: Date) => d.toLocaleDateString('en-GB', { day: 'numeric', month: 
 
   .nempty { text-align: center; color: var(--ink-3); padding: 3rem 0; }
 
-  .sub { background: var(--cream-2); border-top: 1px solid var(--line); padding-block: var(--s-8); }
+  .sub { background: var(--surface-2); border-top: 1px solid var(--line); padding-block: var(--s-8); }
   .sub__inner { display: flex; align-items: center; justify-content: space-between; gap: 2rem; flex-wrap: wrap; }
   .sub__t { font-size: var(--t-2xl); }
   .sub__d { color: var(--ink-2); margin-top: 0.6rem; max-width: 48ch; }

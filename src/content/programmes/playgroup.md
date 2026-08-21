@@ -6,7 +6,7 @@ description: "A calm, unhurried playgroup in Dehiwala for ages 1-2. Sensory play
 ageRange: "1-2 years"
 ageLabel: "1 – 2 years"
 order: 1
-accent: "coral"
+accent: "red"
 icon: "🧸"
 schedule: "Mon–Fri, 8:30 AM – 11:30 AM"
 ratio: "1 adult to 4 children"

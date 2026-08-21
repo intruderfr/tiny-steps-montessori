@@ -1,26 +1,57 @@
 ---
 /**
- * Inline SVG wordmark. Inline (not <img>) so it costs zero network requests,
- * inherits currentColor, and stays crisp at any size.
- * Echoes the footprint device from the school's existing logo.
+ * The Tiny Steps mark, rebuilt as inline SVG.
+ *
+ * The full logo — three footprints around a navy globe, arched "STEPPING
+ * TOWARDS A BRIGHTER FUTURE" text, and a teal ribbon — carries far too much
+ * detail to survive at 44px in a header. So this is the reduced mark: the three
+ * footprints and the navy centre, which is the part that is actually
+ * recognisable at small sizes. The tagline and ribbon live in the page copy and
+ * the footer instead, where there is room to read them.
+ *
+ * Inline rather than <img> so it costs no network request and stays sharp on
+ * every screen.
  */
-interface Props { class?: string; compact?: boolean }
-const { class: cls = '', compact = false } = Astro.props;
+interface Props {
+  class?: string;
+  /** Hide the wordmark and show the mark alone. */
+  compact?: boolean;
+  /** Light text for use on the dark footer. */
+  onDark?: boolean;
+}
+const { class: cls = '', compact = false, onDark = false } = Astro.props;
+
+// Three feet at 120° apart, matching the logo's arrangement:
+// red top, green lower-left, yellow lower-right.
+const feet = [
+  { rotate: 8, fill: 'var(--red)' },
+  { rotate: 128, fill: 'var(--green)' },
+  { rotate: 248, fill: 'var(--logo-yellow)' },
+];
 ---
 
-<span class={`logo ${cls}`}>
+{/* Everything goes through class:list — Astro does not merge a `class`
+    attribute with a `class:list` on the same element, and the loser is
+    dropped silently. */}
+<span class:list={['logo', cls, { 'logo--dark': onDark }]}>
   <svg class="logo__mark" viewBox="0 0 48 48" aria-hidden="true" focusable="false">
-    <circle cx="24" cy="24" r="23" fill="var(--sun)" />
-    {/* Little foot: heel + five toes, the Tiny Steps device */}
-    <path
-      d="M20.5 33.5c-3.6 0-6.2-2.6-6.2-6.3 0-3.9 2.3-7.1 4.4-9.9 1.7-2.2 3.6-3.6 6-3.6 3.4 0 5.6 2.4 5.6 6 0 3.3-1.4 6.2-3.2 8.9-1.7 2.6-3.8 4.9-6.6 4.9Z"
-      fill="var(--ink)"
-    />
-    <circle cx="31.6" cy="14.4" r="2.5" fill="var(--ink)" />
-    <circle cx="35.1" cy="19.1" r="2.1" fill="var(--ink)" />
-    <circle cx="35.8" cy="24.3" r="1.8" fill="var(--ink)" />
-    <circle cx="34.4" cy="29" r="1.5" fill="var(--ink)" />
+    <g transform="translate(24 24)">
+      {/* Navy centre sits behind, so the soles overlap it as in the original */}
+      <circle r="8.4" fill="var(--navy)" />
+      {feet.map((f) => (
+        <g transform={`rotate(${f.rotate})`} fill={f.fill}>
+          {/* sole */}
+          <ellipse cx="0" cy="-10.6" rx="4.9" ry="6.4" />
+          {/* toes, big toe outermost, exactly as the logo steps them down */}
+          <circle cx="4.3" cy="-17.6" r="2.05" />
+          <circle cx="1.2" cy="-19.1" r="1.75" />
+          <circle cx="-1.7" cy="-18.5" r="1.5" />
+          <circle cx="-4.1" cy="-16.9" r="1.25" />
+        </g>
+      ))}
+    </g>
   </svg>
+
   {!compact && (
     <span class="logo__text">
       <span class="logo__name">Tiny Steps</span>
@@ -31,15 +62,23 @@ const { class: cls = '', compact = false } = Astro.props;
 
 <style>
   .logo { display: inline-flex; align-items: center; gap: 0.6rem; text-decoration: none; }
-  .logo__mark { width: 44px; height: 44px; flex: none; transition: transform 0.4s var(--ease-bounce); }
-  .logo:hover .logo__mark { transform: rotate(-10deg) scale(1.06); }
+  .logo__mark { width: 46px; height: 46px; flex: none; transition: transform 0.45s var(--ease-bounce); }
+  .logo:hover .logo__mark { transform: rotate(120deg); }
   .logo__text { display: flex; flex-direction: column; line-height: 1; }
   .logo__name {
     font-family: var(--font-display); font-weight: 800; font-size: 1.3rem;
-    letter-spacing: -0.02em; color: var(--ink);
+    letter-spacing: -0.02em; color: var(--navy);
   }
   .logo__sub {
     font-family: var(--font-body); font-weight: 600; font-size: 0.68rem;
     letter-spacing: 0.22em; text-transform: uppercase; color: var(--teal-deep);
+  }
+  .logo--dark .logo__name { color: #fff; }
+  .logo--dark .logo__sub { color: var(--sky); }
+
+  /* The mark is three-fold symmetric, so a 120° turn lands it back on itself —
+     the rotation reads as the footprints walking round rather than as a wobble. */
+  @media (prefers-reduced-motion: reduce) {
+    .logo:hover .logo__mark { transform: none; }
   }
 </style>

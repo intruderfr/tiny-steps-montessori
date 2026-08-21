@@ -183,7 +183,7 @@ const allFaqs = groups.flatMap((g) => g.items);
 >
   <header class="fhead">
     <div class="wrap">
-      <p class="eyebrow eyebrow--coral">Straight Answers</p>
+      <p class="eyebrow eyebrow--red">Straight Answers</p>
       <h1 class="h1 fhead__t">Questions parents ask us</h1>
       <p class="lede">
         Everything we get asked, answered directly. If your question is not here,
@@ -248,7 +248,7 @@ const allFaqs = groups.flatMap((g) => g.items);
   @media (max-width: 950px) { .fbody { grid-template-columns: 1fr; } }
 
   .fnav { position: sticky; top: 6.5rem; font-size: var(--t-sm); }
-  @media (max-width: 950px) { .fnav { position: static; background: var(--cream-2); padding: 1.3rem; border-radius: var(--r-md); } }
+  @media (max-width: 950px) { .fnav { position: static; background: var(--surface-2); padding: 1.3rem; border-radius: var(--r-md); } }
   .fnav__h { font-family: var(--font-display); font-weight: 700; margin-bottom: 0.8rem; }
   .fnav ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.55rem; }
   .fnav a { color: var(--ink-2); text-decoration: none; display: block; line-height: 1.4; }
@@ -267,11 +267,11 @@ const allFaqs = groups.flatMap((g) => g.items);
   }
   .faq__item summary::-webkit-details-marker { display: none; }
   .faq__item summary:hover { color: var(--teal-deep); }
-  .faq__item summary::after { content: '+'; font-size: 1.45rem; color: var(--sun-deep); flex: none; transition: transform 0.25s; }
+  .faq__item summary::after { content: '+'; font-size: 1.45rem; color: var(--yellow-deep); flex: none; transition: transform 0.25s; }
   .faq__item[open] summary::after { transform: rotate(45deg); }
   .faq__item p { padding: 0 1.2rem 1.1rem; color: var(--ink-2); font-size: var(--t-sm); line-height: 1.72; }
 
-  .ask { background: var(--cream-2); border: 1px solid var(--sun); border-radius: var(--r-lg); padding: 2rem; text-align: center; }
+  .ask { background: var(--surface-2); border: 1px solid var(--yellow); border-radius: var(--r-lg); padding: 2rem; text-align: center; }
   .ask__h { font-family: var(--font-display); font-size: var(--t-xl); }
   .ask p { color: var(--ink-2); margin-block: 0.7rem 1.5rem; font-size: var(--t-sm); line-height: 1.7; max-width: 46ch; margin-inline: auto; }
   .ask__btns { display: flex; gap: 0.8rem; justify-content: center; flex-wrap: wrap; }

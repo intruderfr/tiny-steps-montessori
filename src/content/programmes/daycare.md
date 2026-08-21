@@ -5,7 +5,7 @@ description: "Safe, calm daycare and after-school care in Dehiwala. Extended hou
 ageRange: "1-8 years"
 ageLabel: "1 – 8 years"
 order: 4
-accent: "sun"
+accent: "yellow"
 icon: "🏡"
 schedule: "Mon–Fri, until 5:00 PM"
 ratio: "1 adult to 6 children"

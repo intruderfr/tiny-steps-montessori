@@ -1,8 +1,27 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
-  <circle cx="24" cy="24" r="23" fill="#F4A340"/>
-  <path d="M20.5 33.5c-3.6 0-6.2-2.6-6.2-6.3 0-3.9 2.3-7.1 4.4-9.9 1.7-2.2 3.6-3.6 6-3.6 3.4 0 5.6 2.4 5.6 6 0 3.3-1.4 6.2-3.2 8.9-1.7 2.6-3.8 4.9-6.6 4.9Z" fill="#2C2420"/>
-  <circle cx="31.6" cy="14.4" r="2.5" fill="#2C2420"/>
-  <circle cx="35.1" cy="19.1" r="2.1" fill="#2C2420"/>
-  <circle cx="35.8" cy="24.3" r="1.8" fill="#2C2420"/>
-  <circle cx="34.4" cy="29" r="1.5" fill="#2C2420"/>
+  <rect width="48" height="48" rx="11" fill="#ffffff"/>
+  <g transform="translate(24 24)">
+    <circle r="8.4" fill="#2b2a5f"/>
+    <g transform="rotate(8)" fill="#e1252b">
+      <ellipse cx="0" cy="-10.6" rx="4.9" ry="6.4"/>
+      <circle cx="4.3" cy="-17.6" r="2.05"/>
+      <circle cx="1.2" cy="-19.1" r="1.75"/>
+      <circle cx="-1.7" cy="-18.5" r="1.5"/>
+      <circle cx="-4.1" cy="-16.9" r="1.25"/>
+    </g>
+    <g transform="rotate(128)" fill="#3f8f3c">
+      <ellipse cx="0" cy="-10.6" rx="4.9" ry="6.4"/>
+      <circle cx="4.3" cy="-17.6" r="2.05"/>
+      <circle cx="1.2" cy="-19.1" r="1.75"/>
+      <circle cx="-1.7" cy="-18.5" r="1.5"/>
+      <circle cx="-4.1" cy="-16.9" r="1.25"/>
+    </g>
+    <g transform="rotate(248)" fill="#f0d94a">
+      <ellipse cx="0" cy="-10.6" rx="4.9" ry="6.4"/>
+      <circle cx="4.3" cy="-17.6" r="2.05"/>
+      <circle cx="1.2" cy="-19.1" r="1.75"/>
+      <circle cx="-1.7" cy="-18.5" r="1.5"/>
+      <circle cx="-4.1" cy="-16.9" r="1.25"/>
+    </g>
+  </g>
 </svg>

@@ -5,7 +5,7 @@ description: "Hands-on STEM classes in Dehiwala for ages 5-8. Real experiments, 
 ageRange: "5-8 years"
 ageLabel: "5 – 8 years"
 order: 3
-accent: "plum"
+accent: "navy"
 icon: "🔬"
 schedule: "Saturdays, 9:00 AM – 11:00 AM"
 ratio: "1 facilitator to 6 children"

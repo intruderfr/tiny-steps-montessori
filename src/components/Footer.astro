@@ -10,7 +10,7 @@ const year = new Date().getFullYear();
     <!-- Column 1 — the NAP block. This exact text must match your Google
          Business Profile character-for-character. -->
     <div class="ftr__col ftr__col--brand">
-      <Logo />
+      <Logo onDark />
       <p class="ftr__blurb">{site.description}</p>
 
       <address class="ftr__nap">
@@ -104,7 +104,7 @@ const year = new Date().getFullYear();
 </div>
 
 <style>
-  .ftr { background: #35291f; color: #e8ddd0; padding-top: var(--s-8); margin-top: auto; }
+  .ftr { background: #22214a; color: #dcdaf0; padding-top: var(--s-8); margin-top: auto; }
   .ftr__grid {
     display: grid; gap: var(--s-6);
     grid-template-columns: 1.6fr 1fr 1fr 1fr;
@@ -113,15 +113,13 @@ const year = new Date().getFullYear();
   @media (max-width: 980px) { .ftr__grid { grid-template-columns: 1fr 1fr; } }
   @media (max-width: 560px) { .ftr__grid { grid-template-columns: 1fr; } }
   .ftr__col--brand { max-width: 40ch; }
-  .ftr :global(.logo__name) { color: #fff; }
-  .ftr :global(.logo__sub) { color: var(--sun); }
-  .ftr__blurb { font-size: var(--t-sm); color: #b8a89a; margin-top: 1rem; line-height: 1.7; }
+  .ftr__blurb { font-size: var(--t-sm); color: #9d9bc4; margin-top: 1rem; line-height: 1.7; }
 
   .ftr__nap { font-style: normal; margin-top: 1.3rem; display: grid; gap: 0.6rem; }
   .ftr__napline { display: flex; gap: 0.6rem; align-items: flex-start; font-size: var(--t-sm); }
-  .ftr__napline svg { width: 17px; height: 17px; fill: var(--sun); flex: none; margin-top: 3px; }
-  .ftr__napline a { color: #e8ddd0; text-decoration: none; }
-  .ftr__napline a:hover { color: var(--sun); text-decoration: underline; }
+  .ftr__napline svg { width: 17px; height: 17px; fill: var(--yellow); flex: none; margin-top: 3px; }
+  .ftr__napline a { color: #dcdaf0; text-decoration: none; }
+  .ftr__napline a:hover { color: var(--yellow); text-decoration: underline; }
 
   .ftr__social { display: flex; gap: 0.6rem; margin-top: 1.4rem; }
   .ftr__social a {
@@ -129,8 +127,8 @@ const year = new Date().getFullYear();
     background: rgba(255, 255, 255, 0.08); border-radius: var(--r-full);
     transition: background 0.25s, transform 0.25s var(--ease-bounce);
   }
-  .ftr__social a:hover { background: var(--sun); transform: translateY(-3px); }
-  .ftr__social svg { width: 19px; height: 19px; fill: #e8ddd0; }
+  .ftr__social a:hover { background: var(--yellow); transform: translateY(-3px); }
+  .ftr__social svg { width: 19px; height: 19px; fill: #dcdaf0; }
   .ftr__social a:hover svg { fill: var(--ink); }
 
   .ftr__h {
@@ -138,18 +136,18 @@ const year = new Date().getFullYear();
     margin-bottom: 0.9rem; letter-spacing: 0.01em;
   }
   .ftr__col ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.55rem; }
-  .ftr__col ul a { color: #b8a89a; text-decoration: none; font-size: var(--t-sm); }
-  .ftr__col ul a:hover { color: var(--sun); }
+  .ftr__col ul a { color: #9d9bc4; text-decoration: none; font-size: var(--t-sm); }
+  .ftr__col ul a:hover { color: var(--yellow); }
   .ftr__areas { max-height: 15rem; }
 
   .ftr__bottom {
     border-top: 1px solid rgba(255, 255, 255, 0.1); padding-block: 1.3rem;
     display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap;
-    font-size: var(--t-xs); color: #9c8b7d;
+    font-size: var(--t-xs); color: #a8a6cc;
   }
   .ftr__bottom nav { display: flex; gap: 1.2rem; }
-  .ftr__bottom a { color: #9c8b7d; text-decoration: none; }
-  .ftr__bottom a:hover { color: var(--sun); }
+  .ftr__bottom a { color: #a8a6cc; text-decoration: none; }
+  .ftr__bottom a:hover { color: var(--yellow); }
 
   /* -------------------------------------------------- sticky mobile bar */
   .callbar { display: none; }
@@ -157,7 +155,7 @@ const year = new Date().getFullYear();
     .callbar {
       position: fixed; bottom: 0; left: 0; right: 0; z-index: 90;
       display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1px;
-      background: var(--line); box-shadow: 0 -4px 20px rgba(88, 60, 30, 0.16);
+      background: var(--line); box-shadow: 0 -4px 20px rgba(43, 42, 95, 0.18);
       padding-bottom: env(safe-area-inset-bottom);
     }
     .callbar__btn {
@@ -167,8 +165,8 @@ const year = new Date().getFullYear();
     }
     .callbar__btn svg { width: 17px; height: 17px; fill: currentColor; }
     .callbar__btn--call { background: var(--paper); color: var(--ink); }
-    .callbar__btn--wa { background: #25d366; color: #fff; }
-    .callbar__btn--enrol { background: var(--sun); color: var(--ink); }
+    .callbar__btn--wa { background: #25d366; color: var(--navy); }
+    .callbar__btn--enrol { background: var(--yellow); color: var(--ink); }
     /* Keep the footer clear of the fixed bar. */
     .ftr { padding-bottom: 4.2rem; }
   }

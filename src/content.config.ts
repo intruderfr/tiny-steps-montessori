@@ -57,7 +57,7 @@ const programmes = defineCollection({
     /** Sort order in listings. */
     order: z.number(),
     /** Design token name driving the card colour: sun | teal | coral | sage | plum | sky */
-    accent: z.enum(['sun', 'teal', 'coral', 'sage', 'plum', 'sky']),
+    accent: z.enum(['yellow', 'teal', 'red', 'green', 'navy', 'sky']),
     /** Emoji or short glyph shown on the card. */
     icon: z.string(),
     schedule: z.string(),

@@ -1,69 +1,93 @@
 /**
- * Generates the raster brand assets that a browser or social platform cannot
- * take as SVG: the Open Graph card, the app icons and the Apple touch icon.
+ * Generates the raster brand assets a browser or social platform cannot take
+ * as SVG: the Open Graph card, the app icons and the Apple touch icon.
  *
- * Run with:  npm run images
+ * Run with:  npm run images   (also runs automatically before every build)
  *
- * These are placeholders built from the brand marks. Once you have real
- * photographs of the school, replace public/images/og-default.jpg with a
- * 1200x630 photo — a real classroom converts far better in a WhatsApp or
- * Facebook share preview than any generated card.
+ * The artwork is rebuilt from the real Tiny Steps logo — three footprints
+ * around a navy globe, over a teal ribbon.
+ *
+ * ⚠️  The OG card is a generated placeholder. Once you have photographs,
+ * replace public/images/og-default.jpg with a 1200x630 photo of the school. A
+ * real classroom converts far better in a WhatsApp or Facebook share preview
+ * than any generated card.
  */
 import sharp from 'sharp';
 import { mkdirSync } from 'node:fs';
 
-const SUN = '#F4A340';
-const INK = '#2C2420';
-const CREAM = '#FFFBF3';
-const TEAL = '#2A9D8F';
+// Straight from the logo.
+const RED = '#E1252B';
+const GREEN = '#3F8F3C';
+const YELLOW = '#F0D94A'; // logo primrose, nudged for legibility on white
+const NAVY = '#2B2A5F';
+const TEAL = '#1C9BC7';
+const TEAL_DARK = '#14789D';
+const PAPER = '#FFFFFF';
 
 mkdirSync('public/images', { recursive: true });
 
-/** The footprint mark, at an arbitrary size/offset. */
-const foot = (x, y, s, fill = INK) => `
-  <g transform="translate(${x} ${y}) scale(${s})">
-    <path d="M20.5 33.5c-3.6 0-6.2-2.6-6.2-6.3 0-3.9 2.3-7.1 4.4-9.9 1.7-2.2 3.6-3.6 6-3.6 3.4 0 5.6 2.4 5.6 6 0 3.3-1.4 6.2-3.2 8.9-1.7 2.6-3.8 4.9-6.6 4.9Z" fill="${fill}"/>
-    <circle cx="31.6" cy="14.4" r="2.5" fill="${fill}"/>
-    <circle cx="35.1" cy="19.1" r="2.1" fill="${fill}"/>
-    <circle cx="35.8" cy="24.3" r="1.8" fill="${fill}"/>
-    <circle cx="34.4" cy="29" r="1.5" fill="${fill}"/>
+/** One footprint: sole plus four stepped toes, pointing "up" before rotation. */
+const foot = (rotate, fill) => `
+  <g transform="rotate(${rotate})" fill="${fill}">
+    <ellipse cx="0" cy="-10.6" rx="4.9" ry="6.4"/>
+    <circle cx="4.3" cy="-17.6" r="2.05"/>
+    <circle cx="1.2" cy="-19.1" r="1.75"/>
+    <circle cx="-1.7" cy="-18.5" r="1.5"/>
+    <circle cx="-4.1" cy="-16.9" r="1.25"/>
+  </g>`;
+
+/** The reduced mark: navy centre with three footprints at 120°. */
+const mark = (x, y, scale) => `
+  <g transform="translate(${x} ${y}) scale(${scale})">
+    <circle r="8.4" fill="${NAVY}"/>
+    ${foot(8, RED)}
+    ${foot(128, GREEN)}
+    ${foot(248, YELLOW)}
   </g>`;
 
 /* ------------------------------------------------------------ OG card ---- */
 const og = `
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
-  <rect width="1200" height="630" fill="${CREAM}"/>
-  <circle cx="1060" cy="90" r="190" fill="${SUN}" opacity="0.18"/>
-  <circle cx="110" cy="560" r="150" fill="${TEAL}" opacity="0.14"/>
-  <circle cx="1010" cy="540" r="80" fill="${SUN}" opacity="0.25"/>
+  <rect width="1200" height="630" fill="${PAPER}"/>
 
-  <circle cx="96" cy="86" r="40" fill="${SUN}"/>
-  ${foot(70, 60, 1.1)}
+  <!-- soft brand blooms, well clear of the text column -->
+  <circle cx="1075" cy="95"  r="200" fill="${TEAL}"   opacity="0.09"/>
+  <circle cx="1015" cy="520" r="150" fill="${YELLOW}" opacity="0.22"/>
+  <circle cx="95"   cy="575" r="120" fill="${GREEN}"  opacity="0.09"/>
 
-  <text x="150" y="80" font-family="Segoe UI, Arial, sans-serif" font-size="34" font-weight="700" fill="${INK}">Tiny Steps</text>
-  <text x="150" y="112" font-family="Segoe UI, Arial, sans-serif" font-size="17" font-weight="600" letter-spacing="4" fill="${TEAL}">MONTESSORI</text>
+  <!-- lockup -->
+  ${mark(96, 92, 3.4)}
+  <text x="164" y="82" font-family="Segoe UI, Arial, sans-serif" font-size="36" font-weight="700" fill="${NAVY}">Tiny Steps</text>
+  <text x="166" y="114" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="600" letter-spacing="5" fill="${TEAL}">MONTESSORI</text>
 
-  <text x="90" y="290" font-family="Segoe UI, Arial, sans-serif" font-size="72" font-weight="800" fill="${INK}">Where little feet take</text>
-  <text x="90" y="372" font-family="Segoe UI, Arial, sans-serif" font-size="72" font-weight="800" fill="${INK}">their biggest steps.</text>
-  <rect x="90" y="392" width="430" height="14" rx="7" fill="${SUN}" opacity="0.55"/>
+  <!-- headline -->
+  <text x="90" y="288" font-family="Segoe UI, Arial, sans-serif" font-size="70" font-weight="800" fill="${NAVY}">Where little feet take</text>
+  <text x="90" y="368" font-family="Segoe UI, Arial, sans-serif" font-size="70" font-weight="800" fill="${NAVY}">their biggest steps.</text>
+  <rect x="90" y="388" width="410" height="13" rx="6.5" fill="${YELLOW}"/>
 
-  <text x="90" y="470" font-family="Segoe UI, Arial, sans-serif" font-size="30" fill="#5A4A41">Montessori preschool &amp; daycare in Dehiwala, Colombo</text>
-  <text x="90" y="516" font-family="Segoe UI, Arial, sans-serif" font-size="26" font-weight="600" fill="${TEAL}">Ages 1 – 8  ·  Small classes  ·  Published fees</text>
+  <text x="90" y="462" font-family="Segoe UI, Arial, sans-serif" font-size="29" fill="#4C4E66">Montessori preschool &amp; daycare in Dehiwala, Colombo</text>
 
-  ${foot(880, 400, 2.4, SUN)}
-  ${foot(960, 450, 2.4, SUN)}
+  <!-- the school's own tagline, on the ribbon teal -->
+  <rect x="90" y="492" width="556" height="52" rx="26" fill="${TEAL}"/>
+  <text x="118" y="527" font-family="Segoe UI, Arial, sans-serif" font-size="23" font-weight="700" letter-spacing="1.4" fill="${PAPER}">STEPPING TOWARDS A BRIGHTER FUTURE</text>
+
+  <!-- a few footprints walking off toward the corner -->
+  ${mark(980, 300, 2.2)}
+  ${mark(1085, 385, 1.6)}
 </svg>`;
 
 await sharp(Buffer.from(og)).jpeg({ quality: 88, mozjpeg: true }).toFile('public/images/og-default.jpg');
 
 /* -------------------------------------------------------------- icons ---- */
+// White ground, because the mark's own three colours are the identity — a
+// coloured tile would fight them. Rounded rect keeps it legible as a favicon.
 const icon = (size) => `
 <svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 48 48">
-  <rect width="48" height="48" rx="10" fill="${SUN}"/>
-  ${foot(0, 0, 1)}
+  <rect width="48" height="48" rx="11" fill="${PAPER}"/>
+  ${mark(24, 24, 1)}
 </svg>`;
 
-// Maskable-safe: the mark sits inside the middle 80% so a circular crop is fine.
+// Maskable-safe: the mark sits inside the middle ~80%, so a circular crop is fine.
 for (const [size, name] of [
   [512, 'icon-512.png'],
   [192, 'icon-192.png'],

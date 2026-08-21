@@ -10,7 +10,7 @@ import { site, addressOneLine } from '../data/site';
 >
   <header class="chead">
     <div class="wrap">
-      <p class="eyebrow eyebrow--sun">Get in Touch</p>
+      <p class="eyebrow eyebrow--yellow">Get in Touch</p>
       <h1 class="h1 chead__t">Come and see a real morning</h1>
       <p class="lede">
         We run visits on weekdays while the classrooms are actually running,
@@ -22,7 +22,7 @@ import { site, addressOneLine } from '../data/site';
   {/* Fast contact methods first — most parents will use one of these three and
       never touch the form. Putting the form first would be optimising for us. */}
   <section class="wrap quick">
-    <a href={site.phoneHref} class="qcard qcard--sun">
+    <a href={site.phoneHref} class="qcard qcard--yellow">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.24c1.1.37 2.3.57 3.6.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1l-2.22 2.23Z"/></svg>
       <span class="qcard__l">Call us</span>
       <span class="qcard__v">{site.phone}</span>
@@ -187,8 +187,8 @@ import { site, addressOneLine } from '../data/site';
     border: 1px solid transparent; transition: transform 0.28s var(--ease), box-shadow 0.28s var(--ease);
   }
   .qcard:hover { transform: translateY(-4px); box-shadow: var(--sh-md); }
-  .qcard--sun  { --tint: var(--sun-soft);  --ic: var(--sun-deep); }
-  .qcard--wa   { --tint: #dcf8e8;          --ic: #1a9e50; }
+  .qcard--yellow  { --tint: var(--yellow-soft);  --ic: var(--yellow-text); }
+  .qcard--wa   { --tint: #dcf8e8;          --ic: #0d7038; }
   .qcard--teal { --tint: var(--teal-soft); --ic: var(--teal-deep); }
   .qcard svg { width: 26px; height: 26px; fill: var(--ic); margin-bottom: 0.6rem; }
   .qcard__l { font-size: var(--t-xs); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; color: var(--ic); }
@@ -209,14 +209,14 @@ import { site, addressOneLine } from '../data/site';
   @media (max-width: 560px) { .form__row { grid-template-columns: 1fr; } }
   .field { display: grid; gap: 0.4rem; }
   .field label { font-size: var(--t-sm); font-weight: 600; color: var(--ink-2); }
-  .field label span { color: var(--coral); }
+  .field label span { color: var(--red); }
   .field input, .field select, .field textarea {
     width: 100%; padding: 0.8rem 1rem; border: 1.5px solid var(--line);
     border-radius: var(--r-md); background: var(--paper); font-size: var(--t-base);
     transition: border-color 0.2s, box-shadow 0.2s;
   }
   .field input:focus, .field select:focus, .field textarea:focus {
-    outline: none; border-color: var(--sun); box-shadow: 0 0 0 4px var(--sun-soft);
+    outline: none; border-color: var(--yellow); box-shadow: 0 0 0 4px var(--yellow-soft);
   }
   .field textarea { resize: vertical; font-family: inherit; }
   .form button { justify-self: start; margin-top: 0.4rem; }
@@ -227,7 +227,7 @@ import { site, addressOneLine } from '../data/site';
 
   /* ---------------------------------------------------------------- aside */
   .cinfo { display: grid; gap: 1.1rem; }
-  .cinfo__card { background: var(--cream-2); border: 1px solid var(--line); border-radius: var(--r-lg); padding: 1.5rem; }
+  .cinfo__card { background: var(--surface-2); border: 1px solid var(--line); border-radius: var(--r-lg); padding: 1.5rem; }
   .cinfo__h { font-family: var(--font-display); font-size: 1.12rem; margin-bottom: 0.8rem; }
   .cinfo__addr { font-style: normal; font-size: var(--t-sm); line-height: 1.7; color: var(--ink-2); margin-bottom: 1.1rem; }
   .cinfo__note { font-size: var(--t-xs); color: var(--ink-2); line-height: 1.6; margin-top: 1rem; padding-top: 1rem; border-top: 1px dashed var(--line); }

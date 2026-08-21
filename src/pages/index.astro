@@ -45,11 +45,11 @@ const stats = [
 ];
 
 const day = [
-  { time: '8:00', title: 'Arrival & Greeting', body: 'Shoes off, own hook, own basket. Every child is greeted by name at the door.', accent: 'sun' },
+  { time: '8:00', title: 'Arrival & Greeting', body: 'Shoes off, own hook, own basket. Every child is greeted by name at the door.', accent: 'yellow' },
   { time: '8:30', title: 'The Work Cycle', body: 'Three uninterrupted hours. Children choose their own work and stay with it as long as it holds them.', accent: 'teal' },
-  { time: '10:00', title: 'Snack, Served by Children', body: 'Family style at low tables. They pour, they pass, they wipe up after themselves.', accent: 'coral' },
-  { time: '10:30', title: 'Garden Time', body: 'Every single day. Climbing, sand, water, bare feet and running.', accent: 'sage' },
-  { time: '11:30', title: 'Story & Song', body: 'English, Sinhala and Tamil — the same rhymes, all three languages.', accent: 'plum' },
+  { time: '10:00', title: 'Snack, Served by Children', body: 'Family style at low tables. They pour, they pass, they wipe up after themselves.', accent: 'red' },
+  { time: '10:30', title: 'Garden Time', body: 'Every single day. Climbing, sand, water, bare feet and running.', accent: 'green' },
+  { time: '11:30', title: 'Story & Song', body: 'English, Sinhala and Tamil — the same rhymes, all three languages.', accent: 'navy' },
   { time: '12:30', title: 'Home or Daycare', body: 'Collection at 12:30, or lunch and a real nap for our daycare families until 5:00.', accent: 'sky' },
 ];
 ---
@@ -74,7 +74,7 @@ const day = [
 
     <div class="wrap hero__inner">
       <div class="hero__copy">
-        <p class="eyebrow eyebrow--sun">Dehiwala &middot; Ages 1 to 8</p>
+        <p class="eyebrow eyebrow--yellow">Dehiwala &middot; Ages 1 to 8</p>
         <h1 class="h1 hero__title">
           Where little feet take their <span class="squiggle">biggest</span> steps.
         </h1>
@@ -105,38 +105,38 @@ const day = [
         <svg viewBox="0 0 420 420" class="hero__svg">
           <defs>
             <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stop-color="#FFE9C9" />
-              <stop offset="100%" stop-color="#FFF5E6" />
+              <stop offset="0%" stop-color="#FDF2C9" />
+              <stop offset="100%" stop-color="#EEF5FA" />
             </linearGradient>
           </defs>
           <circle cx="210" cy="210" r="200" fill="url(#sky)" />
           {/* sun */}
-          <circle cx="318" cy="106" r="40" fill="var(--sun)" opacity="0.9" class="float" />
+          <circle cx="318" cy="106" r="40" fill="var(--yellow)" opacity="0.9" class="float" />
           {/* hills */}
-          <path d="M10 300c60-46 110-16 150-34s86-44 140-12 110 30 110 30v126H10Z" fill="var(--sage)" opacity="0.32" />
-          <path d="M10 340c70-34 120 4 172-14s96-30 138 6v78H10Z" fill="var(--sage)" opacity="0.55" />
+          <path d="M10 300c60-46 110-16 150-34s86-44 140-12 110 30 110 30v126H10Z" fill="var(--green)" opacity="0.32" />
+          <path d="M10 340c70-34 120 4 172-14s96-30 138 6v78H10Z" fill="var(--green)" opacity="0.55" />
           {/* tree */}
           <rect x="86" y="238" width="17" height="86" rx="8" fill="#8a6a4f" />
           <circle cx="94" cy="222" r="54" fill="var(--teal)" opacity="0.9" />
           <circle cx="60" cy="244" r="34" fill="var(--teal-deep)" opacity="0.75" />
           <circle cx="128" cy="246" r="30" fill="var(--teal-deep)" opacity="0.65" />
           {/* building blocks */}
-          <rect x="228" y="272" width="52" height="52" rx="12" fill="var(--coral)" />
+          <rect x="228" y="272" width="52" height="52" rx="12" fill="var(--red)" />
           <rect x="286" y="272" width="52" height="52" rx="12" fill="var(--sky)" />
-          <rect x="257" y="216" width="52" height="52" rx="12" fill="var(--sun)" />
-          <circle cx="283" cy="242" r="13" fill="var(--cream)" />
+          <rect x="257" y="216" width="52" height="52" rx="12" fill="var(--yellow)" />
+          <circle cx="283" cy="242" r="13" fill="var(--surface-1)" />
           {/* child, mid-stride */}
-          <circle cx="180" cy="238" r="27" fill="#e8b98f" />
-          <path d="M158 234a22 22 0 0 1 44 0Z" fill="#3c2a20" />
-          <rect x="163" y="266" width="35" height="46" rx="15" fill="var(--plum)" />
-          <rect x="167" y="310" width="12" height="30" rx="6" fill="#e8b98f" />
-          <rect x="184" y="310" width="12" height="30" rx="6" fill="#e8b98f" />
+          <circle cx="180" cy="238" r="27" fill="#eec39b" />
+          <path d="M158 234a22 22 0 0 1 44 0Z" fill="#3a2c26" />
+          <rect x="163" y="266" width="35" height="46" rx="15" fill="var(--navy)" />
+          <rect x="167" y="310" width="12" height="30" rx="6" fill="#eec39b" />
+          <rect x="184" y="310" width="12" height="30" rx="6" fill="#eec39b" />
           <circle cx="173" cy="344" r="9" fill="var(--ink)" />
           <circle cx="190" cy="344" r="9" fill="var(--ink)" />
           {/* little footprints trailing behind */}
-          <ellipse cx="122" cy="352" rx="8" ry="12" fill="var(--sun-deep)" opacity="0.5" transform="rotate(-16 122 352)" />
-          <ellipse cx="142" cy="362" rx="8" ry="12" fill="var(--sun-deep)" opacity="0.35" transform="rotate(-16 142 362)" />
-          <ellipse cx="98" cy="366" rx="8" ry="12" fill="var(--sun-deep)" opacity="0.22" transform="rotate(-16 98 366)" />
+          <ellipse cx="122" cy="352" rx="8" ry="12" fill="var(--yellow-deep)" opacity="0.5" transform="rotate(-16 122 352)" />
+          <ellipse cx="142" cy="362" rx="8" ry="12" fill="var(--yellow-deep)" opacity="0.35" transform="rotate(-16 142 362)" />
+          <ellipse cx="98" cy="366" rx="8" ry="12" fill="var(--yellow-deep)" opacity="0.22" transform="rotate(-16 98 366)" />
         </svg>
       </div>
     </div>
@@ -185,10 +185,10 @@ const day = [
   </section>
 
   {/* ================================================================== WHY */}
-  <section class="section bg-cream edge-top edge-bottom">
+  <section class="section bg-soft edge-top edge-bottom">
     <div class="wrap why">
       <div class="why__copy reveal">
-        <p class="eyebrow eyebrow--coral">Why Tiny Steps</p>
+        <p class="eyebrow eyebrow--red">Why Tiny Steps</p>
         <h2 class="h2">The things that actually matter, done properly</h2>
         <p class="lede">
           Every school will show you nice photographs. These are the four things
@@ -221,7 +221,7 @@ const day = [
   <section class="section">
     <div class="wrap">
       <header class="center sec-head reveal">
-        <p class="eyebrow eyebrow--plum">A Day at Tiny Steps</p>
+        <p class="eyebrow eyebrow--navy">A Day at Tiny Steps</p>
         <h2 class="h2">From the hook by the door to the garden gate</h2>
         <p class="lede center">Here is exactly what happens between 8:00 and 5:00.</p>
       </header>
@@ -298,10 +298,10 @@ const day = [
   </section>
 
   {/* ============================================================= LOCATION */}
-  <section class="section bg-cream edge-top">
+  <section class="section bg-soft edge-top">
     <div class="wrap loc">
       <div class="loc__copy reveal">
-        <p class="eyebrow eyebrow--sun">Find Us</p>
+        <p class="eyebrow eyebrow--yellow">Find Us</p>
         <h2 class="h2">A few minutes from home, wherever you are in Dehiwala</h2>
         <address class="loc__addr">
           {site.address.street}<br />
@@ -341,7 +341,7 @@ const day = [
   <section class="section">
     <div class="wrap wrap-narrow">
       <header class="center sec-head reveal">
-        <p class="eyebrow eyebrow--coral">Straight Answers</p>
+        <p class="eyebrow eyebrow--red">Straight Answers</p>
         <h2 class="h2">Questions parents ask us first</h2>
       </header>
       <div class="faq">
@@ -397,17 +397,17 @@ const day = [
     padding: 0; margin: 2.2rem 0 0; font-size: var(--t-sm); color: var(--ink-2);
   }
   .hero__proof strong { display: block; font-family: var(--font-display); font-size: 1.5rem; color: var(--ink); line-height: 1.1; }
-  .hero__svg { width: 100%; height: auto; filter: drop-shadow(0 24px 50px rgba(88, 60, 30, 0.14)); }
+  .hero__svg { width: 100%; height: auto; filter: drop-shadow(0 24px 50px rgba(43, 42, 95, 0.16)); }
 
   /* floating decorative shapes */
   .hero__shapes { position: absolute; inset: 0; pointer-events: none; z-index: -1; }
   .shape { position: absolute; display: block; border-radius: 50%; opacity: 0.5; }
-  .shape--1 { width: 130px; height: 130px; background: var(--coral-soft); top: 6%; left: -3%; }
+  .shape--1 { width: 130px; height: 130px; background: var(--red-soft); top: 6%; left: -3%; }
   .shape--2 { width: 74px; height: 74px; background: var(--teal-soft); top: 62%; left: 6%; }
-  .shape--3 { width: 180px; height: 180px; background: var(--sun-soft); bottom: -6%; right: 8%; opacity: 0.45; }
-  .shape--4 { width: 46px; height: 46px; background: var(--sage-soft); top: 18%; right: 3%; }
-  .shape--5 { width: 92px; height: 92px; background: var(--plum-soft); top: 40%; right: 44%; opacity: 0.35; }
-  .shape--star { width: 40px; height: 40px; fill: var(--sun); top: 12%; left: 44%; opacity: 0.55; border-radius: 0; }
+  .shape--3 { width: 180px; height: 180px; background: var(--yellow-soft); bottom: -6%; right: 8%; opacity: 0.45; }
+  .shape--4 { width: 46px; height: 46px; background: var(--green-soft); top: 18%; right: 3%; }
+  .shape--5 { width: 92px; height: 92px; background: var(--navy-soft); top: 40%; right: 44%; opacity: 0.35; }
+  .shape--star { width: 40px; height: 40px; fill: var(--yellow); top: 12%; left: 44%; opacity: 0.55; border-radius: 0; }
   .shape--squig { width: 120px; height: 40px; color: var(--teal); bottom: 14%; left: 16%; opacity: 0.28; border-radius: 0; }
   @media (max-width: 700px) { .shape--5, .shape--squig, .shape--star { display: none; } }
 
@@ -427,29 +427,29 @@ const day = [
   .prog__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(255px, 1fr)); gap: var(--s-5); }
   .prog {
     display: flex; flex-direction: column; text-decoration: none;
-    border-top: 5px solid var(--accent, var(--sun));
+    border-top: 5px solid var(--accent, var(--yellow));
     position: relative; overflow: hidden;
   }
-  .prog[data-accent='sun']   { --accent: var(--sun);   --accent-soft: var(--sun-soft); }
-  .prog[data-accent='teal']  { --accent: var(--teal);  --accent-soft: var(--teal-soft); }
-  .prog[data-accent='coral'] { --accent: var(--coral); --accent-soft: var(--coral-soft); }
-  .prog[data-accent='sage']  { --accent: var(--sage);  --accent-soft: var(--sage-soft); }
-  .prog[data-accent='plum']  { --accent: var(--plum);  --accent-soft: var(--plum-soft); }
-  .prog[data-accent='sky']   { --accent: var(--sky);   --accent-soft: var(--sky-soft); }
+  .prog[data-accent='yellow']   { --accent: var(--yellow);   --accent-soft: var(--yellow-soft);  --accent-text: var(--yellow-text);}
+  .prog[data-accent='teal']  { --accent: var(--teal);  --accent-soft: var(--teal-soft);  --accent-text: var(--teal-text);}
+  .prog[data-accent='red'] { --accent: var(--red); --accent-soft: var(--red-soft);  --accent-text: var(--red-text);}
+  .prog[data-accent='green']  { --accent: var(--green);  --accent-soft: var(--green-soft);  --accent-text: var(--green-text);}
+  .prog[data-accent='navy']  { --accent: var(--navy);  --accent-soft: var(--navy-soft);  --accent-text: var(--navy-text);}
+  .prog[data-accent='sky']   { --accent: var(--sky);   --accent-soft: var(--sky-soft);  --accent-text: var(--sky-text);}
   .prog__icon {
     font-size: 2rem; width: 62px; height: 62px; display: grid; place-items: center;
     background: var(--accent-soft); border-radius: var(--r-md); margin-bottom: 1rem;
     transition: transform 0.35s var(--ease-bounce);
   }
   .prog:hover .prog__icon { transform: rotate(-8deg) scale(1.08); }
-  .prog__age { font-size: var(--t-sm); font-weight: 700; color: var(--accent); letter-spacing: 0.04em; }
+  .prog__age { font-size: var(--t-sm); font-weight: 700; color: var(--accent-text); letter-spacing: 0.04em; }
   .prog__title { margin-block: 0.2rem 0.6rem; }
   .prog__desc { font-size: var(--t-sm); color: var(--ink-2); line-height: 1.65; }
   .prog__meta { display: grid; gap: 0.45rem; margin: 1.1rem 0; padding-top: 1rem; border-top: 1px dashed var(--line); font-size: var(--t-xs); }
   .prog__meta > div { display: flex; gap: 0.5rem; }
   .prog__meta dt { color: var(--ink-3); min-width: 3.4rem; }
   .prog__meta dd { margin: 0; font-weight: 600; color: var(--ink-2); }
-  .prog__link { margin-top: auto; font-family: var(--font-display); font-weight: 700; color: var(--accent); font-size: var(--t-sm); }
+  .prog__link { margin-top: auto; font-family: var(--font-display); font-weight: 700; color: var(--accent-text); font-size: var(--t-sm); }
 
   /* ================================================================== WHY */
   .why { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: clamp(2rem, 4vw, 4rem); align-items: start; }
@@ -458,7 +458,7 @@ const day = [
   .why__copy .btn { margin-top: 1.5rem; }
   .why__list { list-style: none; padding: 0; margin: 0; display: grid; gap: 1.1rem; }
   .why__item { display: flex; gap: 1.1rem; background: var(--paper); padding: 1.4rem; border-radius: var(--r-lg); box-shadow: var(--sh-sm); }
-  .why__icon { font-size: 1.6rem; width: 52px; height: 52px; flex: none; display: grid; place-items: center; background: var(--cream-2); border-radius: var(--r-md); }
+  .why__icon { font-size: 1.6rem; width: 52px; height: 52px; flex: none; display: grid; place-items: center; background: var(--surface-2); border-radius: var(--r-md); }
   .why__t { font-family: var(--font-display); font-size: 1.15rem; margin-bottom: 0.3rem; }
   .why__d { font-size: var(--t-sm); color: var(--ink-2); line-height: 1.65; }
 
@@ -475,14 +475,14 @@ const day = [
   .day__body { padding-left: 1.9rem; position: relative; }
   .day__body::before {
     content: ''; position: absolute; left: -7px; top: 8px; width: 17px; height: 17px;
-    border-radius: 50%; background: var(--dot, var(--sun)); box-shadow: 0 0 0 5px var(--cream);
+    border-radius: 50%; background: var(--dot, var(--yellow)); box-shadow: 0 0 0 5px var(--surface-1);
   }
   @media (max-width: 600px) { .day__body { padding-left: 2.6rem; } .day__body::before { left: 12px; } }
-  .day__item[data-accent='sun']   { --dot: var(--sun); }
+  .day__item[data-accent='yellow']   { --dot: var(--yellow); }
   .day__item[data-accent='teal']  { --dot: var(--teal); }
-  .day__item[data-accent='coral'] { --dot: var(--coral); }
-  .day__item[data-accent='sage']  { --dot: var(--sage); }
-  .day__item[data-accent='plum']  { --dot: var(--plum); }
+  .day__item[data-accent='red'] { --dot: var(--red); }
+  .day__item[data-accent='green']  { --dot: var(--green); }
+  .day__item[data-accent='navy']  { --dot: var(--navy); }
   .day__item[data-accent='sky']   { --dot: var(--sky); }
   .day__t { font-family: var(--font-display); font-size: 1.2rem; margin-bottom: 0.25rem; }
   .day__body p { font-size: var(--t-sm); color: var(--ink-2); }
@@ -491,14 +491,14 @@ const day = [
   .quotes .h2 { color: #fff; }
   .quotes__eyebrow {
     display: inline-block; font-size: var(--t-sm); font-weight: 700; letter-spacing: 0.08em;
-    text-transform: uppercase; background: rgba(255,255,255,0.16); color: #fff;
+    text-transform: uppercase; background: var(--yellow); color: var(--navy);
     padding: 0.4rem 0.9rem; border-radius: var(--r-full);
   }
   .quotes__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: var(--s-5); }
-  .quote { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.18); border-radius: var(--r-lg); padding: var(--s-5); margin: 0; }
-  .quote__mark { width: 30px; height: 30px; fill: var(--sun); margin-bottom: 0.8rem; }
+  .quote { background: rgba(0,0,0,0.13); border: 1px solid rgba(255,255,255,0.22); border-radius: var(--r-lg); padding: var(--s-5); margin: 0; }
+  .quote__mark { width: 30px; height: 30px; fill: var(--yellow); margin-bottom: 0.8rem; }
   .quote__text { font-size: var(--t-base); line-height: 1.7; color: #fff; }
-  .quote__by { margin-top: 1.2rem; font-size: var(--t-sm); display: grid; gap: 0.1rem; color: rgba(255,255,255,0.75); }
+  .quote__by { margin-top: 1.2rem; font-size: var(--t-sm); display: grid; gap: 0.1rem; color: rgba(255,255,255,0.95); }
   .quote__by strong { color: #fff; }
   .quotes__note { text-align: center; margin-top: 2rem; }
   .quotes__note a { color: #fff; font-weight: 700; font-family: var(--font-display); }
@@ -530,13 +530,13 @@ const day = [
     display: flex; justify-content: space-between; align-items: center; gap: 1rem;
   }
   .faq__item summary::-webkit-details-marker { display: none; }
-  .faq__item summary::after { content: '+'; font-size: 1.5rem; color: var(--sun-deep); flex: none; transition: transform 0.25s; }
+  .faq__item summary::after { content: '+'; font-size: 1.5rem; color: var(--yellow-deep); flex: none; transition: transform 0.25s; }
   .faq__item[open] summary::after { transform: rotate(45deg); }
   .faq__item p { padding: 0 1.3rem 1.2rem; color: var(--ink-2); font-size: var(--t-sm); line-height: 1.7; }
 
   /* ================================================================== CTA */
-  .cta { background: linear-gradient(140deg, var(--sun) 0%, #f7bf6e 55%, var(--coral) 130%); padding-block: clamp(3.5rem, 2rem + 6vw, 6rem); }
+  .cta { background: linear-gradient(140deg, var(--yellow) 0%, #f9d95e 55%, var(--red) 130%); padding-block: clamp(3.5rem, 2rem + 6vw, 6rem); }
   .cta__inner { text-align: center; max-width: 700px; }
-  .cta__d { font-size: var(--t-lg); color: rgba(44, 36, 32, 0.82); margin-block: 1rem 2rem; }
+  .cta__d { font-size: var(--t-lg); color: rgba(43, 42, 95, 0.85); margin-block: 1rem 2rem; }
   .cta__btns { display: flex; flex-wrap: wrap; gap: 0.9rem; justify-content: center; }
 </style>

@@ -35,11 +35,11 @@ const notIncluded = [
 ];
 
 const steps = [
-  { n: '01', t: 'Get in touch', d: 'Call, WhatsApp or send the enquiry form. Tell us your child’s age and roughly when you would like to start.', accent: 'sun' },
+  { n: '01', t: 'Get in touch', d: 'Call, WhatsApp or send the enquiry form. Tell us your child’s age and roughly when you would like to start.', accent: 'yellow' },
   { n: '02', t: 'Visit while we are running', d: 'A weekday morning, with the classrooms in session. Bring your child. Expect about 45 minutes, and bring hard questions.', accent: 'teal' },
-  { n: '03', t: 'A short settling conversation', d: 'We talk through your child’s temperament, routines, health and anything else we should know. This is us asking, not selling.', accent: 'coral' },
-  { n: '04', t: 'Offer and registration', d: 'If we both think it fits, we confirm a start date and place, and you pay the admission fee to hold it.', accent: 'plum' },
-  { n: '05', t: 'Settling in', d: 'Around two weeks, at your child’s pace, with you in the room at first. Never rushed, and never charged as extra.', accent: 'sage' },
+  { n: '03', t: 'A short settling conversation', d: 'We talk through your child’s temperament, routines, health and anything else we should know. This is us asking, not selling.', accent: 'red' },
+  { n: '04', t: 'Offer and registration', d: 'If we both think it fits, we confirm a start date and place, and you pay the admission fee to hold it.', accent: 'navy' },
+  { n: '05', t: 'Settling in', d: 'Around two weeks, at your child’s pace, with you in the room at first. Never rushed, and never charged as extra.', accent: 'green' },
 ];
 
 const faqs = [
@@ -78,7 +78,7 @@ const faqs = [
 >
   <header class="ahead">
     <div class="wrap">
-      <p class="eyebrow eyebrow--sun">Admissions</p>
+      <p class="eyebrow eyebrow--yellow">Admissions</p>
       <h1 class="h1 ahead__t">Joining Tiny Steps</h1>
       <p class="lede">
         We publish our fees, our ratios and our whole process, because we would
@@ -112,10 +112,10 @@ const faqs = [
   </section>
 
   {/* ---------------------------------------------------------------- fees */}
-  <section class="section bg-cream edge-top edge-bottom" id="fees">
+  <section class="section bg-soft edge-top edge-bottom" id="fees">
     <div class="wrap">
       <header class="sec-head reveal">
-        <p class="eyebrow eyebrow--coral">Fees</p>
+        <p class="eyebrow eyebrow--red">Fees</p>
         <h2 class="h2">Our fees, in public</h2>
         <p class="lede">
           Most preschools in Colombo will only give you a number after an hour-long
@@ -198,7 +198,7 @@ const faqs = [
   <section class="section">
     <div class="wrap wrap-narrow">
       <header class="center sec-head reveal">
-        <p class="eyebrow eyebrow--plum">Admissions FAQ</p>
+        <p class="eyebrow eyebrow--navy">Admissions FAQ</p>
         <h2 class="h2">The practical questions</h2>
       </header>
       <div class="faq">
@@ -235,10 +235,10 @@ const faqs = [
 
   /* ------------------------------------------------------------- process */
   .steps { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: var(--s-4); counter-reset: step; }
-  .step { background: var(--paper); border: 1px solid var(--line); border-top: 5px solid var(--ac, var(--sun)); border-radius: var(--r-lg); padding: 1.5rem; }
-  .step[data-accent='sun'] { --ac: var(--sun); } .step[data-accent='teal'] { --ac: var(--teal); }
-  .step[data-accent='coral'] { --ac: var(--coral); } .step[data-accent='plum'] { --ac: var(--plum); }
-  .step[data-accent='sage'] { --ac: var(--sage); }
+  .step { background: var(--paper); border: 1px solid var(--line); border-top: 5px solid var(--ac, var(--yellow)); border-radius: var(--r-lg); padding: 1.5rem; }
+  .step[data-accent='yellow'] { --ac: var(--yellow);  --ac-text: var(--yellow-text);} .step[data-accent='teal'] { --ac: var(--teal);  --ac-text: var(--teal-text);}
+  .step[data-accent='red'] { --ac: var(--red);  --ac-text: var(--red-text);} .step[data-accent='navy'] { --ac: var(--navy);  --ac-text: var(--navy-text);}
+  .step[data-accent='green'] { --ac: var(--green);  --ac-text: var(--green-text);}
   .step__n { font-family: var(--font-display); font-size: 1.9rem; font-weight: 800; color: var(--ac); opacity: 0.35; line-height: 1; }
   .step__t { font-family: var(--font-display); font-size: 1.12rem; margin-block: 0.5rem 0.4rem; }
   .step__d { font-size: var(--t-sm); color: var(--ink-2); line-height: 1.6; }
@@ -252,7 +252,7 @@ const faqs = [
   .fees td { font-size: var(--t-sm); color: var(--ink-2); }
   .fees .num { font-variant-numeric: tabular-nums; font-weight: 700; color: var(--ink); }
   .fees tbody tr:last-child th, .fees tbody tr:last-child td { border-bottom: none; }
-  .fees tbody tr:nth-child(even) { background: var(--cream); }
+  .fees tbody tr:nth-child(even) { background: var(--surface-1); }
   .fees__note { font-size: var(--t-sm); color: var(--ink-2); margin-top: 1rem; }
 
   .incl { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-5); margin-top: var(--s-6); }
@@ -260,12 +260,12 @@ const faqs = [
   .incl__col { background: var(--paper); border: 1px solid var(--line); border-radius: var(--r-lg); padding: 1.5rem; }
   .incl__h { font-family: var(--font-display); font-size: 1.1rem; margin-bottom: 1rem; }
   .incl__h--yes { color: var(--teal-deep); }
-  .incl__h--no { color: #c9392c; }
+  .incl__h--no { color: var(--red-deep); }
   .incl__col ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.7rem; }
   .incl__col li { display: flex; gap: 0.6rem; font-size: var(--t-sm); color: var(--ink-2); line-height: 1.55; }
   .incl__col svg { width: 18px; height: 18px; flex: none; margin-top: 2px; }
   .incl__h--yes ~ ul svg { fill: var(--teal); }
-  .incl__h--no ~ ul svg { fill: var(--coral); }
+  .incl__h--no ~ ul svg { fill: var(--red); }
 
   .help { margin-top: var(--s-6); background: var(--teal-soft); border: 1px solid var(--teal); border-radius: var(--r-lg); padding: 1.8rem; max-width: 62ch; }
   .help__h { font-family: var(--font-display); font-size: 1.2rem; color: var(--teal-deep); margin-bottom: 0.6rem; }
@@ -279,12 +279,12 @@ const faqs = [
     font-size: 1.05rem; list-style: none; display: flex; justify-content: space-between; gap: 1rem; align-items: center;
   }
   .faq__item summary::-webkit-details-marker { display: none; }
-  .faq__item summary::after { content: '+'; font-size: 1.5rem; color: var(--sun-deep); flex: none; transition: transform 0.25s; }
+  .faq__item summary::after { content: '+'; font-size: 1.5rem; color: var(--yellow-deep); flex: none; transition: transform 0.25s; }
   .faq__item[open] summary::after { transform: rotate(45deg); }
   .faq__item p { padding: 0 1.3rem 1.2rem; color: var(--ink-2); font-size: var(--t-sm); line-height: 1.7; }
 
-  .cta { background: linear-gradient(140deg, var(--sun) 0%, #f7bf6e 55%, var(--coral) 130%); padding-block: clamp(3rem, 2rem + 5vw, 5rem); }
+  .cta { background: linear-gradient(140deg, var(--yellow) 0%, #f9d95e 55%, var(--red) 130%); padding-block: clamp(3rem, 2rem + 5vw, 5rem); }
   .cta__inner { text-align: center; max-width: 640px; }
-  .cta__d { font-size: var(--t-lg); color: rgba(44, 36, 32, 0.82); margin-block: 0.9rem 1.8rem; }
+  .cta__d { font-size: var(--t-lg); color: rgba(43, 42, 95, 0.85); margin-block: 0.9rem 1.8rem; }
   .cta__btns { display: flex; flex-wrap: wrap; gap: 0.9rem; justify-content: center; }
 </style>

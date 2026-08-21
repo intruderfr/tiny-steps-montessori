@@ -92,7 +92,7 @@ export const site = {
   // --------------------------------------------------------------- defaults
   locale: 'en_LK',
   lang: 'en-LK',
-  themeColor: '#F4A340',
+  themeColor: '#1C9BC7', // the logo ribbon teal
   ogImage: '/images/og-default.jpg',
 } as const;
 
