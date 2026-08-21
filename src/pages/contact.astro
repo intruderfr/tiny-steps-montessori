@@ -1,0 +1,249 @@
+---
+import Base from '../layouts/Base.astro';
+import { site, addressOneLine } from '../data/site';
+---
+
+<Base
+  title="Visit & Contact Us in Dehiwala"
+  description="Book a school visit at Tiny Steps Montessori, Dehiwala. Call, WhatsApp or send us a message — we reply to every enquiry within one working day."
+  crumbs={[{ name: 'Contact', href: '/contact' }]}
+>
+  <header class="chead">
+    <div class="wrap">
+      <p class="eyebrow eyebrow--sun">Get in Touch</p>
+      <h1 class="h1 chead__t">Come and see a real morning</h1>
+      <p class="lede">
+        We run visits on weekdays while the classrooms are actually running,
+        because an empty building on a Saturday tells you nothing.
+      </p>
+    </div>
+  </header>
+
+  {/* Fast contact methods first — most parents will use one of these three and
+      never touch the form. Putting the form first would be optimising for us. */}
+  <section class="wrap quick">
+    <a href={site.phoneHref} class="qcard qcard--sun">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.24c1.1.37 2.3.57 3.6.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1l-2.22 2.23Z"/></svg>
+      <span class="qcard__l">Call us</span>
+      <span class="qcard__v">{site.phone}</span>
+      <span class="qcard__n">Mon–Fri, 8:00 AM – 5:00 PM</span>
+    </a>
+    <a href={`https://wa.me/${site.whatsapp}`} class="qcard qcard--wa" rel="noopener" target="_blank">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15l-1.3 4.7 4.8-1.3A10 10 0 1 0 12 2Zm5.1 13.9c-.2.6-1.2 1.2-1.7 1.2-.5.1-1 .1-1.6-.1-.4-.1-.9-.3-1.5-.6-2.7-1.2-4.4-3.9-4.5-4.1-.2-.2-1.1-1.4-1.1-2.7s.7-1.9 1-2.2c.2-.2.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 1.9c.1.2.1.4 0 .6l-.4.5c-.1.2-.3.3-.1.6.2.3.7 1.2 1.6 1.9 1.1.9 1.9 1.2 2.2 1.3.3.1.4.1.6-.1l.8-1c.2-.2.4-.2.6-.1l1.8.9c.2.1.4.2.5.3.1.2.1.7-.1 1.3Z"/></svg>
+      <span class="qcard__l">WhatsApp</span>
+      <span class="qcard__v">Message us</span>
+      <span class="qcard__n">Usually the fastest reply</span>
+    </a>
+    <a href={`mailto:${site.email}`} class="qcard qcard--teal">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2Zm0 4-8 5-8-5V6l8 5 8-5v2Z"/></svg>
+      <span class="qcard__l">Email</span>
+      <span class="qcard__v qcard__v--sm">{site.email}</span>
+      <span class="qcard__n">We reply within one working day</span>
+    </a>
+  </section>
+
+  <section class="section" id="visit">
+    <div class="wrap cgrid">
+      {/* ------------------------------------------------------------ form */}
+      <div class="fwrap">
+        <h2 class="h2 fwrap__t">Book a visit or ask a question</h2>
+        <p class="fwrap__d">
+          Tell us your child's age and roughly when you would like to start.
+          We will come back to you with two or three times that work.
+        </p>
+
+        <!--
+          ⚠️  SETUP REQUIRED — this form needs a backend before it will send.
+          Two easy options for a static site:
+
+          1. Formspree  — create a form at formspree.io, then set:
+                          action="https://formspree.io/f/YOUR_FORM_ID"
+          2. Netlify    — if you deploy to Netlify, add these to the <form> tag:
+                          data-netlify="true" netlify-honeypot="company"
+                          and delete the action attribute.
+
+          Until then the form will not deliver anything. See CONTENT-CHECKLIST.md.
+        -->
+        <form class="form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+          <div class="form__row">
+            <div class="field">
+              <label for="name">Your name <span aria-hidden="true">*</span></label>
+              <input id="name" name="name" type="text" required autocomplete="name" />
+            </div>
+            <div class="field">
+              <label for="phone">Phone <span aria-hidden="true">*</span></label>
+              <input id="phone" name="phone" type="tel" required autocomplete="tel" placeholder="07X XXX XXXX" />
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="email">Email</label>
+            <input id="email" name="email" type="email" autocomplete="email" />
+          </div>
+
+          <div class="form__row">
+            <div class="field">
+              <label for="childAge">Child's age</label>
+              <select id="childAge" name="childAge">
+                <option value="">Please choose</option>
+                <option>Under 1 year</option>
+                <option>1 – 2 years</option>
+                <option>2 – 3 years</option>
+                <option>3 – 5 years</option>
+                <option>5 – 8 years</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="programme">Programme of interest</label>
+              <select id="programme" name="programme">
+                <option value="">Not sure yet</option>
+                <option>Playgroup (1–2)</option>
+                <option>Montessori (2–5)</option>
+                <option>STEM Club (5–8)</option>
+                <option>Daycare / After-School</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="message">Anything you would like us to know</label>
+            <textarea id="message" name="message" rows="5" placeholder="When you would like to start, questions you have, anything about your child we should know…"></textarea>
+          </div>
+
+          {/* Honeypot: real people never fill this in; bots almost always do. */}
+          <div class="hp" aria-hidden="true">
+            <label for="company">Company</label>
+            <input id="company" name="company" type="text" tabindex="-1" autocomplete="off" />
+          </div>
+
+          <button type="submit" class="btn btn--primary btn--lg">Send enquiry</button>
+          <p class="form__note">
+            We use your details only to reply to this enquiry. We never share them.
+            See our <a href="/privacy-policy">privacy policy</a>.
+          </p>
+        </form>
+      </div>
+
+      {/* ---------------------------------------------------------- aside */}
+      <aside class="cinfo">
+        <div class="cinfo__card">
+          <h2 class="cinfo__h">Where we are</h2>
+          <address class="cinfo__addr">{addressOneLine}</address>
+          <a href={site.social.googleMaps} class="btn btn--ghost btn--sm" rel="noopener" target="_blank">
+            Open in Google Maps
+          </a>
+        </div>
+
+        <div class="cinfo__card">
+          <h2 class="cinfo__h">Opening hours</h2>
+          <dl class="hours">
+            {site.hoursHuman.map((h) => (
+              <div class="hours__row">
+                <dt>{h.label}</dt>
+                <dd>{h.value}</dd>
+              </div>
+            ))}
+          </dl>
+          <p class="cinfo__note">
+            School visits run on weekday mornings between 9:00 and 11:00, when
+            the work cycle is in full swing.
+          </p>
+        </div>
+
+        <div class="cinfo__card cinfo__card--areas">
+          <h2 class="cinfo__h">Families travel to us from</h2>
+          <ul class="areas">
+            {site.serviceAreas.map((a) => (
+              <li>
+                <a href={`/montessori-preschool-${a.toLowerCase().replace(/\s+/g, '-')}`}>{a}</a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <section class="mapsec">
+    <iframe
+      title="Map showing the location of Tiny Steps Montessori in Dehiwala"
+      src="https://www.google.com/maps?q=43A%20Srimal%20Avenue%20Galvihara%20Road%20Dehiwala%20Sri%20Lanka&output=embed"
+      width="100%" height="440" style="border:0" loading="lazy"
+      referrerpolicy="no-referrer-when-downgrade" allowfullscreen
+    ></iframe>
+  </section>
+</Base>
+
+<style>
+  .chead { padding-block: clamp(1.6rem, 1rem + 3vw, 3rem) 0; }
+  .chead__t { font-size: var(--t-3xl); margin-block: 0.8rem 1rem; }
+  .chead .lede { max-width: 56ch; }
+
+  /* ---------------------------------------------------------- quick cards */
+  .quick { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: var(--s-4); margin-top: 2.5rem; }
+  .qcard {
+    display: grid; gap: 0.2rem; padding: 1.5rem; border-radius: var(--r-lg);
+    text-decoration: none; color: var(--ink); background: var(--tint);
+    border: 1px solid transparent; transition: transform 0.28s var(--ease), box-shadow 0.28s var(--ease);
+  }
+  .qcard:hover { transform: translateY(-4px); box-shadow: var(--sh-md); }
+  .qcard--sun  { --tint: var(--sun-soft);  --ic: var(--sun-deep); }
+  .qcard--wa   { --tint: #dcf8e8;          --ic: #1a9e50; }
+  .qcard--teal { --tint: var(--teal-soft); --ic: var(--teal-deep); }
+  .qcard svg { width: 26px; height: 26px; fill: var(--ic); margin-bottom: 0.6rem; }
+  .qcard__l { font-size: var(--t-xs); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; color: var(--ic); }
+  .qcard__v { font-family: var(--font-display); font-weight: 700; font-size: 1.25rem; word-break: break-word; }
+  .qcard__v--sm { font-size: 1rem; }
+  .qcard__n { font-size: var(--t-xs); color: var(--ink-2); margin-top: 0.25rem; }
+
+  /* ----------------------------------------------------------------- grid */
+  .cgrid { display: grid; grid-template-columns: minmax(0, 1.25fr) 340px; gap: clamp(2rem, 4vw, 4rem); align-items: start; }
+  @media (max-width: 950px) { .cgrid { grid-template-columns: 1fr; } }
+
+  .fwrap__t { font-size: var(--t-2xl); }
+  .fwrap__d { color: var(--ink-2); margin-block: 0.7rem 2rem; max-width: 52ch; }
+
+  /* ----------------------------------------------------------------- form */
+  .form { display: grid; gap: 1.1rem; }
+  .form__row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.1rem; }
+  @media (max-width: 560px) { .form__row { grid-template-columns: 1fr; } }
+  .field { display: grid; gap: 0.4rem; }
+  .field label { font-size: var(--t-sm); font-weight: 600; color: var(--ink-2); }
+  .field label span { color: var(--coral); }
+  .field input, .field select, .field textarea {
+    width: 100%; padding: 0.8rem 1rem; border: 1.5px solid var(--line);
+    border-radius: var(--r-md); background: var(--paper); font-size: var(--t-base);
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus {
+    outline: none; border-color: var(--sun); box-shadow: 0 0 0 4px var(--sun-soft);
+  }
+  .field textarea { resize: vertical; font-family: inherit; }
+  .form button { justify-self: start; margin-top: 0.4rem; }
+  .form__note { font-size: var(--t-xs); color: var(--ink-3); line-height: 1.6; }
+  .form__note a { color: var(--teal-deep); }
+  /* Honeypot must be invisible to humans but present for bots. */
+  .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
+  /* ---------------------------------------------------------------- aside */
+  .cinfo { display: grid; gap: 1.1rem; }
+  .cinfo__card { background: var(--cream-2); border: 1px solid var(--line); border-radius: var(--r-lg); padding: 1.5rem; }
+  .cinfo__h { font-family: var(--font-display); font-size: 1.12rem; margin-bottom: 0.8rem; }
+  .cinfo__addr { font-style: normal; font-size: var(--t-sm); line-height: 1.7; color: var(--ink-2); margin-bottom: 1.1rem; }
+  .cinfo__note { font-size: var(--t-xs); color: var(--ink-2); line-height: 1.6; margin-top: 1rem; padding-top: 1rem; border-top: 1px dashed var(--line); }
+
+  .hours { display: grid; gap: 0.55rem; }
+  .hours__row { display: flex; justify-content: space-between; gap: 1rem; font-size: var(--t-sm); }
+  .hours__row dt { color: var(--ink-2); }
+  .hours__row dd { margin: 0; font-weight: 700; }
+
+  .areas { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 0.45rem; }
+  .areas a {
+    display: inline-block; background: var(--paper); border: 1px solid var(--line);
+    padding: 0.35rem 0.75rem; border-radius: var(--r-full); font-size: var(--t-xs);
+    text-decoration: none; color: var(--ink-2);
+  }
+  .areas a:hover { border-color: var(--teal); color: var(--teal-deep); }
+
+  .mapsec { line-height: 0; border-top: 1px solid var(--line); }
+</style>

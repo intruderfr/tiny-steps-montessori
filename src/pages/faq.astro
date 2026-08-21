@@ -1,0 +1,278 @@
+---
+import Base from '../layouts/Base.astro';
+import { site, addressOneLine } from '../data/site';
+import { faqSchema } from '../data/schema';
+
+/**
+ * A deep FAQ page is one of the highest-return pages a local school can have.
+ * It captures long-tail voice and AI-assistant queries ("does tiny steps take
+ * two year olds", "montessori dehiwala fees") that no other page targets, and
+ * FAQPage structured data can win an expandable rich result.
+ *
+ * Keep answers direct and specific. Vague answers rank badly and convert worse.
+ */
+const groups = [
+  {
+    heading: 'Ages, programmes and the school day',
+    icon: '🧩',
+    items: [
+      {
+        q: 'What ages do you take?',
+        a: 'Children from 1 to 8 years. Playgroup is for 1–2 year olds, our main Montessori programme runs 2–5 years, and Saturday STEM Club is for children aged 5–8.',
+      },
+      {
+        q: 'What are your hours?',
+        a: 'Playgroup runs 8:30–11:30 and the Montessori programme 8:00–12:30, Monday to Friday. Daycare extends the day to 5:00 PM. STEM Club is Saturdays, 9:00–11:00.',
+      },
+      {
+        q: 'What is your adult-to-child ratio?',
+        a: 'One adult to four children in Playgroup, one guide to eight children in the 2–5 Montessori classroom, and one facilitator to six children in STEM Club. These are per-room numbers, not a school-wide average.',
+      },
+      {
+        q: 'How big are the classes?',
+        a: 'Twelve children per Playgroup group and up to twenty-four in the mixed-age Montessori classroom. STEM Club takes eighteen, in teams of three.',
+      },
+      {
+        q: 'Is the classroom mixed-age?',
+        a: 'Yes. Our 2–5 classroom holds all three year groups together, which is core Montessori practice. Younger children learn by watching; older children consolidate what they know by teaching it.',
+      },
+      {
+        q: 'What languages do you use?',
+        a: 'English, Sinhala and Tamil are all used every day — in stories, songs and ordinary conversation, rather than as a weekly language lesson.',
+      },
+    ],
+  },
+  {
+    heading: 'Starting, settling and the first weeks',
+    icon: '🌱',
+    items: [
+      {
+        q: 'How does settling in work?',
+        a: 'Over roughly two weeks, at your child’s pace. You stay in the room for the first few days, then move just outside, then leave for progressively longer. Some children need a third week, and that costs nothing extra.',
+      },
+      {
+        q: 'Does my child need to be toilet trained?',
+        a: 'No. Nappies and toilet learning are an ordinary part of the day in Playgroup and the younger Montessori years. We will never make toilet training a condition of a place.',
+      },
+      {
+        q: 'My child is very shy. Will they cope?',
+        a: 'Usually very well, provided the settling-in is unhurried. What harms shy children is being pushed in fast, not starting itself. Tell us on the first visit and we will plan around it.',
+      },
+      {
+        q: 'What if my child cries at drop-off?',
+        a: 'Most children settle within five to fifteen minutes. We will tell you the actual number of minutes rather than a reflexive "she was fine", and we message you once they have settled. Week three is often harder than week one — that is normal and it passes.',
+      },
+      {
+        q: 'Can we join partway through the year?',
+        a: 'Yes, whenever we have space. A mixed-age classroom absorbs a new child more easily than a same-age class, because there is no fixed group starting point to catch up with.',
+      },
+    ],
+  },
+  {
+    heading: 'Fees, admissions and paperwork',
+    icon: '📋',
+    items: [
+      {
+        q: 'How much are your fees?',
+        a: 'Our full fee schedule is published on the admissions page, including the one-off admission fee and exactly what is and is not included. We publish it because you should be able to work out your annual total before you ever call us.',
+      },
+      {
+        q: 'Is there a sibling discount?',
+        a: 'Yes, applied to the younger child’s tuition for as long as both children are enrolled. Contact us for current rates.',
+      },
+      {
+        q: 'What do I need to bring to enrol?',
+        a: 'Your child’s birth certificate, immunisation record, two passport photographs, and contact details for two emergency contacts besides yourself.',
+      },
+      {
+        q: 'What if I cannot afford the fees?',
+        a: 'Ask us. We hold a small number of assisted places each year and we do not advertise them. The worst answer you will get is no.',
+      },
+      {
+        q: 'How much notice do I give if we leave?',
+        a: 'One full term’s notice in writing, or payment in lieu. We would always rather have a conversation first if something is not working.',
+      },
+    ],
+  },
+  {
+    heading: 'Food, health and safety',
+    icon: '🛡️',
+    items: [
+      {
+        q: 'What food do you provide?',
+        a: 'A daily snack is included and prepared fresh at the school. Daycare families get a hot vegetarian lunch and an afternoon snack. Tell us about allergies, intolerances and anything your family does not eat, in writing, before the first day.',
+      },
+      {
+        q: 'How do you handle allergies?',
+        a: 'Allergy and medical information is held in the classroom itself, not filed in an office, and every adult who works with your child knows it.',
+      },
+      {
+        q: 'What is your sick-child policy?',
+        a: 'Children with a fever, or with anything contagious, should stay home until they are well. If your child becomes unwell during the day we call you straight away rather than waiting for pickup.',
+      },
+      {
+        q: 'Who is allowed to collect my child?',
+        a: 'Only named, pre-authorised adults. Anyone else needs written notice from you and photo ID at the gate. We will not release a child on a phone call alone.',
+      },
+      {
+        q: 'Do the children go outside every day?',
+        a: 'Yes, every day. Climbing, sand, water and running in our garden. Outdoor time is not weather-permitting-in-theory; it is part of the daily routine.',
+      },
+      {
+        q: 'Do the children nap?',
+        a: 'Daycare children nap on proper mats in a darkened room with a caregiver present throughout. Children who no longer nap get a quiet activity in the adjacent space rather than being made to lie down.',
+      },
+    ],
+  },
+  {
+    heading: 'Progress, communication and what comes next',
+    icon: '💬',
+    items: [
+      {
+        q: 'How will I know how my child is doing?',
+        a: 'A written developmental observation each term, plus a parent–guide meeting to talk it through. No grades — marks are meaningless at this age and encourage exactly the comparison Montessori is designed to avoid.',
+      },
+      {
+        q: 'Will you tell me if something is wrong?',
+        a: 'Yes, promptly and directly. If your child bit someone, spent the morning at the window, or is finding something hard, you hear it from us before you hear it anywhere else.',
+      },
+      {
+        q: 'Will my child be ready for Grade 1?',
+        a: 'Yes. The concentration built in the Montessori work cycle transfers directly. What genuinely needs practising is the form of a conventional classroom — putting a hand up, working to someone else’s timing — and we build that deliberately into the final preschool year.',
+      },
+      {
+        q: 'Do you teach reading and writing?',
+        a: 'Through the Montessori language materials — sandpaper letters, the moveable alphabet, then reading. Because letters are learned by sound and by touch, most of our children write before they read, and without being drilled.',
+      },
+    ],
+  },
+  {
+    heading: 'Visiting and finding us',
+    icon: '📍',
+    items: [
+      {
+        q: 'Where exactly are you?',
+        a: `We are at ${addressOneLine}. Families travel to us from Dehiwala, Mount Lavinia, Ratmalana, Nedimala, Kalubowila, Wellawatte, Kohuwala and Attidiya.`,
+      },
+      {
+        q: 'Can I visit before enrolling?',
+        a: 'Yes, and you should. We run visits on weekday mornings between 9:00 and 11:00 while the classrooms are actually running — a room full of furniture on a Saturday tells you nothing.',
+      },
+      {
+        q: 'Should I bring my child to the visit?',
+        a: 'Please do. We would much rather see how your child responds to the room than describe it to you.',
+      },
+      {
+        q: 'How quickly will you reply to an enquiry?',
+        a: `Within one working day. WhatsApp is usually fastest — ${site.phone}.`,
+      },
+    ],
+  },
+];
+
+// One flat list for the structured data. Every visible Q&A is included, which is
+// what Google's FAQ guidelines require — never mark up an answer you hide.
+const allFaqs = groups.flatMap((g) => g.items);
+---
+
+<Base
+  title="Questions Parents Ask"
+  description="Straight answers about ages, ratios, fees, settling in, food, safety and visiting Tiny Steps Montessori in Dehiwala. Everything parents ask us, answered directly."
+  crumbs={[{ name: 'FAQ', href: '/faq' }]}
+  schemaNodes={[faqSchema(allFaqs)]}
+>
+  <header class="fhead">
+    <div class="wrap">
+      <p class="eyebrow eyebrow--coral">Straight Answers</p>
+      <h1 class="h1 fhead__t">Questions parents ask us</h1>
+      <p class="lede">
+        Everything we get asked, answered directly. If your question is not here,
+        ask it — we will answer it and then add it to this page.
+      </p>
+    </div>
+  </header>
+
+  <div class="wrap fbody">
+    <nav class="fnav" aria-label="FAQ sections">
+      <p class="fnav__h">Jump to</p>
+      <ul>
+        {groups.map((g) => (
+          <li>
+            <a href={`#${g.heading.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`}>
+              <span aria-hidden="true">{g.icon}</span> {g.heading}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <div class="fmain">
+      {groups.map((g) => (
+        <section class="fgroup" id={g.heading.toLowerCase().replace(/[^a-z0-9]+/g, '-')}>
+          <h2 class="fgroup__h">
+            <span class="fgroup__icon" aria-hidden="true">{g.icon}</span>
+            {g.heading}
+          </h2>
+          <div class="faq">
+            {g.items.map((f) => (
+              <details class="faq__item">
+                <summary>{f.q}</summary>
+                <p>{f.a}</p>
+              </details>
+            ))}
+          </div>
+        </section>
+      ))}
+
+      <aside class="ask">
+        <h2 class="ask__h">Still have a question?</h2>
+        <p>
+          Ask us anything at all — including the awkward ones. We would rather
+          answer it now than have you wonder about it later.
+        </p>
+        <div class="ask__btns">
+          <a href="/contact" class="btn btn--primary">Ask us a question</a>
+          <a href={`https://wa.me/${site.whatsapp}`} class="btn btn--ghost" rel="noopener" target="_blank">WhatsApp</a>
+        </div>
+      </aside>
+    </div>
+  </div>
+</Base>
+
+<style>
+  .fhead { padding-block: clamp(1.6rem, 1rem + 3vw, 3rem) 0; }
+  .fhead__t { font-size: var(--t-3xl); margin-block: 0.8rem 1rem; }
+  .fhead .lede { max-width: 56ch; }
+
+  .fbody { display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: clamp(2rem, 4vw, 4rem); padding-block: var(--s-7) var(--section-y); align-items: start; }
+  @media (max-width: 950px) { .fbody { grid-template-columns: 1fr; } }
+
+  .fnav { position: sticky; top: 6.5rem; font-size: var(--t-sm); }
+  @media (max-width: 950px) { .fnav { position: static; background: var(--cream-2); padding: 1.3rem; border-radius: var(--r-md); } }
+  .fnav__h { font-family: var(--font-display); font-weight: 700; margin-bottom: 0.8rem; }
+  .fnav ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.55rem; }
+  .fnav a { color: var(--ink-2); text-decoration: none; display: block; line-height: 1.4; }
+  .fnav a:hover { color: var(--teal-deep); }
+
+  .fmain { display: grid; gap: var(--s-7); }
+  .fgroup { scroll-margin-top: 7rem; }
+  .fgroup__h { font-family: var(--font-display); font-size: var(--t-xl); margin-bottom: 1.2rem; display: flex; align-items: center; gap: 0.7rem; }
+  .fgroup__icon { font-size: 1.4rem; }
+
+  .faq { display: grid; gap: 0.7rem; }
+  .faq__item { background: var(--paper); border: 1px solid var(--line); border-radius: var(--r-md); overflow: hidden; }
+  .faq__item summary {
+    cursor: pointer; padding: 1rem 1.2rem; font-family: var(--font-display); font-weight: 700;
+    font-size: 1.02rem; list-style: none; display: flex; justify-content: space-between; gap: 1rem; align-items: center;
+  }
+  .faq__item summary::-webkit-details-marker { display: none; }
+  .faq__item summary:hover { color: var(--teal-deep); }
+  .faq__item summary::after { content: '+'; font-size: 1.45rem; color: var(--sun-deep); flex: none; transition: transform 0.25s; }
+  .faq__item[open] summary::after { transform: rotate(45deg); }
+  .faq__item p { padding: 0 1.2rem 1.1rem; color: var(--ink-2); font-size: var(--t-sm); line-height: 1.72; }
+
+  .ask { background: var(--cream-2); border: 1px solid var(--sun); border-radius: var(--r-lg); padding: 2rem; text-align: center; }
+  .ask__h { font-family: var(--font-display); font-size: var(--t-xl); }
+  .ask p { color: var(--ink-2); margin-block: 0.7rem 1.5rem; font-size: var(--t-sm); line-height: 1.7; max-width: 46ch; margin-inline: auto; }
+  .ask__btns { display: flex; gap: 0.8rem; justify-content: center; flex-wrap: wrap; }
+</style>

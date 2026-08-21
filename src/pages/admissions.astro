@@ -1,0 +1,290 @@
+---
+import Base from '../layouts/Base.astro';
+import { site } from '../data/site';
+import { faqSchema } from '../data/schema';
+
+/**
+ * ⚠️  ALL FEE FIGURES BELOW ARE PLACEHOLDERS.
+ * Replace every LKR amount with your real numbers before launch, or remove the
+ * fee table entirely. See CONTENT-CHECKLIST.md.
+ *
+ * Publishing fees is a deliberate competitive move: no other Montessori school
+ * in Dehiwala does it, it wins the "preschool fees Sri Lanka" search, and it
+ * filters your enquiries down to families who already accept the price.
+ */
+const fees = [
+  { programme: 'Playgroup', ages: '1 – 2 yrs', hours: '8:30 – 11:30', term: 'LKR 00,000', month: 'LKR 00,000' },
+  { programme: 'Montessori', ages: '2 – 5 yrs', hours: '8:00 – 12:30', term: 'LKR 00,000', month: 'LKR 00,000' },
+  { programme: 'STEM Club', ages: '5 – 8 yrs', hours: 'Sat 9:00 – 11:00', term: 'LKR 00,000', month: '—' },
+  { programme: 'Daycare add-on', ages: '1 – 8 yrs', hours: 'until 5:00 PM', term: 'LKR 00,000', month: 'LKR 00,000' },
+];
+
+const included = [
+  'All Montessori materials and classroom resources',
+  'Daily snack, prepared fresh at the school',
+  'Termly written developmental observation',
+  'Parent–guide meetings each term',
+  'All in-school celebrations and events',
+];
+
+const notIncluded = [
+  'One-off admission fee (LKR 00,000, payable on joining)',
+  'Uniform, where required',
+  'Lunch for daycare families',
+  'Off-site outings, charged individually',
+];
+
+const steps = [
+  { n: '01', t: 'Get in touch', d: 'Call, WhatsApp or send the enquiry form. Tell us your child’s age and roughly when you would like to start.', accent: 'sun' },
+  { n: '02', t: 'Visit while we are running', d: 'A weekday morning, with the classrooms in session. Bring your child. Expect about 45 minutes, and bring hard questions.', accent: 'teal' },
+  { n: '03', t: 'A short settling conversation', d: 'We talk through your child’s temperament, routines, health and anything else we should know. This is us asking, not selling.', accent: 'coral' },
+  { n: '04', t: 'Offer and registration', d: 'If we both think it fits, we confirm a start date and place, and you pay the admission fee to hold it.', accent: 'plum' },
+  { n: '05', t: 'Settling in', d: 'Around two weeks, at your child’s pace, with you in the room at first. Never rushed, and never charged as extra.', accent: 'sage' },
+];
+
+const faqs = [
+  {
+    q: 'When do you take new children?',
+    a: 'We take children at any point in the year when we have space, though the start of a term is usually easier for settling. Playgroup fills earliest because the 1:4 ratio caps us at twelve children.',
+  },
+  {
+    q: 'Is the admission fee refundable?',
+    a: 'The admission fee holds your child’s place and is non-refundable once the place is confirmed. If we cannot offer a place, nothing is charged.',
+  },
+  {
+    q: 'Do you offer a sibling discount?',
+    a: 'Yes. Contact us for current sibling rates — we apply it to the younger child’s tuition for as long as both children are enrolled.',
+  },
+  {
+    q: 'What do I need to bring to enrol?',
+    a: 'Your child’s birth certificate, immunisation record, two passport photographs, and contact details for two emergency contacts besides yourself.',
+  },
+  {
+    q: 'What if my child needs extra support?',
+    a: 'Tell us early and in detail. We will be honest about whether we can meet your child’s needs well. A place we cannot properly support is not a place worth taking.',
+  },
+  {
+    q: 'How much notice do I give if we leave?',
+    a: 'One full term’s notice in writing, or payment in lieu. We would always rather have a conversation first if something is not working.',
+  },
+];
+---
+
+<Base
+  title="Admissions & Fees"
+  description="How to enrol at Tiny Steps Montessori in Dehiwala: our five-step admissions process, published fees for every programme, and exactly what is and is not included."
+  crumbs={[{ name: 'Admissions', href: '/admissions' }]}
+  schemaNodes={[faqSchema(faqs)]}
+>
+  <header class="ahead">
+    <div class="wrap">
+      <p class="eyebrow eyebrow--sun">Admissions</p>
+      <h1 class="h1 ahead__t">Joining Tiny Steps</h1>
+      <p class="lede">
+        We publish our fees, our ratios and our whole process, because we would
+        rather your first conversation with us started from real information.
+      </p>
+      <div class="ahead__cta">
+        <a href="/contact#visit" class="btn btn--primary btn--lg">Book a school visit</a>
+        <a href={`https://wa.me/${site.whatsapp}`} class="btn btn--ghost btn--lg" rel="noopener" target="_blank">WhatsApp us</a>
+      </div>
+    </div>
+  </header>
+
+  {/* ------------------------------------------------------------- process */}
+  <section class="section">
+    <div class="wrap">
+      <header class="sec-head reveal">
+        <p class="eyebrow">The Process</p>
+        <h2 class="h2">Five steps, no pressure at any of them</h2>
+      </header>
+
+      <ol class="steps">
+        {steps.map((s, i) => (
+          <li class={`step reveal d${i + 1}`} data-accent={s.accent}>
+            <span class="step__n">{s.n}</span>
+            <h3 class="step__t">{s.t}</h3>
+            <p class="step__d">{s.d}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  {/* ---------------------------------------------------------------- fees */}
+  <section class="section bg-cream edge-top edge-bottom" id="fees">
+    <div class="wrap">
+      <header class="sec-head reveal">
+        <p class="eyebrow eyebrow--coral">Fees</p>
+        <h2 class="h2">Our fees, in public</h2>
+        <p class="lede">
+          Most preschools in Colombo will only give you a number after an hour-long
+          visit. We think you should be able to work out your annual total before
+          you ever pick up the phone.
+        </p>
+      </header>
+
+      <div class="tablewrap reveal">
+        <table class="fees">
+          <caption class="visually-hidden">Tuition fees by programme</caption>
+          <thead>
+            <tr>
+              <th scope="col">Programme</th>
+              <th scope="col">Ages</th>
+              <th scope="col">Hours</th>
+              <th scope="col">Per term</th>
+              <th scope="col">Per month</th>
+            </tr>
+          </thead>
+          <tbody>
+            {fees.map((f) => (
+              <tr>
+                <th scope="row">{f.programme}</th>
+                <td>{f.ages}</td>
+                <td>{f.hours}</td>
+                <td class="num">{f.term}</td>
+                <td class="num">{f.month}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <p class="fees__note reveal">
+        Three terms per academic year. Fees are reviewed annually; last year's
+        increase was <strong>0%</strong>. We will always give you a full term's
+        notice before any change.
+      </p>
+
+      <div class="incl reveal">
+        <div class="incl__col">
+          <h3 class="incl__h incl__h--yes">Included in the fee</h3>
+          <ul>
+            {included.map((i) => (
+              <li>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2Z"/></svg>
+                {i}
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div class="incl__col">
+          <h3 class="incl__h incl__h--no">Charged separately</h3>
+          <ul>
+            {notIncluded.map((i) => (
+              <li>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 6.4 17.6 5 12 10.6 6.4 5 5 6.4 10.6 12 5 17.6 6.4 19 12 13.4 17.6 19 19 17.6 13.4 12 19 6.4Z"/></svg>
+                {i}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+
+      <aside class="help reveal">
+        <h3 class="help__h">If fees are a barrier, tell us</h3>
+        <p>
+          We hold a small number of assisted places each year and we do not
+          advertise them. If cost is the only thing standing between your child
+          and a place here, have the conversation with us. The worst answer you
+          will get is no.
+        </p>
+        <a href="/contact" class="btn btn--teal btn--sm">Talk to us in confidence</a>
+      </aside>
+    </div>
+  </section>
+
+  {/* ----------------------------------------------------------------- faq */}
+  <section class="section">
+    <div class="wrap wrap-narrow">
+      <header class="center sec-head reveal">
+        <p class="eyebrow eyebrow--plum">Admissions FAQ</p>
+        <h2 class="h2">The practical questions</h2>
+      </header>
+      <div class="faq">
+        {faqs.map((f) => (
+          <details class="faq__item" name="adm-faq">
+            <summary>{f.q}</summary>
+            <p>{f.a}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="cta">
+    <div class="wrap cta__inner">
+      <h2 class="h2">Ready to see the school?</h2>
+      <p class="cta__d">Weekday mornings, while the classrooms are running. Bring your child and bring hard questions.</p>
+      <div class="cta__btns">
+        <a href="/contact#visit" class="btn btn--primary btn--lg">Book a visit</a>
+        <a href={site.phoneHref} class="btn btn--white btn--lg">Call {site.phone}</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .ahead { padding-block: clamp(1.6rem, 1rem + 3vw, 3rem) 0; }
+  .ahead__t { font-size: var(--t-3xl); margin-block: 0.8rem 1rem; }
+  .ahead .lede { max-width: 58ch; }
+  .ahead__cta { display: flex; flex-wrap: wrap; gap: 0.85rem; margin-top: 1.8rem; }
+
+  .sec-head { margin-bottom: clamp(2rem, 1rem + 3vw, 3rem); max-width: 62ch; }
+  .sec-head .h2 { margin-block: 0.6rem 0.8rem; }
+
+  /* ------------------------------------------------------------- process */
+  .steps { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: var(--s-4); counter-reset: step; }
+  .step { background: var(--paper); border: 1px solid var(--line); border-top: 5px solid var(--ac, var(--sun)); border-radius: var(--r-lg); padding: 1.5rem; }
+  .step[data-accent='sun'] { --ac: var(--sun); } .step[data-accent='teal'] { --ac: var(--teal); }
+  .step[data-accent='coral'] { --ac: var(--coral); } .step[data-accent='plum'] { --ac: var(--plum); }
+  .step[data-accent='sage'] { --ac: var(--sage); }
+  .step__n { font-family: var(--font-display); font-size: 1.9rem; font-weight: 800; color: var(--ac); opacity: 0.35; line-height: 1; }
+  .step__t { font-family: var(--font-display); font-size: 1.12rem; margin-block: 0.5rem 0.4rem; }
+  .step__d { font-size: var(--t-sm); color: var(--ink-2); line-height: 1.6; }
+
+  /* ---------------------------------------------------------------- fees */
+  .tablewrap { overflow-x: auto; border-radius: var(--r-lg); box-shadow: var(--sh-sm); background: var(--paper); }
+  .fees { width: 100%; border-collapse: collapse; min-width: 620px; }
+  .fees th, .fees td { padding: 1rem 1.1rem; text-align: left; border-bottom: 1px solid var(--line); }
+  .fees thead th { background: var(--ink); color: #fff; font-family: var(--font-display); font-size: var(--t-sm); letter-spacing: 0.02em; }
+  .fees tbody th { font-family: var(--font-display); font-size: 1.02rem; }
+  .fees td { font-size: var(--t-sm); color: var(--ink-2); }
+  .fees .num { font-variant-numeric: tabular-nums; font-weight: 700; color: var(--ink); }
+  .fees tbody tr:last-child th, .fees tbody tr:last-child td { border-bottom: none; }
+  .fees tbody tr:nth-child(even) { background: var(--cream); }
+  .fees__note { font-size: var(--t-sm); color: var(--ink-2); margin-top: 1rem; }
+
+  .incl { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-5); margin-top: var(--s-6); }
+  @media (max-width: 700px) { .incl { grid-template-columns: 1fr; } }
+  .incl__col { background: var(--paper); border: 1px solid var(--line); border-radius: var(--r-lg); padding: 1.5rem; }
+  .incl__h { font-family: var(--font-display); font-size: 1.1rem; margin-bottom: 1rem; }
+  .incl__h--yes { color: var(--teal-deep); }
+  .incl__h--no { color: #c9392c; }
+  .incl__col ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.7rem; }
+  .incl__col li { display: flex; gap: 0.6rem; font-size: var(--t-sm); color: var(--ink-2); line-height: 1.55; }
+  .incl__col svg { width: 18px; height: 18px; flex: none; margin-top: 2px; }
+  .incl__h--yes ~ ul svg { fill: var(--teal); }
+  .incl__h--no ~ ul svg { fill: var(--coral); }
+
+  .help { margin-top: var(--s-6); background: var(--teal-soft); border: 1px solid var(--teal); border-radius: var(--r-lg); padding: 1.8rem; max-width: 62ch; }
+  .help__h { font-family: var(--font-display); font-size: 1.2rem; color: var(--teal-deep); margin-bottom: 0.6rem; }
+  .help p { font-size: var(--t-sm); color: var(--ink-2); line-height: 1.7; margin-bottom: 1.2rem; }
+
+  /* ----------------------------------------------------------------- faq */
+  .faq { display: grid; gap: 0.75rem; }
+  .faq__item { background: var(--paper); border: 1px solid var(--line); border-radius: var(--r-md); overflow: hidden; }
+  .faq__item summary {
+    cursor: pointer; padding: 1.1rem 1.3rem; font-family: var(--font-display); font-weight: 700;
+    font-size: 1.05rem; list-style: none; display: flex; justify-content: space-between; gap: 1rem; align-items: center;
+  }
+  .faq__item summary::-webkit-details-marker { display: none; }
+  .faq__item summary::after { content: '+'; font-size: 1.5rem; color: var(--sun-deep); flex: none; transition: transform 0.25s; }
+  .faq__item[open] summary::after { transform: rotate(45deg); }
+  .faq__item p { padding: 0 1.3rem 1.2rem; color: var(--ink-2); font-size: var(--t-sm); line-height: 1.7; }
+
+  .cta { background: linear-gradient(140deg, var(--sun) 0%, #f7bf6e 55%, var(--coral) 130%); padding-block: clamp(3rem, 2rem + 5vw, 5rem); }
+  .cta__inner { text-align: center; max-width: 640px; }
+  .cta__d { font-size: var(--t-lg); color: rgba(44, 36, 32, 0.82); margin-block: 0.9rem 1.8rem; }
+  .cta__btns { display: flex; flex-wrap: wrap; gap: 0.9rem; justify-content: center; }
+</style>

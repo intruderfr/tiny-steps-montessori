@@ -1,0 +1,206 @@
+---
+import Logo from './Logo.astro';
+import { site, nav } from '../data/site';
+
+const here = Astro.url.pathname.replace(/\/$/, '') || '/';
+const isActive = (href: string) => (href === '/' ? here === '/' : here.startsWith(href));
+---
+
+<!-- Utility strip: phone + hours are the two things a deciding parent hunts for. -->
+<div class="topbar">
+  <div class="wrap topbar__inner">
+    <a href={site.phoneHref} class="topbar__item topbar__item--strong">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.24c1.1.37 2.3.57 3.6.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1l-2.22 2.23Z"/></svg>
+      {site.phone}
+    </a>
+    <span class="topbar__item topbar__hours">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm1 10.6V6h-2v7.4l5.2 3.1 1-1.7-4.2-2.2Z"/></svg>
+      Mon–Fri, 8:00 AM – 5:00 PM
+    </span>
+    <a href="/contact#visit" class="topbar__item topbar__cta">Book a school visit &rarr;</a>
+  </div>
+</div>
+
+<header class="hdr" id="site-header">
+  <div class="wrap hdr__inner">
+    <a href="/" class="hdr__brand" aria-label={`${site.name} — home`}><Logo /></a>
+
+    <nav class="hdr__nav" aria-label="Main">
+      <ul class="hdr__list">
+        {nav.map((item) => (
+          <li class={item.children ? 'has-sub' : ''}>
+            <a href={item.href} class:list={['hdr__link', { 'is-active': isActive(item.href) }]}
+               aria-current={isActive(item.href) ? 'page' : undefined}>
+              {item.label}
+              {item.children && (
+                <svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5z"/></svg>
+              )}
+            </a>
+            {item.children && (
+              <ul class="submenu">
+                {item.children.map((c) => (
+                  <li><a href={c.href}>{c.label}</a></li>
+                ))}
+              </ul>
+            )}
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <a href="/admissions" class="btn btn--primary btn--sm hdr__apply">Enrol Now</a>
+
+    <button class="hdr__burger" id="burger" aria-expanded="false" aria-controls="mobile-nav"
+            aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<!-- Mobile drawer. Rendered in the DOM (not injected) so it is crawlable. -->
+<div class="mnav" id="mobile-nav" hidden>
+  <nav class="mnav__panel" aria-label="Mobile">
+    <ul>
+      {nav.map((item) => (
+        <li>
+          <a href={item.href} class:list={[{ 'is-active': isActive(item.href) }]}>{item.label}</a>
+          {item.children && (
+            <ul class="mnav__sub">
+              {item.children.map((c) => <li><a href={c.href}>{c.label}</a></li>)}
+            </ul>
+          )}
+        </li>
+      ))}
+    </ul>
+    <div class="mnav__actions">
+      <a href="/admissions" class="btn btn--primary">Enrol Now</a>
+      <a href={site.phoneHref} class="btn btn--ghost">Call {site.phone}</a>
+    </div>
+  </nav>
+</div>
+
+<style>
+  /* ------------------------------------------------------------- topbar */
+  .topbar { background: var(--teal); color: #fff; font-size: var(--t-sm); }
+  .topbar__inner { display: flex; align-items: center; gap: 1.4rem; min-height: 40px; flex-wrap: wrap; }
+  .topbar__item { display: inline-flex; align-items: center; gap: 0.4rem; text-decoration: none; color: #fff; }
+  .topbar__item svg { width: 16px; height: 16px; fill: currentColor; flex: none; }
+  .topbar__item--strong { font-weight: 700; }
+  .topbar__item--strong:hover { text-decoration: underline; }
+  .topbar__cta { margin-left: auto; font-weight: 600; }
+  .topbar__cta:hover { text-decoration: underline; }
+  @media (max-width: 860px) { .topbar__hours, .topbar__cta { display: none; } }
+
+  /* ------------------------------------------------------------- header */
+  .hdr {
+    position: sticky; top: 0; z-index: 100;
+    background: color-mix(in srgb, var(--cream) 88%, transparent);
+    backdrop-filter: blur(14px) saturate(1.4);
+    -webkit-backdrop-filter: blur(14px) saturate(1.4);
+    border-bottom: 1px solid transparent;
+    transition: box-shadow 0.3s var(--ease), border-color 0.3s;
+  }
+  .hdr.is-stuck { box-shadow: var(--sh-md); border-bottom-color: var(--line); }
+  .hdr__inner { display: flex; align-items: center; gap: 1.2rem; min-height: 76px; }
+  .hdr__brand { text-decoration: none; margin-right: auto; }
+
+  .hdr__list { display: flex; align-items: center; gap: 0.15rem; list-style: none; margin: 0; padding: 0; }
+  .hdr__list > li { position: relative; }
+  .hdr__link {
+    display: inline-flex; align-items: center; gap: 0.2rem;
+    padding: 0.6rem 0.85rem; border-radius: var(--r-full);
+    font-weight: 600; font-size: 0.98rem; text-decoration: none; color: var(--ink-2);
+    transition: background 0.2s, color 0.2s;
+  }
+  .hdr__link:hover, .hdr__link.is-active { color: var(--ink); background: var(--sun-soft); }
+  .chev { width: 16px; height: 16px; fill: currentColor; opacity: 0.6; transition: transform 0.25s; }
+  .has-sub:hover .chev { transform: rotate(180deg); }
+
+  .submenu {
+    position: absolute; top: 100%; left: 0; min-width: 250px;
+    background: var(--paper); border: 1px solid var(--line); border-radius: var(--r-md);
+    box-shadow: var(--sh-lg); padding: 0.5rem; list-style: none; margin: 0.4rem 0 0;
+    opacity: 0; visibility: hidden; transform: translateY(8px);
+    transition: opacity 0.22s var(--ease), transform 0.22s var(--ease), visibility 0.22s;
+  }
+  .has-sub:hover .submenu, .has-sub:focus-within .submenu {
+    opacity: 1; visibility: visible; transform: none;
+  }
+  .submenu a {
+    display: block; padding: 0.6rem 0.8rem; border-radius: var(--r-sm);
+    text-decoration: none; font-weight: 500; font-size: 0.95rem; color: var(--ink-2);
+  }
+  .submenu a:hover { background: var(--teal-soft); color: var(--teal-deep); }
+
+  @media (max-width: 1024px) { .hdr__nav, .hdr__apply { display: none; } }
+
+  /* ------------------------------------------------------------- burger */
+  .hdr__burger {
+    display: none; width: 46px; height: 46px; border: none; background: var(--sun-soft);
+    border-radius: var(--r-md); cursor: pointer; padding: 0;
+    flex-direction: column; align-items: center; justify-content: center; gap: 5px;
+  }
+  .hdr__burger span {
+    display: block; width: 21px; height: 2.5px; background: var(--ink); border-radius: 2px;
+    transition: transform 0.3s var(--ease), opacity 0.2s;
+  }
+  .hdr__burger[aria-expanded='true'] span:nth-child(1) { transform: translateY(7.5px) rotate(45deg); }
+  .hdr__burger[aria-expanded='true'] span:nth-child(2) { opacity: 0; }
+  .hdr__burger[aria-expanded='true'] span:nth-child(3) { transform: translateY(-7.5px) rotate(-45deg); }
+  @media (max-width: 1024px) { .hdr__burger { display: flex; } }
+
+  /* ------------------------------------------------------- mobile drawer */
+  .mnav { position: fixed; inset: 0; z-index: 99; background: rgba(44, 36, 32, 0.45); }
+  .mnav[hidden] { display: none; }
+  .mnav__panel {
+    position: absolute; inset: 0 0 0 auto; width: min(400px, 88vw);
+    background: var(--cream); padding: 6.5rem 1.6rem 2rem; overflow-y: auto;
+    box-shadow: var(--sh-lg); animation: slide-in 0.32s var(--ease);
+  }
+  @keyframes slide-in { from { transform: translateX(100%); } }
+  .mnav__panel ul { list-style: none; margin: 0; padding: 0; }
+  .mnav__panel > ul > li { border-bottom: 1px solid var(--line); }
+  .mnav__panel > ul > li > a {
+    display: block; padding: 0.95rem 0.2rem; font-family: var(--font-display);
+    font-weight: 700; font-size: 1.25rem; text-decoration: none; color: var(--ink);
+  }
+  .mnav__panel a.is-active { color: var(--teal-deep); }
+  .mnav__sub { padding: 0 0 0.9rem 0.9rem !important; }
+  .mnav__sub a {
+    display: block; padding: 0.4rem 0; text-decoration: none;
+    color: var(--ink-2); font-size: 0.98rem;
+  }
+  .mnav__actions { display: grid; gap: 0.7rem; margin-top: 1.8rem; }
+</style>
+
+<script>
+  // Sticky-header shadow: only appears once you have scrolled off the top.
+  const header = document.getElementById('site-header');
+  const onScroll = () => header?.classList.toggle('is-stuck', window.scrollY > 8);
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive: true });
+
+  // Mobile drawer with focus trapping and scroll lock.
+  const burger = document.getElementById('burger');
+  const drawer = document.getElementById('mobile-nav');
+
+  const setOpen = (open: boolean) => {
+    if (!burger || !drawer) return;
+    burger.setAttribute('aria-expanded', String(open));
+    burger.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    drawer.hidden = !open;
+    document.body.style.overflow = open ? 'hidden' : '';
+    if (open) drawer.querySelector<HTMLAnchorElement>('a')?.focus();
+  };
+
+  burger?.addEventListener('click', () =>
+    setOpen(burger.getAttribute('aria-expanded') !== 'true')
+  );
+  // Click the scrim (but not the panel) to dismiss.
+  drawer?.addEventListener('click', (e) => {
+    if (e.target === drawer) setOpen(false);
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && drawer && !drawer.hidden) { setOpen(false); burger?.focus(); }
+  });
+</script>

@@ -1,0 +1,22 @@
+{
+  "name": "tiny-steps-montessori",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "images": "node scripts/gen-images.mjs",
+    "prebuild": "node scripts/gen-images.mjs",
+    "audit": "node scripts/seo-audit.mjs",
+    "postbuild": "node scripts/fix-base.mjs"
+  },
+  "dependencies": {
+    "@astrojs/rss": "^4.0.19",
+    "@astrojs/sitemap": "^3.7.3",
+    "astro": "^7.2.4",
+    "sharp": "^0.35.3"
+  }
+}

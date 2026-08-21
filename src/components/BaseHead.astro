@@ -1,0 +1,131 @@
+---
+/**
+ * Every <head> tag the site needs, in one place.
+ * Title/description/canonical/OG/Twitter/JSON-LD all flow from page props so no
+ * page can accidentally ship without them.
+ */
+import { site, abs, absFromPathname, isHomePath } from '../data/site';
+
+interface Props {
+  title: string;
+  description: string;
+  image?: string;
+  imageAlt?: string;
+  /** "website" for pages, "article" for news posts. */
+  type?: 'website' | 'article';
+  publishedAt?: Date;
+  updatedAt?: Date;
+  /** Set true on thin/utility pages you do not want indexed. */
+  noindex?: boolean;
+  /** JSON-LD @graph object produced by src/data/schema.ts */
+  schema?: object;
+}
+
+const {
+  title,
+  description,
+  image = site.ogImage,
+  imageAlt = `${site.name} — ${site.tagline}`,
+  type = 'website',
+  publishedAt,
+  updatedAt,
+  noindex = false,
+  schema,
+} = Astro.props;
+
+/**
+ * Titles get the brand appended — but only when it still fits.
+ *
+ * Google truncates the SERP title around 60 characters. A long article headline
+ * plus " | Tiny Steps Montessori" blows straight past that and the brand gets
+ * cut off anyway, so we step down: full brand, then short brand, then none.
+ * Pages whose own title exceeds 60 should set an explicit shorter `title`.
+ */
+const MAX = 60;
+const withBrand = (t: string) => {
+  if (isHome) return t;
+  for (const suffix of [` | ${site.name}`, ` | ${site.shortName}`]) {
+    if (t.length + suffix.length <= MAX) return t + suffix;
+  }
+  return t;
+};
+// Canonical always comes from the real request path, which already carries the
+// base path when the site is served from a sub-directory.
+const isHome = isHomePath(Astro.url.pathname);
+// Strip the trailing slash so /about/ and /about never compete as two URLs.
+const canonical = absFromPathname(Astro.url.pathname).replace(/(.+)\/$/, '$1');
+const fullTitle = withBrand(title);
+const ogImage = abs(image);
+---
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="generator" content={Astro.generator} />
+
+{/* ------------------------------------------------------------ core SEO */}
+<title>{fullTitle}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+<meta
+  name="robots"
+  content={noindex
+    ? 'noindex, nofollow'
+    : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'}
+/>
+
+{/* Explicit locale signal: this school serves Sri Lanka, not the US or India. */}
+<link rel="alternate" hreflang={site.lang} href={canonical} />
+<link rel="alternate" hreflang="x-default" href={canonical} />
+<meta name="language" content="English" />
+<meta name="geo.region" content="LK-1" />
+<meta name="geo.placename" content={site.address.locality} />
+<meta name="geo.position" content={`${site.geo.latitude};${site.geo.longitude}`} />
+<meta name="ICBM" content={`${site.geo.latitude}, ${site.geo.longitude}`} />
+
+{/* ---------------------------------------------------------- Open Graph */}
+<meta property="og:type" content={type} />
+<meta property="og:site_name" content={site.name} />
+<meta property="og:locale" content={site.locale} />
+<meta property="og:title" content={fullTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:image" content={ogImage} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content={imageAlt} />
+{publishedAt && <meta property="article:published_time" content={publishedAt.toISOString()} />}
+{updatedAt && <meta property="article:modified_time" content={updatedAt.toISOString()} />}
+
+{/* ------------------------------------------------------------- Twitter */}
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={fullTitle} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={ogImage} />
+<meta name="twitter:image:alt" content={imageAlt} />
+
+{/* ----------------------------------------------------------- app chrome */}
+<meta name="theme-color" content={site.themeColor} />
+<meta name="apple-mobile-web-app-title" content={site.shortName} />
+<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+<link rel="manifest" href="/site.webmanifest" />
+<link rel="sitemap" href="/sitemap-index.xml" />
+<link rel="alternate" type="application/rss+xml" title={`${site.name} — News`} href={abs('/rss.xml')} />
+
+{/* ---------------------------------------------------------------- fonts */}
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  rel="stylesheet"
+  href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+/>
+
+{/* --------------------------------------------------------- structured data */}
+{schema && <script type="application/ld+json" set:html={JSON.stringify(schema)} />}
+
+{/* Reveal animations are JS-driven; without JS everything must still be visible. */}
+<noscript>
+  <style>
+    .reveal { opacity: 1 !important; transform: none !important; }
+  </style>
+</noscript>

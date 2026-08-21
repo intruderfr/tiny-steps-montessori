@@ -1,0 +1,161 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import { site } from '../../data/site';
+import { articleSchema } from '../../data/schema';
+
+export async function getStaticPaths() {
+  // Drafts are excluded from the build entirely — no URL, nothing to index.
+  const posts = await getCollection('news', ({ data }) => !data.draft);
+  return posts.map((p) => ({ params: { slug: p.id }, props: { entry: p } }));
+}
+
+interface Props { entry: CollectionEntry<'news'> }
+const { entry } = Astro.props;
+const { Content, headings } = await render(entry);
+const d = entry.data;
+
+const all = (await getCollection('news', ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime()
+);
+
+// Related: same category first, then most recent. Genuine topical links beat a
+// random "you might also like" block, for readers and for crawlers alike.
+const related = [
+  ...all.filter((p) => p.id !== entry.id && p.data.category === d.category),
+  ...all.filter((p) => p.id !== entry.id && p.data.category !== d.category),
+].slice(0, 3);
+
+const fmt = (date: Date) =>
+  date.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+
+// Only h2s make a useful contents list; h3s make it noisy.
+const toc = headings.filter((h) => h.depth === 2);
+const shareUrl = new URL(`/news/${entry.id}`, site.url).href;
+---
+
+<Base
+  title={d.metaTitle ?? d.title}
+  description={d.description}
+  type="article"
+  image={d.image}
+  publishedAt={d.publishedAt}
+  updatedAt={d.updatedAt}
+  crumbs={[{ name: 'News', href: '/news' }, { name: d.title, href: `/news/${entry.id}` }]}
+  schemaNodes={[
+    articleSchema({
+      title: d.title,
+      description: d.description,
+      slug: entry.id,
+      publishedAt: d.publishedAt,
+      updatedAt: d.updatedAt,
+      image: d.image,
+      author: d.author,
+      category: d.category,
+    }),
+  ]}
+>
+  <article class="post">
+    <header class="wrap post__head">
+      <p class="post__cat">{d.category}</p>
+      <h1 class="h1 post__title">{d.title}</h1>
+      <p class="lede post__lede">{d.description}</p>
+      <p class="post__meta">
+        <span>{d.author}</span>
+        <span aria-hidden="true">&middot;</span>
+        <time datetime={d.publishedAt.toISOString()}>{fmt(d.publishedAt)}</time>
+        {d.updatedAt && (
+          <>
+            <span aria-hidden="true">&middot;</span>
+            <span>Updated {fmt(d.updatedAt)}</span>
+          </>
+        )}
+        {d.readingTime && (
+          <>
+            <span aria-hidden="true">&middot;</span>
+            <span>{d.readingTime} min read</span>
+          </>
+        )}
+      </p>
+    </header>
+
+    <div class="wrap post__body">
+      {toc.length > 2 && (
+        <nav class="toc" aria-label="On this page">
+          <p class="toc__h">On this page</p>
+          <ul>
+            {toc.map((h) => (
+              <li><a href={`#${h.slug}`}>{h.text}</a></li>
+            ))}
+          </ul>
+        </nav>
+      )}
+
+      <div class="prose post__prose">
+        <Content />
+      </div>
+    </div>
+
+    <div class="wrap post__share">
+      <span>Found this useful? Share it with another parent:</span>
+      <a href={`https://wa.me/?text=${encodeURIComponent(d.title + ' ' + shareUrl)}`} rel="noopener nofollow" target="_blank">WhatsApp</a>
+      <a href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`} rel="noopener nofollow" target="_blank">Facebook</a>
+      <a href={`mailto:?subject=${encodeURIComponent(d.title)}&body=${encodeURIComponent(shareUrl)}`}>Email</a>
+    </div>
+
+    <section class="section bg-cream edge-top">
+      <div class="wrap">
+        <h2 class="h2 center" style="margin-bottom:2.2rem">Keep reading</h2>
+        <div class="rel">
+          {related.map((p, i) => (
+            <a href={`/news/${p.id}`} class={`ncard card card--lift reveal d${i + 1}`}>
+              <p class="ncard__cat">{p.data.category}</p>
+              <h3 class="ncard__t">{p.data.title}</h3>
+              <p class="ncard__d">{p.data.description}</p>
+              <p class="ncard__meta">
+                <time datetime={p.data.publishedAt.toISOString()}>{fmt(p.data.publishedAt)}</time>
+              </p>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  </article>
+</Base>
+
+<style>
+  .post__head { max-width: 820px; padding-block: clamp(1.5rem, 1rem + 3vw, 3rem) 0; }
+  .post__cat { font-size: var(--t-sm); font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--teal-deep); }
+  .post__title { font-size: var(--t-3xl); margin-block: 0.7rem 1rem; }
+  .post__lede { color: var(--ink-2); }
+  .post__meta { margin-top: 1.4rem; padding-top: 1.4rem; border-top: 1px solid var(--line); font-size: var(--t-sm); color: var(--ink-3); display: flex; flex-wrap: wrap; gap: 0.5rem; }
+
+  .post__body { display: grid; grid-template-columns: 240px minmax(0, 1fr); gap: clamp(2rem, 4vw, 4rem); padding-block: var(--s-6) var(--section-y); align-items: start; }
+  @media (max-width: 950px) { .post__body { grid-template-columns: 1fr; } }
+  .post__prose { max-width: var(--maxw-prose); }
+
+  .toc { position: sticky; top: 6.5rem; font-size: var(--t-sm); }
+  @media (max-width: 950px) {
+    .toc { position: static; background: var(--cream-2); padding: 1.2rem 1.4rem; border-radius: var(--r-md); }
+  }
+  .toc__h { font-family: var(--font-display); font-weight: 700; margin-bottom: 0.7rem; color: var(--ink); }
+  .toc ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.5rem; border-left: 2px solid var(--line); }
+  .toc li { padding-left: 0.9rem; }
+  .toc a { color: var(--ink-2); text-decoration: none; line-height: 1.4; display: block; }
+  .toc a:hover { color: var(--teal-deep); }
+
+  .post__share {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 0.9rem;
+    padding-block: 1.4rem; border-block: 1px solid var(--line);
+    font-size: var(--t-sm); color: var(--ink-2); max-width: var(--maxw);
+  }
+  .post__share a { font-weight: 700; color: var(--teal-deep); text-decoration: none; }
+  .post__share a:hover { text-decoration: underline; }
+
+  .rel { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: var(--s-5); }
+  .ncard { display: flex; flex-direction: column; text-decoration: none; }
+  .ncard__cat { font-size: var(--t-xs); font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--teal-deep); margin-bottom: 0.6rem; }
+  .ncard__t { font-family: var(--font-display); font-size: 1.22rem; line-height: 1.25; margin-bottom: 0.5rem; }
+  .ncard__d { font-size: var(--t-sm); color: var(--ink-2); line-height: 1.6; }
+  .ncard__meta { margin-top: auto; padding-top: 1rem; font-size: var(--t-xs); color: var(--ink-3); }
+</style>

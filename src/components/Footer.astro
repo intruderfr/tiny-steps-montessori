@@ -1,0 +1,175 @@
+---
+import Logo from './Logo.astro';
+import { site, addressOneLine } from '../data/site';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="ftr">
+  <div class="wrap ftr__grid">
+    <!-- Column 1 — the NAP block. This exact text must match your Google
+         Business Profile character-for-character. -->
+    <div class="ftr__col ftr__col--brand">
+      <Logo />
+      <p class="ftr__blurb">{site.description}</p>
+
+      <address class="ftr__nap">
+        <div class="ftr__napline">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5Z"/></svg>
+          <span itemprop="address">{addressOneLine}</span>
+        </div>
+        <div class="ftr__napline">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.24c1.1.37 2.3.57 3.6.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1l-2.22 2.23Z"/></svg>
+          <a href={site.phoneHref}>{site.phone}</a>
+        </div>
+        <div class="ftr__napline">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2Zm0 4-8 5-8-5V6l8 5 8-5v2Z"/></svg>
+          <a href={`mailto:${site.email}`}>{site.email}</a>
+        </div>
+      </address>
+
+      <div class="ftr__social">
+        <a href={site.social.facebook} aria-label="Tiny Steps Montessori on Facebook" rel="noopener noreferrer me" target="_blank">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 12a10 10 0 1 0-11.6 9.9v-7h-2.5V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.4v7A10 10 0 0 0 22 12Z"/></svg>
+        </a>
+        <a href={site.social.instagram} aria-label="Tiny Steps Montessori on Instagram" rel="noopener noreferrer me" target="_blank">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.2c3.2 0 3.6 0 4.9.07 1.2.05 1.8.25 2.2.42.6.22 1 .48 1.4.9.4.4.7.8.9 1.4.2.4.4 1 .4 2.2.1 1.3.1 1.7.1 4.9s0 3.6-.1 4.9c0 1.2-.2 1.8-.4 2.2-.2.6-.5 1-.9 1.4-.4.4-.8.7-1.4.9-.4.2-1 .4-2.2.4-1.3.1-1.7.1-4.9.1s-3.6 0-4.9-.1c-1.2 0-1.8-.2-2.2-.4-.6-.2-1-.5-1.4-.9-.4-.4-.7-.8-.9-1.4-.2-.4-.4-1-.4-2.2C2.2 15.6 2.2 15.2 2.2 12s0-3.6.1-4.9c0-1.2.2-1.8.4-2.2.2-.6.5-1 .9-1.4.4-.4.8-.7 1.4-.9.4-.2 1-.4 2.2-.4C8.4 2.2 8.8 2.2 12 2.2Zm0 3.2a6.6 6.6 0 1 0 0 13.2 6.6 6.6 0 0 0 0-13.2Zm0 10.9a4.3 4.3 0 1 1 0-8.6 4.3 4.3 0 0 1 0 8.6Zm6.9-11.1a1.55 1.55 0 1 1-3.1 0 1.55 1.55 0 0 1 3.1 0Z"/></svg>
+        </a>
+        <a href={`https://wa.me/${site.whatsapp}`} aria-label="Message Tiny Steps Montessori on WhatsApp" rel="noopener noreferrer" target="_blank">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15l-1.3 4.7 4.8-1.3A10 10 0 1 0 12 2Zm5.1 13.9c-.2.6-1.2 1.2-1.7 1.2-.5.1-1 .1-1.6-.1-.4-.1-.9-.3-1.5-.6-2.7-1.2-4.4-3.9-4.5-4.1-.2-.2-1.1-1.4-1.1-2.7s.7-1.9 1-2.2c.2-.2.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 1.9c.1.2.1.4 0 .6l-.4.5c-.1.2-.3.3-.1.6.2.3.7 1.2 1.6 1.9 1.1.9 1.9 1.2 2.2 1.3.3.1.4.1.6-.1l.8-1c.2-.2.4-.2.6-.1l1.8.9c.2.1.4.2.5.3.1.2.1.7-.1 1.3Z"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <div class="ftr__col">
+      <h2 class="ftr__h">Programmes</h2>
+      <ul>
+        <li><a href="/programmes/playgroup">Playgroup &middot; 1–2 yrs</a></li>
+        <li><a href="/programmes/montessori">Montessori &middot; 2–5 yrs</a></li>
+        <li><a href="/programmes/stem">STEM Club &middot; 5–8 yrs</a></li>
+        <li><a href="/programmes/daycare">Daycare &amp; After-School</a></li>
+        <li><a href="/programmes">All programmes</a></li>
+      </ul>
+    </div>
+
+    <div class="ftr__col">
+      <h2 class="ftr__h">School</h2>
+      <ul>
+        <li><a href="/about">About Tiny Steps</a></li>
+        <li><a href="/admissions">Admissions &amp; Fees</a></li>
+        <li><a href="/news">News &amp; Parent Guides</a></li>
+        <li><a href="/faq">Questions Parents Ask</a></li>
+        <li><a href="/contact">Visit &amp; Contact</a></li>
+      </ul>
+    </div>
+
+    <!-- Service-area links. Genuine internal links to real location pages —
+         they help parents in each suburb and reinforce local relevance. -->
+    <div class="ftr__col">
+      <h2 class="ftr__h">Families We Serve</h2>
+      <ul class="ftr__areas">
+        {site.serviceAreas.map((area) => (
+          <li>
+            <a href={`/montessori-preschool-${area.toLowerCase().replace(/\s+/g, '-')}`}>
+              Montessori in {area}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+
+  <div class="wrap ftr__bottom">
+    <p>&copy; {year} {site.legalName}. {site.tagline}.</p>
+    <nav aria-label="Legal">
+      <a href="/privacy-policy">Privacy</a>
+      <a href="/sitemap-index.xml">Sitemap</a>
+      <a href="/rss.xml">RSS</a>
+    </nav>
+  </div>
+</footer>
+
+<!-- Persistent mobile call bar. On phones the single highest-value action is
+     "tap to call", so it never scrolls away. -->
+<div class="callbar">
+  <a href={site.phoneHref} class="callbar__btn callbar__btn--call">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.24c1.1.37 2.3.57 3.6.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1l-2.22 2.23Z"/></svg>
+    Call
+  </a>
+  <a href={`https://wa.me/${site.whatsapp}`} class="callbar__btn callbar__btn--wa" rel="noopener" target="_blank">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15l-1.3 4.7 4.8-1.3A10 10 0 1 0 12 2Zm5.1 13.9c-.2.6-1.2 1.2-1.7 1.2-.5.1-1 .1-1.6-.1-.4-.1-.9-.3-1.5-.6-2.7-1.2-4.4-3.9-4.5-4.1-.2-.2-1.1-1.4-1.1-2.7s.7-1.9 1-2.2c.2-.2.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 1.9c.1.2.1.4 0 .6l-.4.5c-.1.2-.3.3-.1.6.2.3.7 1.2 1.6 1.9 1.1.9 1.9 1.2 2.2 1.3.3.1.4.1.6-.1l.8-1c.2-.2.4-.2.6-.1l1.8.9c.2.1.4.2.5.3.1.2.1.7-.1 1.3Z"/></svg>
+    WhatsApp
+  </a>
+  <a href="/admissions" class="callbar__btn callbar__btn--enrol">Enrol</a>
+</div>
+
+<style>
+  .ftr { background: #35291f; color: #e8ddd0; padding-top: var(--s-8); margin-top: auto; }
+  .ftr__grid {
+    display: grid; gap: var(--s-6);
+    grid-template-columns: 1.6fr 1fr 1fr 1fr;
+    padding-bottom: var(--s-7);
+  }
+  @media (max-width: 980px) { .ftr__grid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 560px) { .ftr__grid { grid-template-columns: 1fr; } }
+  .ftr__col--brand { max-width: 40ch; }
+  .ftr :global(.logo__name) { color: #fff; }
+  .ftr :global(.logo__sub) { color: var(--sun); }
+  .ftr__blurb { font-size: var(--t-sm); color: #b8a89a; margin-top: 1rem; line-height: 1.7; }
+
+  .ftr__nap { font-style: normal; margin-top: 1.3rem; display: grid; gap: 0.6rem; }
+  .ftr__napline { display: flex; gap: 0.6rem; align-items: flex-start; font-size: var(--t-sm); }
+  .ftr__napline svg { width: 17px; height: 17px; fill: var(--sun); flex: none; margin-top: 3px; }
+  .ftr__napline a { color: #e8ddd0; text-decoration: none; }
+  .ftr__napline a:hover { color: var(--sun); text-decoration: underline; }
+
+  .ftr__social { display: flex; gap: 0.6rem; margin-top: 1.4rem; }
+  .ftr__social a {
+    width: 40px; height: 40px; display: grid; place-items: center;
+    background: rgba(255, 255, 255, 0.08); border-radius: var(--r-full);
+    transition: background 0.25s, transform 0.25s var(--ease-bounce);
+  }
+  .ftr__social a:hover { background: var(--sun); transform: translateY(-3px); }
+  .ftr__social svg { width: 19px; height: 19px; fill: #e8ddd0; }
+  .ftr__social a:hover svg { fill: var(--ink); }
+
+  .ftr__h {
+    font-family: var(--font-display); font-size: 1.05rem; color: #fff;
+    margin-bottom: 0.9rem; letter-spacing: 0.01em;
+  }
+  .ftr__col ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.55rem; }
+  .ftr__col ul a { color: #b8a89a; text-decoration: none; font-size: var(--t-sm); }
+  .ftr__col ul a:hover { color: var(--sun); }
+  .ftr__areas { max-height: 15rem; }
+
+  .ftr__bottom {
+    border-top: 1px solid rgba(255, 255, 255, 0.1); padding-block: 1.3rem;
+    display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap;
+    font-size: var(--t-xs); color: #9c8b7d;
+  }
+  .ftr__bottom nav { display: flex; gap: 1.2rem; }
+  .ftr__bottom a { color: #9c8b7d; text-decoration: none; }
+  .ftr__bottom a:hover { color: var(--sun); }
+
+  /* -------------------------------------------------- sticky mobile bar */
+  .callbar { display: none; }
+  @media (max-width: 768px) {
+    .callbar {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 90;
+      display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1px;
+      background: var(--line); box-shadow: 0 -4px 20px rgba(88, 60, 30, 0.16);
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+    .callbar__btn {
+      display: flex; align-items: center; justify-content: center; gap: 0.4rem;
+      padding: 0.9rem 0.4rem; font-family: var(--font-display); font-weight: 700;
+      font-size: 0.92rem; text-decoration: none;
+    }
+    .callbar__btn svg { width: 17px; height: 17px; fill: currentColor; }
+    .callbar__btn--call { background: var(--paper); color: var(--ink); }
+    .callbar__btn--wa { background: #25d366; color: #fff; }
+    .callbar__btn--enrol { background: var(--sun); color: var(--ink); }
+    /* Keep the footer clear of the fixed bar. */
+    .ftr { padding-bottom: 4.2rem; }
+  }
+</style>

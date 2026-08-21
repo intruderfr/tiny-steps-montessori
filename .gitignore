@@ -1,0 +1,30 @@
+# build output
+dist/
+.astro/
+
+# dependencies
+node_modules/
+
+# generated brand assets (rebuilt by `npm run images` on every build)
+public/images/og-default.jpg
+public/images/logo.png
+public/icon-192.png
+public/icon-512.png
+public/apple-touch-icon.png
+
+# env & local
+.env
+.env.production
+.env.local
+*.local
+
+# editor / OS
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# logs
+npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*

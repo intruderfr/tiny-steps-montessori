@@ -1,0 +1,45 @@
+---
+/**
+ * Inline SVG wordmark. Inline (not <img>) so it costs zero network requests,
+ * inherits currentColor, and stays crisp at any size.
+ * Echoes the footprint device from the school's existing logo.
+ */
+interface Props { class?: string; compact?: boolean }
+const { class: cls = '', compact = false } = Astro.props;
+---
+
+<span class={`logo ${cls}`}>
+  <svg class="logo__mark" viewBox="0 0 48 48" aria-hidden="true" focusable="false">
+    <circle cx="24" cy="24" r="23" fill="var(--sun)" />
+    {/* Little foot: heel + five toes, the Tiny Steps device */}
+    <path
+      d="M20.5 33.5c-3.6 0-6.2-2.6-6.2-6.3 0-3.9 2.3-7.1 4.4-9.9 1.7-2.2 3.6-3.6 6-3.6 3.4 0 5.6 2.4 5.6 6 0 3.3-1.4 6.2-3.2 8.9-1.7 2.6-3.8 4.9-6.6 4.9Z"
+      fill="var(--ink)"
+    />
+    <circle cx="31.6" cy="14.4" r="2.5" fill="var(--ink)" />
+    <circle cx="35.1" cy="19.1" r="2.1" fill="var(--ink)" />
+    <circle cx="35.8" cy="24.3" r="1.8" fill="var(--ink)" />
+    <circle cx="34.4" cy="29" r="1.5" fill="var(--ink)" />
+  </svg>
+  {!compact && (
+    <span class="logo__text">
+      <span class="logo__name">Tiny Steps</span>
+      <span class="logo__sub">Montessori</span>
+    </span>
+  )}
+</span>
+
+<style>
+  .logo { display: inline-flex; align-items: center; gap: 0.6rem; text-decoration: none; }
+  .logo__mark { width: 44px; height: 44px; flex: none; transition: transform 0.4s var(--ease-bounce); }
+  .logo:hover .logo__mark { transform: rotate(-10deg) scale(1.06); }
+  .logo__text { display: flex; flex-direction: column; line-height: 1; }
+  .logo__name {
+    font-family: var(--font-display); font-weight: 800; font-size: 1.3rem;
+    letter-spacing: -0.02em; color: var(--ink);
+  }
+  .logo__sub {
+    font-family: var(--font-body); font-weight: 600; font-size: 0.68rem;
+    letter-spacing: 0.22em; text-transform: uppercase; color: var(--teal-deep);
+  }
+</style>

@@ -1,0 +1,150 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import { site } from '../../data/site';
+import { courseSchema } from '../../data/schema';
+
+export async function getStaticPaths() {
+  const programmes = await getCollection('programmes');
+  return programmes.map((p) => ({ params: { slug: p.id }, props: { entry: p } }));
+}
+
+interface Props { entry: CollectionEntry<'programmes'> }
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const d = entry.data;
+
+// Sibling programmes for cross-linking — keeps a visitor moving through the
+// site instead of bouncing, and spreads internal link equity.
+const others = (await getCollection('programmes'))
+  .filter((p) => p.id !== entry.id)
+  .sort((a, b) => a.data.order - b.data.order);
+
+const facts = [
+  { k: 'Ages', v: d.ageLabel },
+  { k: 'Hours', v: d.schedule },
+  { k: 'Ratio', v: d.ratio },
+  { k: 'Group size', v: d.capacity },
+];
+---
+
+<Base
+  title={d.metaTitle ?? d.title}
+  description={d.description}
+  crumbs={[{ name: 'Programmes', href: '/programmes' }, { name: d.shortTitle, href: `/programmes/${entry.id}` }]}
+  schemaNodes={[
+    courseSchema({
+      title: d.title,
+      description: d.description,
+      slug: entry.id,
+      ageRange: d.ageRange,
+    }),
+  ]}
+>
+  <article>
+    <header class="phead" data-accent={d.accent}>
+      <div class="wrap phead__inner">
+        <span class="phead__icon" aria-hidden="true">{d.icon}</span>
+        <p class="phead__age">{d.ageLabel}</p>
+        <h1 class="h1 phead__title">{d.title}</h1>
+        <p class="lede phead__lede">{d.description}</p>
+
+        <dl class="facts">
+          {facts.map((f) => (
+            <div class="facts__item">
+              <dt>{f.k}</dt>
+              <dd>{f.v}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+    </header>
+
+    <div class="wrap pbody">
+      <div class="prose">
+        <Content />
+      </div>
+
+      <aside class="side">
+        <div class="side__card">
+          <h2 class="side__h">What is included</h2>
+          <ul class="side__list">
+            {d.highlights.map((h) => (
+              <li>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2Z"/></svg>
+                <span>{h}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div class="side__card side__card--cta">
+          <h2 class="side__h">Interested in {d.shortTitle}?</h2>
+          <p>Come and watch a session before you decide anything. Weekday mornings, while the room is running.</p>
+          <a href="/contact#visit" class="btn btn--primary">Book a visit</a>
+          <a href={site.phoneHref} class="side__phone">or call {site.phone}</a>
+        </div>
+      </aside>
+    </div>
+
+    <section class="section bg-cream edge-top">
+      <div class="wrap">
+        <h2 class="h2 center" style="margin-bottom:2.2rem">Our other programmes</h2>
+        <div class="others">
+          {others.map((p, i) => (
+            <a href={`/programmes/${p.id}`} class={`ocard card card--lift reveal d${i + 1}`} data-accent={p.data.accent}>
+              <span class="ocard__icon" aria-hidden="true">{p.data.icon}</span>
+              <div>
+                <p class="ocard__age">{p.data.ageLabel}</p>
+                <h3 class="ocard__t">{p.data.shortTitle}</h3>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  </article>
+</Base>
+
+<style>
+  .phead { padding-block: clamp(2rem, 1rem + 4vw, 3.5rem) clamp(2.5rem, 1rem + 5vw, 4rem); background: var(--tint, var(--sun-soft)); position: relative; }
+  .phead[data-accent='sun']   { --tint: var(--sun-soft);   --ac: var(--sun-deep); }
+  .phead[data-accent='teal']  { --tint: var(--teal-soft);  --ac: var(--teal-deep); }
+  .phead[data-accent='coral'] { --tint: var(--coral-soft); --ac: #c9392c; }
+  .phead[data-accent='sage']  { --tint: var(--sage-soft);  --ac: #4d7a38; }
+  .phead[data-accent='plum']  { --tint: var(--plum-soft);  --ac: var(--plum); }
+  .phead[data-accent='sky']   { --tint: var(--sky-soft);   --ac: #2b7bb0; }
+  .phead__inner { max-width: 780px; }
+  .phead__icon { font-size: 2.6rem; display: block; margin-bottom: 0.7rem; }
+  .phead__age { font-family: var(--font-display); font-weight: 700; color: var(--ac); letter-spacing: 0.05em; text-transform: uppercase; font-size: var(--t-sm); }
+  .phead__title { margin-block: 0.4rem 1rem; font-size: var(--t-3xl); }
+  .phead__lede { color: var(--ink-2); }
+
+  .facts { display: grid; grid-template-columns: repeat(4, auto); gap: 1.8rem; margin-top: 2rem; justify-content: start; }
+  @media (max-width: 700px) { .facts { grid-template-columns: repeat(2, 1fr); gap: 1.2rem; } }
+  .facts__item dt { font-size: var(--t-xs); text-transform: uppercase; letter-spacing: 0.07em; color: var(--ink-3); margin-bottom: 0.2rem; }
+  .facts__item dd { margin: 0; font-family: var(--font-display); font-weight: 700; font-size: 1.02rem; }
+
+  .pbody { display: grid; grid-template-columns: minmax(0, 1fr) 330px; gap: clamp(2rem, 4vw, 4rem); padding-block: var(--section-y); align-items: start; }
+  @media (max-width: 950px) { .pbody { grid-template-columns: 1fr; } }
+
+  .side { display: grid; gap: 1.2rem; position: sticky; top: 6.5rem; }
+  @media (max-width: 950px) { .side { position: static; } }
+  .side__card { background: var(--paper); border: 1px solid var(--line); border-radius: var(--r-lg); padding: 1.5rem; }
+  .side__card--cta { background: var(--cream-2); border-color: var(--sun); }
+  .side__card--cta p { font-size: var(--t-sm); color: var(--ink-2); margin-block: 0.6rem 1.2rem; line-height: 1.6; }
+  .side__h { font-family: var(--font-display); font-size: 1.15rem; }
+  .side__list { list-style: none; padding: 0; margin: 1rem 0 0; display: grid; gap: 0.75rem; }
+  .side__list li { display: flex; gap: 0.6rem; font-size: var(--t-sm); line-height: 1.55; color: var(--ink-2); }
+  .side__list svg { width: 19px; height: 19px; fill: var(--teal); flex: none; margin-top: 2px; }
+  .side__phone { display: block; margin-top: 0.9rem; font-size: var(--t-sm); color: var(--ink-2); text-align: center; }
+
+  .others { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--s-4); }
+  .ocard { display: flex; align-items: center; gap: 1rem; text-decoration: none; border-left: 4px solid var(--ac2, var(--sun)); }
+  .ocard[data-accent='sun'] { --ac2: var(--sun); } .ocard[data-accent='teal'] { --ac2: var(--teal); }
+  .ocard[data-accent='coral'] { --ac2: var(--coral); } .ocard[data-accent='sage'] { --ac2: var(--sage); }
+  .ocard[data-accent='plum'] { --ac2: var(--plum); } .ocard[data-accent='sky'] { --ac2: var(--sky); }
+  .ocard__icon { font-size: 1.7rem; }
+  .ocard__age { font-size: var(--t-xs); color: var(--ink-3); }
+  .ocard__t { font-family: var(--font-display); font-size: 1.15rem; }
+</style>

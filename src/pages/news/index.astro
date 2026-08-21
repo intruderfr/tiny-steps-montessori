@@ -1,0 +1,177 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+
+const posts = (await getCollection('news', ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime()
+);
+
+const featured = posts.find((p) => p.data.featured) ?? posts[0];
+const rest = posts.filter((p) => p.id !== featured?.id);
+
+const categories = [...new Set(posts.map((p) => p.data.category))].sort();
+
+const fmt = (d: Date) => d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+---
+
+<Base
+  title="News & Parent Guides"
+  description="Honest, practical writing for parents choosing a preschool in Colombo: how to compare schools, what school readiness means, and news from Tiny Steps."
+  crumbs={[{ name: 'News', href: '/news' }]}
+>
+  <header class="nhead">
+    <div class="wrap">
+      <p class="eyebrow">News &amp; Guides</p>
+      <h1 class="h1 nhead__title">Written for parents who are deciding</h1>
+      <p class="lede">
+        No filler and no marketing copy. These are the things we would want to
+        know if we were choosing a preschool in Colombo — including the questions
+        schools would rather you did not ask.
+      </p>
+    </div>
+  </header>
+
+  {featured && (
+    <section class="wrap">
+      <a href={`/news/${featured.id}`} class="feat">
+        <div class="feat__body">
+          <p class="feat__badge">Most read</p>
+          <p class="feat__cat">{featured.data.category}</p>
+          <h2 class="h2 feat__t">{featured.data.title}</h2>
+          <p class="feat__d">{featured.data.description}</p>
+          <p class="feat__meta">
+            <time datetime={featured.data.publishedAt.toISOString()}>{fmt(featured.data.publishedAt)}</time>
+            {featured.data.readingTime && <span>&middot; {featured.data.readingTime} min read</span>}
+          </p>
+          <span class="feat__link">Read the article &rarr;</span>
+        </div>
+        <div class="feat__art" aria-hidden="true">
+          <svg viewBox="0 0 200 200">
+            <circle cx="100" cy="100" r="86" fill="var(--sun-soft)" />
+            <circle cx="100" cy="100" r="58" fill="var(--sun)" opacity="0.55" />
+            <path d="M62 118c0-22 17-40 38-40s38 18 38 40" fill="none" stroke="var(--ink)" stroke-width="7" stroke-linecap="round" />
+            <circle cx="82" cy="86" r="7" fill="var(--ink)" />
+            <circle cx="118" cy="86" r="7" fill="var(--ink)" />
+          </svg>
+        </div>
+      </a>
+    </section>
+  )}
+
+  <section class="section">
+    <div class="wrap">
+      <!-- Category filter. Progressive enhancement: with JS off every article
+           stays in the DOM and visible, so nothing is hidden from crawlers. -->
+      <div class="filters" role="group" aria-label="Filter articles by category">
+        <button class="chip is-on" data-cat="all" type="button">All articles</button>
+        {categories.map((c) => (
+          <button class="chip" data-cat={c} type="button">{c}</button>
+        ))}
+      </div>
+
+      <div class="nlist" id="nlist">
+        {rest.map((p, i) => (
+          <a href={`/news/${p.id}`} class={`ncard card card--lift reveal d${(i % 6) + 1}`} data-cat={p.data.category}>
+            <p class="ncard__cat">{p.data.category}</p>
+            <h2 class="ncard__t">{p.data.title}</h2>
+            <p class="ncard__d">{p.data.description}</p>
+            <p class="ncard__meta">
+              <time datetime={p.data.publishedAt.toISOString()}>{fmt(p.data.publishedAt)}</time>
+              {p.data.readingTime && <span>&middot; {p.data.readingTime} min read</span>}
+            </p>
+          </a>
+        ))}
+      </div>
+
+      <p class="nempty" id="nempty" hidden>No articles in that category yet.</p>
+    </div>
+  </section>
+
+  <section class="sub">
+    <div class="wrap sub__inner">
+      <div>
+        <h2 class="h2 sub__t">Never miss a guide</h2>
+        <p class="sub__d">
+          New articles land every few weeks. Follow along by RSS, or on Instagram
+          where we post what the children have actually been doing.
+        </p>
+      </div>
+      <div class="sub__btns">
+        <a href="/rss.xml" class="btn btn--primary">Subscribe by RSS</a>
+        <a href="/contact" class="btn btn--ghost">Ask us a question</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .nhead { padding-block: clamp(1.6rem, 1rem + 3vw, 3rem) 0; }
+  .nhead__title { font-size: var(--t-3xl); margin-block: 0.8rem 1rem; max-width: 20ch; }
+  .nhead .lede { max-width: 60ch; }
+
+  .feat {
+    display: grid; grid-template-columns: 1.5fr 1fr; gap: 2rem; align-items: center;
+    background: var(--paper); border: 1px solid var(--line); border-radius: var(--r-xl);
+    padding: clamp(1.5rem, 1rem + 2vw, 2.8rem); margin-top: 2.5rem; text-decoration: none;
+    box-shadow: var(--sh-sm); transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease);
+  }
+  .feat:hover { transform: translateY(-5px); box-shadow: var(--sh-lg); }
+  @media (max-width: 800px) { .feat { grid-template-columns: 1fr; } .feat__art { display: none; } }
+  .feat__badge {
+    display: inline-block; background: var(--coral); color: #fff; font-size: var(--t-xs);
+    font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em;
+    padding: 0.25rem 0.7rem; border-radius: var(--r-full); margin-bottom: 0.9rem;
+  }
+  .feat__cat { font-size: var(--t-xs); font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--teal-deep); }
+  .feat__t { font-size: var(--t-2xl); margin-block: 0.4rem 0.8rem; }
+  .feat__d { color: var(--ink-2); font-size: var(--t-base); line-height: 1.7; }
+  .feat__meta { font-size: var(--t-xs); color: var(--ink-3); margin-top: 1rem; display: flex; gap: 0.35rem; }
+  .feat__link { display: inline-block; margin-top: 1.2rem; font-family: var(--font-display); font-weight: 700; color: var(--sun-deep); }
+  .feat__art svg { width: 100%; max-width: 240px; margin-inline: auto; }
+
+  .filters { display: flex; flex-wrap: wrap; gap: 0.55rem; margin-bottom: 2rem; }
+  .chip {
+    border: 1px solid var(--line); background: var(--paper); color: var(--ink-2);
+    padding: 0.5rem 1.05rem; border-radius: var(--r-full); cursor: pointer;
+    font-weight: 600; font-size: var(--t-sm); transition: all 0.2s;
+  }
+  .chip:hover { border-color: var(--sun); }
+  .chip.is-on { background: var(--ink); color: #fff; border-color: var(--ink); }
+
+  .nlist { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: var(--s-5); }
+  .ncard { display: flex; flex-direction: column; text-decoration: none; }
+  .ncard[hidden] { display: none; }
+  .ncard__cat { font-size: var(--t-xs); font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--teal-deep); margin-bottom: 0.6rem; }
+  .ncard__t { font-family: var(--font-display); font-size: 1.25rem; line-height: 1.25; margin-bottom: 0.55rem; }
+  .ncard__d { font-size: var(--t-sm); color: var(--ink-2); line-height: 1.6; }
+  .ncard__meta { margin-top: auto; padding-top: 1.1rem; font-size: var(--t-xs); color: var(--ink-3); display: flex; gap: 0.35rem; }
+
+  .nempty { text-align: center; color: var(--ink-3); padding: 3rem 0; }
+
+  .sub { background: var(--cream-2); border-top: 1px solid var(--line); padding-block: var(--s-8); }
+  .sub__inner { display: flex; align-items: center; justify-content: space-between; gap: 2rem; flex-wrap: wrap; }
+  .sub__t { font-size: var(--t-2xl); }
+  .sub__d { color: var(--ink-2); margin-top: 0.6rem; max-width: 48ch; }
+  .sub__btns { display: flex; gap: 0.8rem; flex-wrap: wrap; }
+</style>
+
+<script>
+  const chips = document.querySelectorAll<HTMLButtonElement>('.chip');
+  const cards = document.querySelectorAll<HTMLElement>('#nlist .ncard');
+  const empty = document.getElementById('nempty');
+
+  chips.forEach((chip) => {
+    chip.addEventListener('click', () => {
+      const cat = chip.dataset.cat;
+      chips.forEach((c) => c.classList.toggle('is-on', c === chip));
+
+      let shown = 0;
+      cards.forEach((card) => {
+        const match = cat === 'all' || card.dataset.cat === cat;
+        card.hidden = !match;
+        if (match) shown++;
+      });
+      if (empty) empty.hidden = shown > 0;
+    });
+  });
+</script>

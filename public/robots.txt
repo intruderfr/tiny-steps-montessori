@@ -1,0 +1,25 @@
+# Tiny Steps Montessori — robots.txt
+# Everything on this site is meant to be found. There is nothing to hide from
+# crawlers, so the default is a full allow.
+
+User-agent: *
+Allow: /
+
+# AI assistants increasingly answer "best montessori in Dehiwala" directly.
+# Being readable by them is a distribution channel, not a risk — these are
+# explicitly allowed so the school can be cited in those answers.
+User-agent: GPTBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+# Sitemap — regenerated on every build by @astrojs/sitemap.
+# ⚠️  Update the domain here if you launch on a different one.
+Sitemap: https://tinystepsmontessori.lk/sitemap-index.xml

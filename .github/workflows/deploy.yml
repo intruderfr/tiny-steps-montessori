@@ -1,0 +1,62 @@
+name: Build & deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  # Lets you re-run a deploy from the Actions tab without pushing a commit.
+  workflow_dispatch:
+
+# Read the repo, write the Pages deployment, mint the OIDC token Pages needs.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Never let two deploys race. In-progress runs finish so a half-built site is
+# never published, but queued ones collapse to the newest commit.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        env:
+          # GitHub Pages project sites are served from a sub-path, so the build
+          # needs to know both the origin and the repo name. Derived from the
+          # runner context so a fork or rename keeps working with no edits.
+          SITE_URL: ${{ format('https://{0}.github.io', github.repository_owner) }}
+          BASE_PATH: ${{ github.event.repository.name }}
+        run: npm run build
+
+      - name: Check SEO
+        env:
+          BASE_PATH: ${{ github.event.repository.name }}
+        run: npm run audit
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - id: deploy
+        uses: actions/deploy-pages@v4

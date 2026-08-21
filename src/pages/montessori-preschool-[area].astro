@@ -1,0 +1,252 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import { site, addressOneLine } from '../data/site';
+import { areas, type Area } from '../data/areas';
+import { faqSchema } from '../data/schema';
+
+export async function getStaticPaths() {
+  return areas.map((a) => ({ params: { area: a.slug }, props: { area: a } }));
+}
+
+interface Props { area: Area }
+const { area } = Astro.props;
+
+const programmes = (await getCollection('programmes')).sort((a, b) => a.data.order - b.data.order);
+
+const others = areas.filter((a) => a.slug !== area.slug);
+
+// FAQs are localised — the answers name this suburb specifically, which is what
+// keeps these pages distinct rather than a template with a swapped noun.
+const faqs = [
+  {
+    q: `How far is Tiny Steps Montessori from ${area.name}?`,
+    a: `We are ${area.distance} from ${area.name} — roughly ${area.driveTime} by car in normal traffic. ${area.route}`,
+  },
+  {
+    q: `Do you take children from ${area.name}?`,
+    a: `Yes. ${area.name} is one of the areas we regularly draw families from, alongside Dehiwala, Mount Lavinia, Ratmalana and the surrounding suburbs. There is no catchment restriction.`,
+  },
+  {
+    q: 'What ages do you take?',
+    a: 'Children from 1 to 8 years: Playgroup for 1–2 year olds, our main Montessori programme for 2–5, and Saturday STEM Club for 5–8 year olds.',
+  },
+  {
+    q: 'Do you offer daycare for working parents?',
+    a: `Yes — our daycare runs to 5:00 PM in the same building with the same staff, which is what makes the journey from ${area.name} workable for parents commuting into Colombo.`,
+  },
+];
+---
+
+<Base
+  title={`Montessori Preschool near ${area.name}`}
+  description={`Looking for a Montessori preschool near ${area.name}? Tiny Steps is ${area.distance} away in Dehiwala — ages 1–8, published ratios, daycare to 5:00 PM. Book a visit.`}
+  crumbs={[{ name: `Montessori near ${area.name}`, href: `/montessori-preschool-${area.slug}` }]}
+  schemaNodes={[faqSchema(faqs)]}
+>
+  <header class="lhead">
+    <div class="wrap lhead__inner">
+      <div>
+        <p class="eyebrow eyebrow--sun">Serving {area.name}</p>
+        <h1 class="h1 lhead__t">
+          A Montessori preschool near <span class="squiggle--teal squiggle">{area.name}</span>
+        </h1>
+        <p class="lede">{area.angle}</p>
+
+        <div class="lhead__cta">
+          <a href="/contact#visit" class="btn btn--primary btn--lg">Book a school visit</a>
+          <a href={site.phoneHref} class="btn btn--ghost btn--lg">Call {site.phone}</a>
+        </div>
+      </div>
+
+      <aside class="trip">
+        <h2 class="trip__h">Getting here from {area.name}</h2>
+        <dl class="trip__facts">
+          <div><dt>Distance</dt><dd>{area.distance}</dd></div>
+          <div><dt>Drive time</dt><dd>{area.driveTime}</dd></div>
+        </dl>
+        <p class="trip__route">{area.route}</p>
+        <p class="trip__lm">
+          <strong>Near:</strong> {area.landmarks.join(' · ')}
+        </p>
+        <address class="trip__addr">{addressOneLine}</address>
+      </aside>
+    </div>
+  </header>
+
+  {/* --------------------------------------------------------- programmes */}
+  <section class="section">
+    <div class="wrap">
+      <header class="sec-head reveal">
+        <p class="eyebrow">What We Offer {area.name} Families</p>
+        <h2 class="h2">Four programmes, ages 1 to 8</h2>
+      </header>
+      <div class="pgrid">
+        {programmes.map((p, i) => (
+          <a href={`/programmes/${p.id}`} class={`pcard card card--lift reveal d${i + 1}`} data-accent={p.data.accent}>
+            <span class="pcard__icon" aria-hidden="true">{p.data.icon}</span>
+            <p class="pcard__age">{p.data.ageLabel}</p>
+            <h3 class="pcard__t">{p.data.shortTitle}</h3>
+            <p class="pcard__r">{p.data.ratio}</p>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {/* -------------------------------------------------------------- why us */}
+  <section class="section bg-cream edge-top edge-bottom">
+    <div class="wrap wrap-narrow">
+      <h2 class="h2 reveal">Why {area.name} parents choose us</h2>
+      <div class="prose reveal" style="margin-top:1.5rem">
+        <p>
+          There are a number of preschools within reach of {area.name}, and most
+          of them will show you a warm building and a friendly tour. The
+          difficulty is that the things which actually determine your child's day
+          are rarely the things on display.
+        </p>
+        <p>So we publish ours, and we would encourage you to ask every school on your list for the same:</p>
+        <ul>
+          <li>
+            <strong>Adult-to-child ratio, room by room.</strong> One adult to four
+            children in Playgroup. One guide to eight in the 2–5 Montessori
+            classroom. Ask for the per-room number, not a school-wide average.
+          </li>
+          <li>
+            <strong>A genuine three-hour work cycle.</strong> Not a twenty-minute
+            token version. Uninterrupted concentration is where the whole method
+            lives, and it is the first thing schools quietly drop.
+          </li>
+          <li>
+            <strong>Fees in writing, in public.</strong> Our full fee schedule is
+            on the <a href="/admissions">admissions page</a>, including the one-off
+            admission fee and what is not included.
+          </li>
+          <li>
+            <strong>Honest reporting.</strong> If your child had a hard morning,
+            you hear the actual number of minutes they cried — not a reflexive
+            "she was fine".
+          </li>
+        </ul>
+        <p>
+          If you would rather work through this properly, we wrote a full
+          checklist: <a href="/news/how-to-choose-a-preschool-in-colombo">How to Choose a Preschool in Colombo</a>.
+          Use it on us.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  {/* ----------------------------------------------------------------- faq */}
+  <section class="section">
+    <div class="wrap wrap-narrow">
+      <h2 class="h2 center reveal" style="margin-bottom:2rem">
+        Questions from {area.name} parents
+      </h2>
+      <div class="faq">
+        {faqs.map((f) => (
+          <details class="faq__item" name="area-faq">
+            <summary>{f.q}</summary>
+            <p>{f.a}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {/* ---------------------------------------------------------------- map */}
+  <section class="mapsec">
+    <iframe
+      title={`Map showing Tiny Steps Montessori in Dehiwala, near ${area.name}`}
+      src="https://www.google.com/maps?q=43A%20Srimal%20Avenue%20Galvihara%20Road%20Dehiwala%20Sri%20Lanka&output=embed"
+      width="100%" height="400" style="border:0" loading="lazy"
+      referrerpolicy="no-referrer-when-downgrade" allowfullscreen
+    ></iframe>
+  </section>
+
+  {/* --------------------------------------------------------- other areas */}
+  <section class="section">
+    <div class="wrap">
+      <h2 class="h3 center" style="margin-bottom:1.5rem">We also serve</h2>
+      <ul class="others">
+        {others.map((a) => (
+          <li><a href={`/montessori-preschool-${a.slug}`}>Montessori near {a.name}</a></li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="cta">
+    <div class="wrap cta__inner">
+      <h2 class="h2">Come and see us from {area.name}</h2>
+      <p class="cta__d">
+        It is {area.driveTime} away. Visits run on weekday mornings while the
+        classrooms are actually working.
+      </p>
+      <div class="cta__btns">
+        <a href="/contact#visit" class="btn btn--primary btn--lg">Book a visit</a>
+        <a href={`https://wa.me/${site.whatsapp}`} class="btn btn--white btn--lg" rel="noopener" target="_blank">WhatsApp us</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .lhead { padding-block: clamp(1.6rem, 1rem + 3vw, 3rem) var(--s-6); }
+  .lhead__inner { display: grid; grid-template-columns: minmax(0, 1.35fr) 330px; gap: clamp(2rem, 4vw, 3.5rem); align-items: start; }
+  @media (max-width: 900px) { .lhead__inner { grid-template-columns: 1fr; } }
+  .lhead__t { font-size: var(--t-3xl); margin-block: 0.8rem 1rem; }
+  .lhead .lede { max-width: 58ch; }
+  .lhead__cta { display: flex; flex-wrap: wrap; gap: 0.85rem; margin-top: 1.8rem; }
+
+  .trip { background: var(--cream-2); border: 1px solid var(--line); border-radius: var(--r-lg); padding: 1.6rem; }
+  .trip__h { font-family: var(--font-display); font-size: 1.12rem; margin-bottom: 1rem; }
+  .trip__facts { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; padding-bottom: 1rem; border-bottom: 1px dashed var(--line); }
+  .trip__facts dt { font-size: var(--t-xs); text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-3); }
+  .trip__facts dd { margin: 0.2rem 0 0; font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; }
+  .trip__route { font-size: var(--t-sm); color: var(--ink-2); line-height: 1.65; margin-top: 1rem; }
+  .trip__lm { font-size: var(--t-xs); color: var(--ink-2); margin-top: 0.9rem; line-height: 1.6; }
+  .trip__addr { font-style: normal; font-size: var(--t-xs); color: var(--ink-3); margin-top: 1rem; padding-top: 1rem; border-top: 1px dashed var(--line); line-height: 1.6; }
+
+  .sec-head { margin-bottom: 2.2rem; }
+  .sec-head .h2 { margin-top: 0.6rem; }
+
+  .pgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: var(--s-4); }
+  .pcard { text-decoration: none; border-top: 5px solid var(--ac, var(--sun)); }
+  .pcard[data-accent='sun'] { --ac: var(--sun); --soft: var(--sun-soft); }
+  .pcard[data-accent='teal'] { --ac: var(--teal); --soft: var(--teal-soft); }
+  .pcard[data-accent='coral'] { --ac: var(--coral); --soft: var(--coral-soft); }
+  .pcard[data-accent='sage'] { --ac: var(--sage); --soft: var(--sage-soft); }
+  .pcard[data-accent='plum'] { --ac: var(--plum); --soft: var(--plum-soft); }
+  .pcard[data-accent='sky'] { --ac: var(--sky); --soft: var(--sky-soft); }
+  .pcard__icon { font-size: 1.7rem; width: 52px; height: 52px; display: grid; place-items: center; background: var(--soft); border-radius: var(--r-md); margin-bottom: 0.8rem; }
+  .pcard__age { font-size: var(--t-xs); font-weight: 700; color: var(--ac); text-transform: uppercase; letter-spacing: 0.05em; }
+  .pcard__t { font-family: var(--font-display); font-size: 1.15rem; margin-block: 0.2rem 0.4rem; }
+  .pcard__r { font-size: var(--t-xs); color: var(--ink-2); }
+
+  .faq { display: grid; gap: 0.75rem; }
+  .faq__item { background: var(--paper); border: 1px solid var(--line); border-radius: var(--r-md); overflow: hidden; }
+  .faq__item summary {
+    cursor: pointer; padding: 1.1rem 1.3rem; font-family: var(--font-display); font-weight: 700;
+    font-size: 1.02rem; list-style: none; display: flex; justify-content: space-between; gap: 1rem; align-items: center;
+  }
+  .faq__item summary::-webkit-details-marker { display: none; }
+  .faq__item summary::after { content: '+'; font-size: 1.5rem; color: var(--sun-deep); flex: none; transition: transform 0.25s; }
+  .faq__item[open] summary::after { transform: rotate(45deg); }
+  .faq__item p { padding: 0 1.3rem 1.2rem; color: var(--ink-2); font-size: var(--t-sm); line-height: 1.7; }
+
+  .mapsec { line-height: 0; }
+
+  .others { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 0.6rem; justify-content: center; }
+  .others a {
+    display: inline-block; background: var(--cream-2); border: 1px solid var(--line);
+    padding: 0.5rem 1rem; border-radius: var(--r-full); font-size: var(--t-sm);
+    text-decoration: none; color: var(--ink-2);
+  }
+  .others a:hover { border-color: var(--teal); color: var(--teal-deep); }
+
+  .cta { background: linear-gradient(140deg, var(--sun) 0%, #f7bf6e 55%, var(--coral) 130%); padding-block: clamp(3rem, 2rem + 5vw, 5rem); }
+  .cta__inner { text-align: center; max-width: 640px; }
+  .cta__d { font-size: var(--t-lg); color: rgba(44, 36, 32, 0.82); margin-block: 0.9rem 1.8rem; }
+  .cta__btns { display: flex; flex-wrap: wrap; gap: 0.9rem; justify-content: center; }
+</style>

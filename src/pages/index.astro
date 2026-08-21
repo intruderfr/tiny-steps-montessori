@@ -1,0 +1,542 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import { site } from '../data/site';
+import { faqSchema } from '../data/schema';
+
+const programmes = (await getCollection('programmes')).sort(
+  (a, b) => a.data.order - b.data.order
+);
+
+const posts = (await getCollection('news', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime())
+  .slice(0, 3);
+
+// These same questions appear verbatim on /faq. Answering them on the home page
+// too gives the page a shot at an FAQ rich result on brand-name searches.
+const faqs = [
+  {
+    q: 'What ages does Tiny Steps Montessori take?',
+    a: 'We take children from 1 to 8 years. Playgroup is for 1–2 year olds, our main Montessori programme runs from 2–5 years, and our Saturday STEM Club is for children aged 5–8.',
+  },
+  {
+    q: 'Where exactly are you in Dehiwala?',
+    a: `We are at ${site.address.street}, ${site.address.locality} ${site.address.postalCode}. We are a short drive from Mount Lavinia, Ratmalana, Nedimala, Kalubowila and Wellawatte.`,
+  },
+  {
+    q: 'What is your adult to child ratio?',
+    a: 'One adult to four children in Playgroup, one guide to eight children in the 2–5 Montessori classroom, and one facilitator to six children in STEM Club.',
+  },
+  {
+    q: 'Do you offer daycare for working parents?',
+    a: 'Yes. Our daycare and after-school care extends the day to 5:00 PM, in the same building with the same familiar staff. Full-time, part-time and occasional days are all available.',
+  },
+  {
+    q: 'Can I visit the school before enrolling?',
+    a: 'Yes, and we recommend it. We run visits on weekday mornings while the classrooms are actually running, so you can see a real work cycle rather than an empty building.',
+  },
+];
+
+const stats = [
+  { value: '1:4', label: 'Adults to children in Playgroup' },
+  { value: '3 hrs', label: 'Uninterrupted Montessori work cycle' },
+  { value: '3', label: 'Languages spoken every day' },
+  { value: `${site.rating.value}★`, label: `From ${site.rating.count} parent reviews` },
+];
+
+const day = [
+  { time: '8:00', title: 'Arrival & Greeting', body: 'Shoes off, own hook, own basket. Every child is greeted by name at the door.', accent: 'sun' },
+  { time: '8:30', title: 'The Work Cycle', body: 'Three uninterrupted hours. Children choose their own work and stay with it as long as it holds them.', accent: 'teal' },
+  { time: '10:00', title: 'Snack, Served by Children', body: 'Family style at low tables. They pour, they pass, they wipe up after themselves.', accent: 'coral' },
+  { time: '10:30', title: 'Garden Time', body: 'Every single day. Climbing, sand, water, bare feet and running.', accent: 'sage' },
+  { time: '11:30', title: 'Story & Song', body: 'English, Sinhala and Tamil — the same rhymes, all three languages.', accent: 'plum' },
+  { time: '12:30', title: 'Home or Daycare', body: 'Collection at 12:30, or lunch and a real nap for our daycare families until 5:00.', accent: 'sky' },
+];
+---
+
+<Base
+  title="Montessori Preschool & Daycare in Dehiwala | Tiny Steps"
+  description="Montessori preschool and daycare in Dehiwala, Colombo. Playgroup, Montessori and STEM for ages 1-8. Small classes, trained guides, published fees."
+  schemaNodes={[faqSchema(faqs)]}
+>
+  {/* ================================================================= HERO */}
+  <section class="hero">
+    {/* Decorative floating shapes. aria-hidden — they carry no meaning. */}
+    <div class="hero__shapes" aria-hidden="true">
+      <span class="shape shape--1 drift"></span>
+      <span class="shape shape--2 float"></span>
+      <span class="shape shape--3 drift"></span>
+      <span class="shape shape--4 float"></span>
+      <span class="shape shape--5 drift"></span>
+      <svg class="shape shape--star float" viewBox="0 0 24 24"><path d="m12 2 2.6 6.6L21.6 10l-5.3 4.6 1.7 7-6-3.8-6 3.8 1.7-7L2.4 10l7-1.4L12 2Z"/></svg>
+      <svg class="shape shape--squig" viewBox="0 0 120 40"><path d="M4 22c14-20 28 20 42 0s28 20 42 0 24-6 28-4" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round"/></svg>
+    </div>
+
+    <div class="wrap hero__inner">
+      <div class="hero__copy">
+        <p class="eyebrow eyebrow--sun">Dehiwala &middot; Ages 1 to 8</p>
+        <h1 class="h1 hero__title">
+          Where little feet take their <span class="squiggle">biggest</span> steps.
+        </h1>
+        <p class="lede hero__lede">
+          A warm, child-led Montessori preschool and daycare in Dehiwala, Colombo.
+          Small classes, trained guides, three languages, and a garden your child
+          will be in every single day.
+        </p>
+
+        <div class="hero__cta">
+          <a href="/contact#visit" class="btn btn--primary btn--lg">
+            Book a School Visit
+            <svg viewBox="0 0 24 24" aria-hidden="true" width="20" height="20" fill="currentColor"><path d="M13 5l7 7-7 7v-4H4v-6h9V5Z"/></svg>
+          </a>
+          <a href="/programmes" class="btn btn--ghost btn--lg">See Our Programmes</a>
+        </div>
+
+        <ul class="hero__proof">
+          <li><strong>{site.rating.value}★</strong> parent rating</li>
+          <li><strong>1:4</strong> in Playgroup</li>
+          <li><strong>Open</strong> published fees</li>
+        </ul>
+      </div>
+
+      {/* Illustrated scene — inline SVG, so it costs no extra request and is
+          sharp on every screen. Purely decorative, hidden from screen readers. */}
+      <div class="hero__art" aria-hidden="true">
+        <svg viewBox="0 0 420 420" class="hero__svg">
+          <defs>
+            <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#FFE9C9" />
+              <stop offset="100%" stop-color="#FFF5E6" />
+            </linearGradient>
+          </defs>
+          <circle cx="210" cy="210" r="200" fill="url(#sky)" />
+          {/* sun */}
+          <circle cx="318" cy="106" r="40" fill="var(--sun)" opacity="0.9" class="float" />
+          {/* hills */}
+          <path d="M10 300c60-46 110-16 150-34s86-44 140-12 110 30 110 30v126H10Z" fill="var(--sage)" opacity="0.32" />
+          <path d="M10 340c70-34 120 4 172-14s96-30 138 6v78H10Z" fill="var(--sage)" opacity="0.55" />
+          {/* tree */}
+          <rect x="86" y="238" width="17" height="86" rx="8" fill="#8a6a4f" />
+          <circle cx="94" cy="222" r="54" fill="var(--teal)" opacity="0.9" />
+          <circle cx="60" cy="244" r="34" fill="var(--teal-deep)" opacity="0.75" />
+          <circle cx="128" cy="246" r="30" fill="var(--teal-deep)" opacity="0.65" />
+          {/* building blocks */}
+          <rect x="228" y="272" width="52" height="52" rx="12" fill="var(--coral)" />
+          <rect x="286" y="272" width="52" height="52" rx="12" fill="var(--sky)" />
+          <rect x="257" y="216" width="52" height="52" rx="12" fill="var(--sun)" />
+          <circle cx="283" cy="242" r="13" fill="var(--cream)" />
+          {/* child, mid-stride */}
+          <circle cx="180" cy="238" r="27" fill="#e8b98f" />
+          <path d="M158 234a22 22 0 0 1 44 0Z" fill="#3c2a20" />
+          <rect x="163" y="266" width="35" height="46" rx="15" fill="var(--plum)" />
+          <rect x="167" y="310" width="12" height="30" rx="6" fill="#e8b98f" />
+          <rect x="184" y="310" width="12" height="30" rx="6" fill="#e8b98f" />
+          <circle cx="173" cy="344" r="9" fill="var(--ink)" />
+          <circle cx="190" cy="344" r="9" fill="var(--ink)" />
+          {/* little footprints trailing behind */}
+          <ellipse cx="122" cy="352" rx="8" ry="12" fill="var(--sun-deep)" opacity="0.5" transform="rotate(-16 122 352)" />
+          <ellipse cx="142" cy="362" rx="8" ry="12" fill="var(--sun-deep)" opacity="0.35" transform="rotate(-16 142 362)" />
+          <ellipse cx="98" cy="366" rx="8" ry="12" fill="var(--sun-deep)" opacity="0.22" transform="rotate(-16 98 366)" />
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  {/* ================================================================ STATS */}
+  <section class="bg-paper stats">
+    <div class="wrap stats__grid">
+      {stats.map((s, i) => (
+        <div class={`stats__item reveal d${i + 1}`}>
+          <p class="stats__value">{s.value}</p>
+          <p class="stats__label">{s.label}</p>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  {/* =========================================================== PROGRAMMES */}
+  <section class="section" id="programmes">
+    <div class="wrap">
+      <header class="center sec-head reveal">
+        <p class="eyebrow">Our Programmes</p>
+        <h2 class="h2">Four rooms, one idea: follow the child</h2>
+        <p class="lede center">
+          Each programme is built around what a child of that age genuinely needs
+          — not around what looks impressive on a syllabus.
+        </p>
+      </header>
+
+      <div class="prog__grid">
+        {programmes.map((p, i) => (
+          <a href={`/programmes/${p.id}`} class={`prog card card--lift reveal d${i + 1}`} data-accent={p.data.accent}>
+            <span class="prog__icon" aria-hidden="true">{p.data.icon}</span>
+            <p class="prog__age">{p.data.ageLabel}</p>
+            <h3 class="h3 prog__title">{p.data.shortTitle}</h3>
+            <p class="prog__desc">{p.data.description}</p>
+            <dl class="prog__meta">
+              <div><dt>Ratio</dt><dd>{p.data.ratio}</dd></div>
+              <div><dt>Hours</dt><dd>{p.data.schedule}</dd></div>
+            </dl>
+            <span class="prog__link">Explore this programme &rarr;</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {/* ================================================================== WHY */}
+  <section class="section bg-cream edge-top edge-bottom">
+    <div class="wrap why">
+      <div class="why__copy reveal">
+        <p class="eyebrow eyebrow--coral">Why Tiny Steps</p>
+        <h2 class="h2">The things that actually matter, done properly</h2>
+        <p class="lede">
+          Every school will show you nice photographs. These are the four things
+          we would check if we were choosing a preschool for our own child — so
+          they are the four things we hold ourselves to.
+        </p>
+        <a href="/about" class="btn btn--teal">Read our approach</a>
+      </div>
+
+      <ul class="why__list">
+        {[
+          { icon: '👩‍🏫', t: 'Ratios we publish', d: 'One adult to four children in Playgroup. One guide to eight in the Montessori room. Ask any other school for their number, room by room.' },
+          { icon: '⏳', t: 'A real three-hour work cycle', d: 'Not a twenty-minute token version. Children stay with their chosen work for as long as it holds them — which is where concentration is built.' },
+          { icon: '🗣️', t: 'Three languages, every day', d: 'English, Sinhala and Tamil are woven through stories, songs and conversation. Not as a weekly lesson — as the ordinary language of the room.' },
+          { icon: '💬', t: 'We tell you the truth', d: 'If your child had a hard morning, you will hear about it — with the actual number of minutes they cried, not a reflexive "she was fine".' },
+        ].map((w, i) => (
+          <li class={`why__item reveal d${i + 1}`}>
+            <span class="why__icon" aria-hidden="true">{w.icon}</span>
+            <div>
+              <h3 class="why__t">{w.t}</h3>
+              <p class="why__d">{w.d}</p>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  {/* ================================================================== DAY */}
+  <section class="section">
+    <div class="wrap">
+      <header class="center sec-head reveal">
+        <p class="eyebrow eyebrow--plum">A Day at Tiny Steps</p>
+        <h2 class="h2">From the hook by the door to the garden gate</h2>
+        <p class="lede center">Here is exactly what happens between 8:00 and 5:00.</p>
+      </header>
+
+      <ol class="day">
+        {day.map((d, i) => (
+          <li class={`day__item reveal d${(i % 6) + 1}`} data-accent={d.accent}>
+            <span class="day__time">{d.time}</span>
+            <div class="day__body">
+              <h3 class="day__t">{d.title}</h3>
+              <p>{d.body}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  {/* =========================================================== TESTIMONIAL */}
+  <section class="section bg-teal edge-top edge-bottom quotes">
+    <div class="wrap">
+      <header class="center sec-head reveal">
+        <p class="quotes__eyebrow">From Our Families</p>
+        <h2 class="h2">What parents tell us</h2>
+      </header>
+      <div class="quotes__grid">
+        {[
+          { q: 'She started pouring her own water at home within a fortnight. We did not teach her that — she just came home able to do it, and quietly proud of herself.', n: 'Parent of a 3-year-old', a: 'Montessori 2–5' },
+          { q: 'The settling-in was the reason we chose Tiny Steps. Nobody rushed us, and nobody made me feel silly for staying in the room that first week.', n: 'Parent of a 20-month-old', a: 'Playgroup' },
+          { q: 'They messaged me twenty minutes after drop-off, every day, for the first month. I never had to ask twice.', n: 'Working parent', a: 'Daycare' },
+        ].map((t, i) => (
+          <blockquote class={`quote reveal d${i + 1}`}>
+            <svg class="quote__mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 5C6 5 3 8 3 11.5c0 3 2 5.5 5 5.5.4 0 .8 0 1.2-.2C8.6 18.4 7 19.5 5 20l.8 1.8C10.5 20.2 13 16.4 13 11.7 13 7.8 11.8 5 9.5 5Zm11 0C17 5 14 8 14 11.5c0 3 2 5.5 5 5.5.4 0 .8 0 1.2-.2-.6 1.6-2.2 2.7-4.2 3.2l.8 1.8c4.7-1.6 7.2-5.4 7.2-10.1C24 7.8 22.8 5 20.5 5Z"/></svg>
+            <p class="quote__text">{t.q}</p>
+            <footer class="quote__by"><strong>{t.n}</strong><span>{t.a}</span></footer>
+          </blockquote>
+        ))}
+      </div>
+      <p class="quotes__note reveal">
+        <a href={site.social.googleReviews} rel="noopener nofollow" target="_blank">
+          Read our reviews on Google &rarr;
+        </a>
+      </p>
+    </div>
+  </section>
+
+  {/* ================================================================= NEWS */}
+  <section class="section">
+    <div class="wrap">
+      <header class="sec-head sec-head--row reveal">
+        <div>
+          <p class="eyebrow">News &amp; Guides</p>
+          <h2 class="h2">Written for parents deciding</h2>
+        </div>
+        <a href="/news" class="btn btn--ghost">All articles</a>
+      </header>
+
+      <div class="news__grid">
+        {posts.map((p, i) => (
+          <a href={`/news/${p.id}`} class={`ncard card card--lift reveal d${i + 1}`}>
+            <p class="ncard__cat">{p.data.category}</p>
+            <h3 class="ncard__t">{p.data.title}</h3>
+            <p class="ncard__d">{p.data.description}</p>
+            <p class="ncard__meta">
+              <time datetime={p.data.publishedAt.toISOString()}>
+                {p.data.publishedAt.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}
+              </time>
+              {p.data.readingTime && <span>&middot; {p.data.readingTime} min read</span>}
+            </p>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {/* ============================================================= LOCATION */}
+  <section class="section bg-cream edge-top">
+    <div class="wrap loc">
+      <div class="loc__copy reveal">
+        <p class="eyebrow eyebrow--sun">Find Us</p>
+        <h2 class="h2">A few minutes from home, wherever you are in Dehiwala</h2>
+        <address class="loc__addr">
+          {site.address.street}<br />
+          {site.address.locality} {site.address.postalCode}<br />
+          {site.address.countryName}
+        </address>
+        <p class="loc__areas">
+          Families travel to us from{' '}
+          {site.serviceAreas.map((a, i) => (
+            <>
+              <a href={`/montessori-preschool-${a.toLowerCase().replace(/\s+/g, '-')}`}>{a}</a>
+              {i < site.serviceAreas.length - 2 ? ', ' : i === site.serviceAreas.length - 2 ? ' and ' : '.'}
+            </>
+          ))}
+        </p>
+        <div class="loc__cta">
+          <a href={site.phoneHref} class="btn btn--primary">Call {site.phone}</a>
+          <a href={`https://wa.me/${site.whatsapp}`} class="btn btn--ghost" rel="noopener" target="_blank">WhatsApp us</a>
+        </div>
+      </div>
+
+      <div class="loc__map reveal d2">
+        {/* loading="lazy" keeps the map off the critical path — an eagerly
+            loaded Google Maps iframe is one of the most common LCP killers. */}
+        <iframe
+          title="Map showing Tiny Steps Montessori, Dehiwala"
+          src="https://www.google.com/maps?q=43A%20Srimal%20Avenue%20Galvihara%20Road%20Dehiwala%20Sri%20Lanka&output=embed"
+          width="100%" height="380" style="border:0" loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+          allowfullscreen
+        ></iframe>
+      </div>
+    </div>
+  </section>
+
+  {/* ================================================================== FAQ */}
+  <section class="section">
+    <div class="wrap wrap-narrow">
+      <header class="center sec-head reveal">
+        <p class="eyebrow eyebrow--coral">Straight Answers</p>
+        <h2 class="h2">Questions parents ask us first</h2>
+      </header>
+      <div class="faq">
+        {faqs.map((f, i) => (
+          <details class={`faq__item reveal d${(i % 5) + 1}`} name="home-faq">
+            <summary>{f.q}</summary>
+            <p>{f.a}</p>
+          </details>
+        ))}
+      </div>
+      <p class="center" style="margin-top:2rem">
+        <a href="/faq" class="btn btn--ghost">See all questions</a>
+      </p>
+    </div>
+  </section>
+
+  {/* ================================================================== CTA */}
+  <section class="cta">
+    <div class="wrap cta__inner reveal">
+      <h2 class="h2 cta__t">Come and see a real morning</h2>
+      <p class="cta__d">
+        We run visits on weekdays while the classrooms are running — because a
+        room full of furniture tells you nothing, and a room full of working
+        children tells you everything.
+      </p>
+      <div class="cta__btns">
+        <a href="/contact#visit" class="btn btn--primary btn--lg">Book a School Visit</a>
+        <a href="/admissions" class="btn btn--white btn--lg">Fees &amp; Admissions</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  /* ================================================================= HERO */
+  .hero { position: relative; overflow: hidden; padding-block: clamp(2.5rem, 1rem + 6vw, 5.5rem) clamp(3rem, 1rem + 7vw, 6rem); }
+  .hero__inner {
+    display: grid; grid-template-columns: 1.05fr 0.95fr;
+    align-items: center; gap: clamp(2rem, 4vw, 4rem);
+  }
+  @media (max-width: 900px) {
+    .hero__inner { grid-template-columns: 1fr; text-align: center; }
+    .hero__lede, .hero__proof { margin-inline: auto; }
+    .hero__cta { justify-content: center; }
+    .hero__art { max-width: 420px; margin-inline: auto; order: -1; }
+  }
+  .hero__title { margin-bottom: 1.1rem; }
+  .hero__lede { margin-bottom: 1.9rem; }
+  .eyebrow { margin-bottom: 1rem; }
+  .hero__cta { display: flex; flex-wrap: wrap; gap: 0.85rem; }
+  .hero__proof {
+    display: flex; flex-wrap: wrap; gap: 1.6rem; list-style: none;
+    padding: 0; margin: 2.2rem 0 0; font-size: var(--t-sm); color: var(--ink-2);
+  }
+  .hero__proof strong { display: block; font-family: var(--font-display); font-size: 1.5rem; color: var(--ink); line-height: 1.1; }
+  .hero__svg { width: 100%; height: auto; filter: drop-shadow(0 24px 50px rgba(88, 60, 30, 0.14)); }
+
+  /* floating decorative shapes */
+  .hero__shapes { position: absolute; inset: 0; pointer-events: none; z-index: -1; }
+  .shape { position: absolute; display: block; border-radius: 50%; opacity: 0.5; }
+  .shape--1 { width: 130px; height: 130px; background: var(--coral-soft); top: 6%; left: -3%; }
+  .shape--2 { width: 74px; height: 74px; background: var(--teal-soft); top: 62%; left: 6%; }
+  .shape--3 { width: 180px; height: 180px; background: var(--sun-soft); bottom: -6%; right: 8%; opacity: 0.45; }
+  .shape--4 { width: 46px; height: 46px; background: var(--sage-soft); top: 18%; right: 3%; }
+  .shape--5 { width: 92px; height: 92px; background: var(--plum-soft); top: 40%; right: 44%; opacity: 0.35; }
+  .shape--star { width: 40px; height: 40px; fill: var(--sun); top: 12%; left: 44%; opacity: 0.55; border-radius: 0; }
+  .shape--squig { width: 120px; height: 40px; color: var(--teal); bottom: 14%; left: 16%; opacity: 0.28; border-radius: 0; }
+  @media (max-width: 700px) { .shape--5, .shape--squig, .shape--star { display: none; } }
+
+  /* ================================================================ STATS */
+  .stats { padding-block: clamp(2rem, 1rem + 3vw, 3rem); border-block: 1px solid var(--line); }
+  .stats__grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--s-5); text-align: center; }
+  @media (max-width: 720px) { .stats__grid { grid-template-columns: repeat(2, 1fr); gap: var(--s-6) var(--s-4); } }
+  .stats__value { font-family: var(--font-display); font-size: clamp(2rem, 1.4rem + 2vw, 2.9rem); color: var(--teal-deep); line-height: 1; }
+  .stats__label { font-size: var(--t-sm); color: var(--ink-2); margin-top: 0.5rem; }
+
+  /* ------------------------------------------------------- section heads */
+  .sec-head { margin-bottom: clamp(2.2rem, 1rem + 3vw, 3.5rem); max-width: 62ch; }
+  .sec-head .h2 { margin-block: 0.6rem 0.9rem; }
+  .sec-head--row { display: flex; align-items: flex-end; justify-content: space-between; gap: 1.5rem; max-width: none; flex-wrap: wrap; }
+
+  /* =========================================================== PROGRAMMES */
+  .prog__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(255px, 1fr)); gap: var(--s-5); }
+  .prog {
+    display: flex; flex-direction: column; text-decoration: none;
+    border-top: 5px solid var(--accent, var(--sun));
+    position: relative; overflow: hidden;
+  }
+  .prog[data-accent='sun']   { --accent: var(--sun);   --accent-soft: var(--sun-soft); }
+  .prog[data-accent='teal']  { --accent: var(--teal);  --accent-soft: var(--teal-soft); }
+  .prog[data-accent='coral'] { --accent: var(--coral); --accent-soft: var(--coral-soft); }
+  .prog[data-accent='sage']  { --accent: var(--sage);  --accent-soft: var(--sage-soft); }
+  .prog[data-accent='plum']  { --accent: var(--plum);  --accent-soft: var(--plum-soft); }
+  .prog[data-accent='sky']   { --accent: var(--sky);   --accent-soft: var(--sky-soft); }
+  .prog__icon {
+    font-size: 2rem; width: 62px; height: 62px; display: grid; place-items: center;
+    background: var(--accent-soft); border-radius: var(--r-md); margin-bottom: 1rem;
+    transition: transform 0.35s var(--ease-bounce);
+  }
+  .prog:hover .prog__icon { transform: rotate(-8deg) scale(1.08); }
+  .prog__age { font-size: var(--t-sm); font-weight: 700; color: var(--accent); letter-spacing: 0.04em; }
+  .prog__title { margin-block: 0.2rem 0.6rem; }
+  .prog__desc { font-size: var(--t-sm); color: var(--ink-2); line-height: 1.65; }
+  .prog__meta { display: grid; gap: 0.45rem; margin: 1.1rem 0; padding-top: 1rem; border-top: 1px dashed var(--line); font-size: var(--t-xs); }
+  .prog__meta > div { display: flex; gap: 0.5rem; }
+  .prog__meta dt { color: var(--ink-3); min-width: 3.4rem; }
+  .prog__meta dd { margin: 0; font-weight: 600; color: var(--ink-2); }
+  .prog__link { margin-top: auto; font-family: var(--font-display); font-weight: 700; color: var(--accent); font-size: var(--t-sm); }
+
+  /* ================================================================== WHY */
+  .why { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: clamp(2rem, 4vw, 4rem); align-items: start; }
+  @media (max-width: 900px) { .why { grid-template-columns: 1fr; } }
+  .why__copy .h2 { margin-block: 0.7rem 1rem; }
+  .why__copy .btn { margin-top: 1.5rem; }
+  .why__list { list-style: none; padding: 0; margin: 0; display: grid; gap: 1.1rem; }
+  .why__item { display: flex; gap: 1.1rem; background: var(--paper); padding: 1.4rem; border-radius: var(--r-lg); box-shadow: var(--sh-sm); }
+  .why__icon { font-size: 1.6rem; width: 52px; height: 52px; flex: none; display: grid; place-items: center; background: var(--cream-2); border-radius: var(--r-md); }
+  .why__t { font-family: var(--font-display); font-size: 1.15rem; margin-bottom: 0.3rem; }
+  .why__d { font-size: var(--t-sm); color: var(--ink-2); line-height: 1.65; }
+
+  /* ================================================================== DAY */
+  .day { list-style: none; padding: 0; margin: 0; display: grid; gap: 0; position: relative; max-width: 760px; margin-inline: auto; }
+  .day::before { content: ''; position: absolute; left: 74px; top: 12px; bottom: 12px; width: 3px; background: repeating-linear-gradient(var(--line) 0 8px, transparent 8px 16px); }
+  @media (max-width: 600px) { .day::before { left: 20px; } }
+  .day__item { display: flex; gap: 1.6rem; padding-block: 1.1rem; position: relative; }
+  .day__time {
+    font-family: var(--font-display); font-weight: 700; font-size: 1rem;
+    min-width: 60px; text-align: right; color: var(--ink-3); padding-top: 0.15rem;
+  }
+  @media (max-width: 600px) { .day__time { min-width: 0; text-align: left; padding-left: 2.6rem; } .day__item { flex-direction: column; gap: 0.4rem; } }
+  .day__body { padding-left: 1.9rem; position: relative; }
+  .day__body::before {
+    content: ''; position: absolute; left: -7px; top: 8px; width: 17px; height: 17px;
+    border-radius: 50%; background: var(--dot, var(--sun)); box-shadow: 0 0 0 5px var(--cream);
+  }
+  @media (max-width: 600px) { .day__body { padding-left: 2.6rem; } .day__body::before { left: 12px; } }
+  .day__item[data-accent='sun']   { --dot: var(--sun); }
+  .day__item[data-accent='teal']  { --dot: var(--teal); }
+  .day__item[data-accent='coral'] { --dot: var(--coral); }
+  .day__item[data-accent='sage']  { --dot: var(--sage); }
+  .day__item[data-accent='plum']  { --dot: var(--plum); }
+  .day__item[data-accent='sky']   { --dot: var(--sky); }
+  .day__t { font-family: var(--font-display); font-size: 1.2rem; margin-bottom: 0.25rem; }
+  .day__body p { font-size: var(--t-sm); color: var(--ink-2); }
+
+  /* =========================================================== TESTIMONIAL */
+  .quotes .h2 { color: #fff; }
+  .quotes__eyebrow {
+    display: inline-block; font-size: var(--t-sm); font-weight: 700; letter-spacing: 0.08em;
+    text-transform: uppercase; background: rgba(255,255,255,0.16); color: #fff;
+    padding: 0.4rem 0.9rem; border-radius: var(--r-full);
+  }
+  .quotes__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: var(--s-5); }
+  .quote { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.18); border-radius: var(--r-lg); padding: var(--s-5); margin: 0; }
+  .quote__mark { width: 30px; height: 30px; fill: var(--sun); margin-bottom: 0.8rem; }
+  .quote__text { font-size: var(--t-base); line-height: 1.7; color: #fff; }
+  .quote__by { margin-top: 1.2rem; font-size: var(--t-sm); display: grid; gap: 0.1rem; color: rgba(255,255,255,0.75); }
+  .quote__by strong { color: #fff; }
+  .quotes__note { text-align: center; margin-top: 2rem; }
+  .quotes__note a { color: #fff; font-weight: 700; font-family: var(--font-display); }
+
+  /* ================================================================= NEWS */
+  .news__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--s-5); }
+  .ncard { display: flex; flex-direction: column; text-decoration: none; }
+  .ncard__cat { font-size: var(--t-xs); font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--teal-deep); margin-bottom: 0.7rem; }
+  .ncard__t { font-family: var(--font-display); font-size: 1.28rem; line-height: 1.25; margin-bottom: 0.6rem; }
+  .ncard__d { font-size: var(--t-sm); color: var(--ink-2); line-height: 1.65; }
+  .ncard__meta { margin-top: auto; padding-top: 1.1rem; font-size: var(--t-xs); color: var(--ink-3); display: flex; gap: 0.35rem; }
+
+  /* ============================================================= LOCATION */
+  .loc { display: grid; grid-template-columns: 1fr 1.1fr; gap: clamp(2rem, 4vw, 3.5rem); align-items: center; }
+  @media (max-width: 900px) { .loc { grid-template-columns: 1fr; } }
+  .loc__copy .h2 { margin-block: 0.7rem 1.2rem; }
+  .loc__addr { font-style: normal; font-size: var(--t-lg); font-family: var(--font-display); line-height: 1.5; }
+  .loc__areas { margin-top: 1.1rem; font-size: var(--t-sm); color: var(--ink-2); line-height: 1.9; }
+  .loc__areas a { color: var(--teal-deep); font-weight: 600; }
+  .loc__cta { display: flex; flex-wrap: wrap; gap: 0.8rem; margin-top: 1.8rem; }
+  .loc__map { border-radius: var(--r-lg); overflow: hidden; box-shadow: var(--sh-md); line-height: 0; }
+
+  /* ================================================================== FAQ */
+  .faq { display: grid; gap: 0.75rem; }
+  .faq__item { background: var(--paper); border: 1px solid var(--line); border-radius: var(--r-md); overflow: hidden; }
+  .faq__item summary {
+    cursor: pointer; padding: 1.1rem 1.3rem; font-family: var(--font-display);
+    font-weight: 700; font-size: 1.08rem; list-style: none;
+    display: flex; justify-content: space-between; align-items: center; gap: 1rem;
+  }
+  .faq__item summary::-webkit-details-marker { display: none; }
+  .faq__item summary::after { content: '+'; font-size: 1.5rem; color: var(--sun-deep); flex: none; transition: transform 0.25s; }
+  .faq__item[open] summary::after { transform: rotate(45deg); }
+  .faq__item p { padding: 0 1.3rem 1.2rem; color: var(--ink-2); font-size: var(--t-sm); line-height: 1.7; }
+
+  /* ================================================================== CTA */
+  .cta { background: linear-gradient(140deg, var(--sun) 0%, #f7bf6e 55%, var(--coral) 130%); padding-block: clamp(3.5rem, 2rem + 6vw, 6rem); }
+  .cta__inner { text-align: center; max-width: 700px; }
+  .cta__d { font-size: var(--t-lg); color: rgba(44, 36, 32, 0.82); margin-block: 1rem 2rem; }
+  .cta__btns { display: flex; flex-wrap: wrap; gap: 0.9rem; justify-content: center; }
+</style>

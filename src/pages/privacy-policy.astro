@@ -1,0 +1,140 @@
+---
+import Base from '../layouts/Base.astro';
+import { site, addressOneLine } from '../data/site';
+
+/**
+ * ⚠️  TEMPLATE — this is a reasonable starting point, not legal advice.
+ * Have it reviewed before launch, especially if you add analytics, a booking
+ * system, or any tool that stores children's data.
+ */
+const updated = 'August 2026';
+---
+
+<Base
+  title="Privacy Policy"
+  description="How Tiny Steps Montessori collects, uses and protects the personal information of parents and children."
+  crumbs={[{ name: 'Privacy Policy', href: '/privacy-policy' }]}
+>
+  <div class="wrap pp">
+    <h1 class="h1 pp__t">Privacy Policy</h1>
+    <p class="pp__meta">Last updated: {updated}</p>
+
+    <div class="prose">
+      <p>
+        {site.legalName} ("we", "us") is committed to protecting the privacy of
+        the families who contact us and who enrol with us. This policy explains
+        what we collect, why, and what you can ask us to do about it.
+      </p>
+
+      <h2>Who we are</h2>
+      <p>
+        {site.legalName}<br />
+        {addressOneLine}<br />
+        Telephone: <a href={site.phoneHref}>{site.phone}</a><br />
+        Email: <a href={`mailto:${site.email}`}>{site.email}</a>
+      </p>
+
+      <h2>What we collect</h2>
+      <p><strong>When you make an enquiry:</strong> your name, phone number, email address, your child's age, and anything you choose to tell us in your message.</p>
+      <p><strong>When your child enrols:</strong> your child's full name and date of birth, birth certificate and immunisation details, medical and allergy information, emergency contacts, authorised collection contacts, and your billing details.</p>
+      <p><strong>When you visit this website:</strong> our host may keep standard server logs (IP address, browser type, pages requested) for security and to keep the site running. We do not use advertising or tracking cookies.</p>
+
+      <h2>Why we collect it</h2>
+      <ul>
+        <li>To reply to your enquiry and arrange a visit</li>
+        <li>To care for your child safely, including responding to medical needs</li>
+        <li>To contact you in an emergency</li>
+        <li>To verify who is authorised to collect your child</li>
+        <li>To administer fees and keep the records we are required to keep</li>
+        <li>To send you school news and updates, where you have asked for them</li>
+      </ul>
+
+      <h2>Photographs and video</h2>
+      <p>
+        We photograph children during ordinary activities for our own records and
+        for parent updates. <strong>We will not publish any photograph of your child
+        on our website, on social media, or in any printed material without your
+        specific written consent</strong>, which you give — or withhold — on enrolment.
+      </p>
+      <p>
+        You can change your mind at any time. Tell us and we will remove existing
+        images from anywhere we control, as far as it is technically possible to
+        do so.
+      </p>
+
+      <h2>Who we share it with</h2>
+      <p>
+        We do not sell your information and we do not share it for marketing. We
+        share it only where necessary:
+      </p>
+      <ul>
+        <li>With our own staff, to the extent they need it to care for your child</li>
+        <li>With emergency medical services, if your child needs urgent care</li>
+        <li>With relevant authorities where we are legally required to disclose, including safeguarding obligations</li>
+      </ul>
+
+      <h2>How long we keep it</h2>
+      <p>
+        Enquiry details are kept for up to twelve months if you do not enrol.
+        Enrolment records are kept for as long as your child attends and for a
+        period afterwards as required by law and for safeguarding purposes.
+      </p>
+
+      <h2>How we protect it</h2>
+      <p>
+        Paper records are held securely at the school. Electronic records are
+        access-controlled and limited to staff who need them. Medical and allergy
+        information is additionally held in the classroom so it is available
+        immediately when it matters.
+      </p>
+
+      <h2>Your rights</h2>
+      <p>You can ask us to:</p>
+      <ul>
+        <li>Tell you what information we hold about you and your child</li>
+        <li>Correct anything that is wrong or out of date</li>
+        <li>Delete information, where we are not required to keep it</li>
+        <li>Stop sending you school updates</li>
+        <li>Withdraw photography consent</li>
+      </ul>
+      <p>
+        Email <a href={`mailto:${site.email}`}>{site.email}</a> and we will respond
+        within 30 days.
+      </p>
+
+      <h2>Third-party services</h2>
+      <p>
+        This website embeds a Google Maps frame so you can find us. When it loads,
+        Google may receive information about your visit under its own privacy
+        policy. Our contact form is processed by a third-party form provider
+        solely to deliver your message to us.
+      </p>
+
+      <h2>Children</h2>
+      <p>
+        This website is written for parents, not for children, and we do not
+        knowingly collect information directly from a child through it.
+      </p>
+
+      <h2>Changes to this policy</h2>
+      <p>
+        If we change this policy we will update the date at the top. If the change
+        is significant, we will tell enrolled families directly.
+      </p>
+
+      <h2>Questions or complaints</h2>
+      <p>
+        Contact us on <a href={site.phoneHref}>{site.phone}</a> or at{' '}
+        <a href={`mailto:${site.email}`}>{site.email}</a>. If you are not satisfied
+        with our response, you may raise the matter with the relevant data
+        protection authority in Sri Lanka.
+      </p>
+    </div>
+  </div>
+</Base>
+
+<style>
+  .pp { max-width: 800px; padding-block: clamp(1.6rem, 1rem + 3vw, 3rem) var(--section-y); }
+  .pp__t { font-size: var(--t-3xl); }
+  .pp__meta { color: var(--ink-3); font-size: var(--t-sm); margin-block: 0.6rem 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--line); }
+</style>

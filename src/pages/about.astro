@@ -1,0 +1,245 @@
+---
+import Base from '../layouts/Base.astro';
+import { site } from '../data/site';
+
+/**
+ * ⚠️  STAFF SECTION IS A PLACEHOLDER.
+ * Replace the names, roles and bios below with your real team, or delete the
+ * section. Real named staff with real photographs is one of the strongest trust
+ * signals a school website can carry — parents look for it first.
+ */
+const team = [
+  { name: '[Name]', role: 'Founder & Head of School', bio: '[Two sentences: their Montessori training, how long they have taught, and why they started Tiny Steps.]', accent: 'sun' },
+  { name: '[Name]', role: 'Lead Guide, Montessori 2–5', bio: '[Their diploma, the awarding body, and how many years in a Montessori classroom.]', accent: 'teal' },
+  { name: '[Name]', role: 'Playgroup Lead', bio: '[Their early-years background and their approach to settling in the under-twos.]', accent: 'coral' },
+  { name: '[Name]', role: 'STEM Club Facilitator', bio: '[Their subject background and what they bring to Saturday mornings.]', accent: 'plum' },
+];
+
+const values = [
+  {
+    icon: '🧭',
+    t: 'Follow the child',
+    d: 'The child shows you what they are ready for. Our job is to notice it and to put the right thing in front of them at the right moment — not to run everyone through the same sequence on the same week.',
+  },
+  {
+    icon: '🤲',
+    t: 'Never do for a child what they can do themselves',
+    d: 'Every time an adult buttons a coat that a child could have buttoned, a small piece of capability is quietly taken away. It is slower to let them. We let them.',
+  },
+  {
+    icon: '🔇',
+    t: 'Protect concentration',
+    d: 'A deeply absorbed child is not interrupted here — not for a photograph, not for a snack, not because the timetable says so. Concentration is the thing we are actually building.',
+  },
+  {
+    icon: '📣',
+    t: 'Tell parents the truth',
+    d: 'Including when it is uncomfortable. If your child bit someone, or spent the morning at the window, or is finding something hard, you will hear it from us before you hear it anywhere else.',
+  },
+];
+---
+
+<Base
+  title="About Our Montessori School"
+  description="Who we are, what we believe about young children, and how Tiny Steps Montessori in Dehiwala actually runs day to day — including the things most schools leave out."
+  crumbs={[{ name: 'About', href: '/about' }]}
+>
+  <header class="ahead">
+    <div class="wrap ahead__inner">
+      <div>
+        <p class="eyebrow">About Tiny Steps</p>
+        <h1 class="h1 ahead__t">A small school, run carefully</h1>
+        <p class="lede">
+          We are a Montessori preschool and daycare in Dehiwala for children aged
+          1 to 8. We are deliberately small, we publish the numbers that matter,
+          and we would rather tell you something awkward than manage you.
+        </p>
+      </div>
+      <div class="ahead__art" aria-hidden="true">
+        <svg viewBox="0 0 300 300">
+          <circle cx="150" cy="150" r="140" fill="var(--teal-soft)" />
+          <path d="M40 210c40-30 70-10 100-25s60-30 100-8v103H40Z" fill="var(--sage)" opacity="0.45" />
+          <rect x="120" y="120" width="60" height="60" rx="14" fill="var(--sun)" />
+          <rect x="70" y="155" width="45" height="45" rx="11" fill="var(--coral)" />
+          <rect x="185" y="155" width="45" height="45" rx="11" fill="var(--sky)" />
+          <circle cx="150" cy="150" r="16" fill="var(--cream)" />
+          <circle cx="92" cy="177" r="11" fill="var(--cream)" />
+          <circle cx="207" cy="177" r="11" fill="var(--cream)" />
+        </svg>
+      </div>
+    </div>
+  </header>
+
+  {/* ---------------------------------------------------------- our story */}
+  <section class="section">
+    <div class="wrap wrap-narrow prose reveal">
+      <h2>Why we started</h2>
+      <p>
+        Tiny Steps opened in {site.founded} because we wanted a school where the
+        adult-to-child ratio was the first thing on the wall rather than the last
+        thing anyone mentioned.
+      </p>
+      <p>
+        Choosing a preschool in Colombo is genuinely hard. Almost every school now
+        uses the word Montessori. Very few will tell you their per-room ratio, how
+        long their teachers have stayed, or what a year actually costs. Parents
+        end up choosing on the strength of a warm tour and a nice photograph,
+        which is not much to go on when the decision matters this much.
+      </p>
+      <p>
+        So we built the school we would want for our own children, and then we
+        published the parts other schools keep quiet: <a href="/admissions#fees">the
+        fees</a>, the ratios, the hours, the whole admissions process. If that
+        makes it easier to compare us against someone else and choose them, we can
+        live with that.
+      </p>
+
+      <h2>What "Montessori" means here</h2>
+      <p>
+        Two things, specifically, and you can check both on a visit:
+      </p>
+      <p>
+        <strong>A genuine three-hour uninterrupted work cycle.</strong> Children
+        choose their own work and stay with it as long as it holds them. No bell,
+        no whole-class instruction cutting across, no being moved on just as they
+        were getting somewhere.
+      </p>
+      <p>
+        <strong>A mixed-age classroom.</strong> Our 2–5 room holds all three years
+        together. A four-year-old showing a two-year-old how to carry a tray
+        learns more in that moment than any worksheet delivers.
+      </p>
+      <p>
+        Plenty of preschools own Montessori materials. Rather fewer run both of
+        these. It is worth asking every school on your list — we wrote about
+        exactly how in <a href="/news/montessori-vs-traditional-preschool">Montessori
+        vs Traditional Preschool</a>.
+      </p>
+    </div>
+  </section>
+
+  {/* ------------------------------------------------------------- values */}
+  <section class="section bg-cream edge-top edge-bottom">
+    <div class="wrap">
+      <header class="center sec-head reveal">
+        <p class="eyebrow eyebrow--coral">What We Believe</p>
+        <h2 class="h2">Four things we hold to, even when it is inconvenient</h2>
+      </header>
+      <div class="vgrid">
+        {values.map((v, i) => (
+          <div class={`vcard reveal d${i + 1}`}>
+            <span class="vcard__icon" aria-hidden="true">{v.icon}</span>
+            <h3 class="vcard__t">{v.t}</h3>
+            <p class="vcard__d">{v.d}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {/* --------------------------------------------------------------- team */}
+  <section class="section">
+    <div class="wrap">
+      <header class="center sec-head reveal">
+        <p class="eyebrow eyebrow--plum">Our Team</p>
+        <h2 class="h2">The people your child will actually be with</h2>
+        <p class="lede center">
+          Staff turnover is the metric no school advertises. Ours are named here
+          because we expect them to still be here next year.
+        </p>
+      </header>
+      <div class="tgrid">
+        {team.map((m, i) => (
+          <article class={`tcard reveal d${i + 1}`} data-accent={m.accent}>
+            {/* Replace with a real photograph: <img src="…" alt="…" width="…" height="…" loading="lazy" /> */}
+            <div class="tcard__photo" aria-hidden="true">
+              <svg viewBox="0 0 100 100">
+                <circle cx="50" cy="38" r="20" fill="currentColor" opacity="0.35" />
+                <path d="M14 96c0-20 16-34 36-34s36 14 36 34" fill="currentColor" opacity="0.35" />
+              </svg>
+            </div>
+            <h3 class="tcard__n">{m.name}</h3>
+            <p class="tcard__r">{m.role}</p>
+            <p class="tcard__b">{m.bio}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {/* --------------------------------------------------------------- safe */}
+  <section class="section bg-teal edge-top">
+    <div class="wrap wrap-narrow">
+      <h2 class="h2 safe__t">Keeping children safe</h2>
+      <ul class="safe">
+        <li><strong>Collection is checked.</strong> Only named, pre-authorised adults collect a child. Anyone else needs written notice from you and photo ID at the gate.</li>
+        <li><strong>Every incident is logged and reported.</strong> Bumps, bites, falls — you hear about it the same day, in writing, whether or not it left a mark.</li>
+        <li><strong>Allergies and medical needs are held in the room</strong>, not in an office file, and every adult who works with your child knows them.</li>
+        <li><strong>Staff are screened before they start</strong>, and no adult is ever alone and unobserved with a child.</li>
+        <li><strong>Fire drills run each term</strong>, with the children, so it is familiar rather than frightening.</li>
+      </ul>
+      <p class="safe__note">
+        If you want to see our full safeguarding and medical policies before
+        enrolling, ask and we will email them to you. You should not have to
+        request them twice.
+      </p>
+    </div>
+  </section>
+
+  <section class="cta">
+    <div class="wrap cta__inner">
+      <h2 class="h2">The best way to judge us is to come</h2>
+      <p class="cta__d">Weekday mornings, classrooms running, children in them. Bring your child and bring hard questions.</p>
+      <div class="cta__btns">
+        <a href="/contact#visit" class="btn btn--primary btn--lg">Book a visit</a>
+        <a href="/programmes" class="btn btn--white btn--lg">See our programmes</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .ahead { padding-block: clamp(1.6rem, 1rem + 3vw, 3rem) 0; }
+  .ahead__inner { display: grid; grid-template-columns: minmax(0, 1.3fr) 300px; gap: clamp(2rem, 4vw, 3.5rem); align-items: center; }
+  @media (max-width: 850px) { .ahead__inner { grid-template-columns: 1fr; } .ahead__art { max-width: 240px; } }
+  .ahead__t { font-size: var(--t-3xl); margin-block: 0.8rem 1rem; }
+  .ahead .lede { max-width: 56ch; }
+
+  .sec-head { margin-bottom: clamp(2rem, 1rem + 3vw, 3rem); max-width: 62ch; }
+  .sec-head .h2 { margin-block: 0.6rem 0.8rem; }
+
+  .vgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(255px, 1fr)); gap: var(--s-5); }
+  .vcard { background: var(--paper); border: 1px solid var(--line); border-radius: var(--r-lg); padding: 1.6rem; }
+  .vcard__icon { font-size: 1.9rem; display: block; margin-bottom: 0.8rem; }
+  .vcard__t { font-family: var(--font-display); font-size: 1.15rem; margin-bottom: 0.5rem; line-height: 1.25; }
+  .vcard__d { font-size: var(--t-sm); color: var(--ink-2); line-height: 1.68; }
+
+  .tgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(215px, 1fr)); gap: var(--s-5); }
+  .tcard { text-align: center; }
+  .tcard[data-accent='sun'] { color: var(--sun); } .tcard[data-accent='teal'] { color: var(--teal); }
+  .tcard[data-accent='coral'] { color: var(--coral); } .tcard[data-accent='plum'] { color: var(--plum); }
+  .tcard__photo {
+    width: 130px; height: 130px; margin: 0 auto 1rem; border-radius: 50%;
+    background: currentColor; overflow: hidden; display: grid; place-items: center;
+  }
+  .tcard__photo svg { width: 100%; height: 100%; color: var(--ink); }
+  .tcard__photo :global(img) { width: 100%; height: 100%; object-fit: cover; }
+  .tcard__n { font-family: var(--font-display); font-size: 1.2rem; color: var(--ink); }
+  .tcard__r { font-size: var(--t-xs); font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: currentColor; margin-block: 0.25rem 0.6rem; }
+  .tcard__b { font-size: var(--t-sm); color: var(--ink-2); line-height: 1.6; }
+
+  .safe__t { color: #fff; margin-bottom: 1.6rem; }
+  .safe { list-style: none; padding: 0; margin: 0; display: grid; gap: 1rem; }
+  .safe li {
+    background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: var(--r-md); padding: 1.1rem 1.3rem; font-size: var(--t-sm);
+    line-height: 1.7; color: rgba(255, 255, 255, 0.92);
+  }
+  .safe li strong { color: #fff; }
+  .safe__note { margin-top: 1.6rem; font-size: var(--t-sm); color: rgba(255, 255, 255, 0.8); line-height: 1.7; }
+
+  .cta { background: linear-gradient(140deg, var(--sun) 0%, #f7bf6e 55%, var(--coral) 130%); padding-block: clamp(3rem, 2rem + 5vw, 5rem); }
+  .cta__inner { text-align: center; max-width: 640px; }
+  .cta__d { font-size: var(--t-lg); color: rgba(44, 36, 32, 0.82); margin-block: 0.9rem 1.8rem; }
+  .cta__btns { display: flex; flex-wrap: wrap; gap: 0.9rem; justify-content: center; }
+</style>

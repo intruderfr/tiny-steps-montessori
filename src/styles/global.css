@@ -1,0 +1,249 @@
+/* ==========================================================================
+   TINY STEPS MONTESSORI — DESIGN SYSTEM
+   Warm, playful and tactile for children; calm, legible and trustworthy for
+   the parent who is actually choosing the school. Ships as one stylesheet so
+   there is no render-blocking waterfall.
+   ========================================================================== */
+
+/* ----------------------------------------------------------------- tokens */
+:root {
+  /* Brand — sampled from the Tiny Steps footprint logo, warmed up for screen */
+  --sun: #f4a340;
+  --sun-deep: #e08420;
+  --sun-soft: #ffe9c9;
+  --coral: #f2685c;
+  --coral-soft: #ffe0dc;
+  --teal: #2a9d8f;
+  --teal-deep: #1f7a6f;
+  --teal-soft: #d4f0eb;
+  --sky: #4ea8de;
+  --sky-soft: #d9edf9;
+  --sage: #7fb069;
+  --sage-soft: #e3f2da;
+  --plum: #7b5ea7;
+  --plum-soft: #ece4f7;
+
+  /* Neutrals — warm, never pure grey. Cold greys read clinical. */
+  --cream: #fffbf3;
+  --cream-2: #fff5e6;
+  --paper: #ffffff;
+  --ink: #2c2420;
+  --ink-2: #5a4a41;
+  --ink-3: #8b7a70;
+  --line: #efe3d3;
+
+  /* Semantic */
+  --bg: var(--cream);
+  --surface: var(--paper);
+  --text: var(--ink);
+  --text-muted: var(--ink-2);
+  --brand: var(--sun);
+
+  /* Type */
+  --font-display: "Baloo 2", "Trebuchet MS", system-ui, sans-serif;
+  --font-body: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+
+  /* Fluid type scale — clamp() so it breathes without breakpoint jumps */
+  --t-xs: clamp(0.75rem, 0.72rem + 0.15vw, 0.82rem);
+  --t-sm: clamp(0.875rem, 0.84rem + 0.18vw, 0.95rem);
+  --t-base: clamp(1rem, 0.96rem + 0.22vw, 1.12rem);
+  --t-lg: clamp(1.15rem, 1.08rem + 0.35vw, 1.35rem);
+  --t-xl: clamp(1.4rem, 1.25rem + 0.7vw, 1.85rem);
+  --t-2xl: clamp(1.75rem, 1.45rem + 1.4vw, 2.6rem);
+  --t-3xl: clamp(2.1rem, 1.6rem + 2.4vw, 3.6rem);
+  --t-4xl: clamp(2.6rem, 1.7rem + 4vw, 5rem);
+
+  /* Space */
+  --s-1: 0.25rem; --s-2: 0.5rem;  --s-3: 0.75rem; --s-4: 1rem;
+  --s-5: 1.5rem;  --s-6: 2rem;    --s-7: 3rem;    --s-8: 4rem;
+  --s-9: 6rem;    --s-10: 8rem;
+  --section-y: clamp(3.5rem, 2rem + 7vw, 7rem);
+  --gutter: clamp(1.1rem, 0.6rem + 2.5vw, 2.5rem);
+  --maxw: 1200px;
+  --maxw-prose: 68ch;
+
+  /* Shape — generous radii read as "safe and soft" to parents */
+  --r-sm: 10px; --r-md: 16px; --r-lg: 24px; --r-xl: 34px; --r-2xl: 48px;
+  --r-full: 999px;
+
+  /* Depth — warm-tinted shadows, never neutral black */
+  --sh-sm: 0 1px 2px rgba(88, 60, 30, 0.06), 0 2px 6px rgba(88, 60, 30, 0.05);
+  --sh-md: 0 4px 10px rgba(88, 60, 30, 0.07), 0 12px 28px rgba(88, 60, 30, 0.07);
+  --sh-lg: 0 10px 24px rgba(88, 60, 30, 0.09), 0 28px 60px rgba(88, 60, 30, 0.1);
+  --sh-brand: 0 10px 30px rgba(244, 163, 64, 0.35);
+
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ------------------------------------------------------------------ reset */
+*, *::before, *::after { box-sizing: border-box; }
+* { margin: 0; }
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+  scroll-padding-top: 6rem; /* clears the sticky header on anchor jumps */
+}
+body {
+  font-family: var(--font-body);
+  font-size: var(--t-base);
+  line-height: 1.65;
+  color: var(--text);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: clip;
+}
+img, picture, svg, video { display: block; max-width: 100%; height: auto; }
+input, button, textarea, select { font: inherit; color: inherit; }
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+p, li { text-wrap: pretty; }
+a { color: inherit; text-decoration-color: color-mix(in srgb, currentColor 35%, transparent); text-underline-offset: 3px; }
+:focus-visible { outline: 3px solid var(--teal); outline-offset: 3px; border-radius: 4px; }
+::selection { background: var(--sun-soft); color: var(--ink); }
+
+/* ---------------------------------------------------------------- layout */
+.wrap { width: 100%; max-width: var(--maxw); margin-inline: auto; padding-inline: var(--gutter); }
+.wrap-narrow { max-width: 820px; }
+.section { padding-block: var(--section-y); position: relative; }
+.stack > * + * { margin-top: var(--flow, 1.1em); }
+.grid { display: grid; gap: var(--s-5); }
+.center { text-align: center; margin-inline: auto; }
+
+/* --------------------------------------------------------------- eyebrow */
+.eyebrow {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  font-size: var(--t-sm); font-weight: 700; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--teal-deep);
+  background: var(--teal-soft); padding: 0.4rem 0.9rem; border-radius: var(--r-full);
+}
+.eyebrow--sun { color: var(--sun-deep); background: var(--sun-soft); }
+.eyebrow--coral { color: #c9392c; background: var(--coral-soft); }
+.eyebrow--plum { color: var(--plum); background: var(--plum-soft); }
+
+/* -------------------------------------------------------------- headings */
+.h1 { font-size: var(--t-4xl); }
+.h2 { font-size: var(--t-3xl); }
+.h3 { font-size: var(--t-xl); }
+.lede { font-size: var(--t-lg); color: var(--text-muted); max-width: 62ch; }
+
+/* Hand-drawn underline on a key word — cheap warmth, no extra image request */
+.squiggle { position: relative; white-space: nowrap; }
+.squiggle::after {
+  content: ""; position: absolute; left: -2%; right: -2%; bottom: -0.12em; height: 0.42em;
+  background: no-repeat center / 100% 100%;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 20' preserveAspectRatio='none'%3E%3Cpath d='M2 14C40 4 78 16 116 9s60-6 82 2' stroke='%23F4A340' stroke-width='7' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  z-index: -1; pointer-events: none;
+}
+.squiggle--teal::after {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 20' preserveAspectRatio='none'%3E%3Cpath d='M2 14C40 4 78 16 116 9s60-6 82 2' stroke='%232A9D8F' stroke-width='7' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+
+/* --------------------------------------------------------------- buttons */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.55rem;
+  font-family: var(--font-display); font-weight: 700; font-size: var(--t-base);
+  padding: 0.85rem 1.6rem; border-radius: var(--r-full);
+  border: none; cursor: pointer; text-decoration: none; white-space: nowrap;
+  transition: transform 0.25s var(--ease-bounce), box-shadow 0.25s var(--ease), background-color 0.2s;
+}
+.btn:hover { transform: translateY(-3px); }
+.btn:active { transform: translateY(-1px); }
+.btn--primary { background: var(--sun); color: var(--ink); box-shadow: var(--sh-brand); }
+.btn--primary:hover { background: var(--sun-deep); }
+.btn--teal { background: var(--teal); color: #fff; box-shadow: 0 10px 30px rgba(42, 157, 143, 0.32); }
+.btn--teal:hover { background: var(--teal-deep); }
+.btn--ghost { background: transparent; color: var(--ink); box-shadow: inset 0 0 0 2px var(--line); }
+.btn--ghost:hover { background: var(--paper); box-shadow: inset 0 0 0 2px var(--sun); }
+.btn--white { background: #fff; color: var(--ink); box-shadow: var(--sh-md); }
+.btn--lg { padding: 1.05rem 2.1rem; font-size: var(--t-lg); }
+.btn--sm { padding: 0.55rem 1.1rem; font-size: var(--t-sm); }
+
+/* ----------------------------------------------------------------- cards */
+.card {
+  background: var(--surface); border-radius: var(--r-lg); padding: var(--s-5);
+  box-shadow: var(--sh-sm); border: 1px solid var(--line);
+  transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease);
+}
+.card--lift:hover { transform: translateY(-6px); box-shadow: var(--sh-lg); }
+
+/* -------------------------------------------------------------- surfaces */
+.bg-cream { background: var(--cream-2); }
+.bg-paper { background: var(--paper); }
+.bg-teal  { background: var(--teal); color: #fff; }
+.bg-ink   { background: #35291f; color: var(--cream); }
+
+/* Organic top/bottom edge so sections feel cut from paper, not stacked boxes */
+.edge-top, .edge-bottom { position: relative; }
+.edge-top::before, .edge-bottom::after {
+  content: ""; position: absolute; left: 0; right: 0; height: clamp(28px, 5vw, 70px);
+  background: inherit; pointer-events: none;
+}
+.edge-top::before { top: 0; transform: translateY(-99%); clip-path: ellipse(75% 100% at 50% 100%); }
+.edge-bottom::after { bottom: 0; transform: translateY(99%); clip-path: ellipse(75% 100% at 50% 0%); }
+
+/* ------------------------------------------------------------- animation */
+/* Scroll reveal. Progressive enhancement: the .is-in class is added by JS, but
+   a <noscript> rule below makes everything visible if JS never runs — content
+   is never hidden from crawlers or from no-JS users. */
+.reveal { opacity: 0; transform: translateY(26px); }
+.reveal.is-in { opacity: 1; transform: none; transition: opacity 0.7s var(--ease), transform 0.7s var(--ease); }
+.reveal.d1 { transition-delay: 0.08s; } .reveal.d2 { transition-delay: 0.16s; }
+.reveal.d3 { transition-delay: 0.24s; } .reveal.d4 { transition-delay: 0.32s; }
+.reveal.d5 { transition-delay: 0.40s; } .reveal.d6 { transition-delay: 0.48s; }
+
+@keyframes float-y { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-16px); } }
+@keyframes drift   { 0%, 100% { transform: translate(0, 0) rotate(0deg); } 33% { transform: translate(14px, -18px) rotate(6deg); } 66% { transform: translate(-10px, 10px) rotate(-5deg); } }
+@keyframes spin-slow { to { transform: rotate(360deg); } }
+@keyframes pop { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.float { animation: float-y 6s ease-in-out infinite; }
+.drift { animation: drift 14s ease-in-out infinite; }
+
+/* Anyone who asked for less motion gets a completely still page. */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important; animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important; scroll-behavior: auto !important;
+  }
+  .reveal { opacity: 1; transform: none; }
+}
+
+/* ------------------------------------------------------------------ prose */
+.prose { max-width: var(--maxw-prose); font-size: var(--t-lg); line-height: 1.75; }
+.prose > * + * { margin-top: 1.15em; }
+.prose h2 { font-size: var(--t-2xl); margin-top: 2.2em; }
+.prose h3 { font-size: var(--t-xl); margin-top: 1.8em; }
+.prose ul, .prose ol { padding-left: 1.4em; }
+.prose li + li { margin-top: 0.45em; }
+.prose li::marker { color: var(--sun-deep); }
+.prose a { color: var(--teal-deep); font-weight: 600; }
+.prose blockquote {
+  border-left: 5px solid var(--sun); padding: 0.4em 0 0.4em 1.3em;
+  font-family: var(--font-display); font-size: 1.1em; color: var(--ink-2);
+}
+.prose img { border-radius: var(--r-lg); box-shadow: var(--sh-md); }
+.prose code { background: var(--cream-2); padding: 0.15em 0.4em; border-radius: 6px; font-size: 0.9em; }
+.prose table { width: 100%; border-collapse: collapse; font-size: var(--t-base); }
+.prose th, .prose td { text-align: left; padding: 0.7em 0.9em; border-bottom: 1px solid var(--line); }
+.prose th { font-family: var(--font-display); background: var(--cream-2); }
+.prose figcaption { font-size: var(--t-sm); color: var(--ink-3); margin-top: 0.6em; text-align: center; }
+
+/* ------------------------------------------------------------- utilities */
+.visually-hidden {
+  position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+.skip-link {
+  position: absolute; left: 50%; translate: -50% -140%; z-index: 999;
+  background: var(--ink); color: #fff; padding: 0.8rem 1.4rem;
+  border-radius: 0 0 var(--r-md) var(--r-md); font-weight: 700; text-decoration: none;
+  transition: translate 0.2s var(--ease);
+}
+.skip-link:focus { translate: -50% 0; }
