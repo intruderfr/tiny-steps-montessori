@@ -11,7 +11,8 @@
     "images": "node scripts/gen-images.mjs",
     "prebuild": "node scripts/gen-images.mjs",
     "audit": "node scripts/seo-audit.mjs",
-    "postbuild": "node scripts/fix-base.mjs"
+    "postbuild": "node scripts/fix-base.mjs",
+    "code": "node scripts/make-code.mjs"
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.19",

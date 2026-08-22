@@ -1,0 +1,140 @@
+---
+/**
+ * A question-and-options challenge, driven entirely by a bank in
+ * src/data/knowledge.ts.
+ *
+ * First Sounds, Shape Detective and My Sri Lanka are all this same shape, so
+ * they share one component rather than three near-identical copies. Adding
+ * another knowledge challenge is a data change plus one line on the page.
+ *
+ * The bank is embedded as JSON in the markup rather than imported, so each
+ * page only ships the questions it actually uses.
+ */
+import { BANKS } from '../../data/knowledge';
+
+interface Props {
+  /** Must match the id in CHALLENGES (src/scripts/progress.ts) and BANKS. */
+  id: string;
+  name: string;
+  icon: string;
+  kicker: string;
+  how: string;
+  /** CSS colour tokens, e.g. "var(--green-soft)". */
+  tint: string;
+  accent: string;
+  /** The "away from the screen" line under the activity. */
+  real: string;
+}
+
+const { id, name, icon, kicker, how, tint, accent, real } = Astro.props;
+const bank = BANKS[id];
+if (!bank) throw new Error(`KnowledgeChallenge: no question bank for id "${id}"`);
+---
+
+<section class="game kn" id={`ch-${id}`} style={`--tint:${tint}; --ac-text:${accent}`}>
+  <header class="game__head">
+    <span class="game__icon" aria-hidden="true">{icon}</span>
+    <div class="game__titles">
+      <p class="game__kicker">{kicker} · {bank.length} stages</p>
+      <h2 class="game__title">{name}</h2>
+      <p class="game__how">{how}</p>
+    </div>
+  </header>
+
+  <div class="stages" data-stage-picker role="group" aria-label={`Choose a stage in ${name}`}></div>
+
+  <div class="game__board">
+    <p class="kn__ask" data-ask></p>
+    <div class="opts" data-opts role="group" aria-label="Choose your answer"></div>
+    <div data-board hidden></div>
+  </div>
+
+  <p class="game__hint" data-hint></p>
+  <p class="game__status" data-status role="status" aria-live="polite">Have a look, then choose.</p>
+
+  <div class="game__actions">
+    <button class="btn btn--primary" type="button" data-next hidden></button>
+    <button class="btn btn--ghost btn--sm" type="button" data-replay>Try another one</button>
+  </div>
+
+  <p class="game__real">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2Z"/></svg>
+    <span set:html={real}></span>
+  </p>
+
+  <script type="application/json" data-bank set:html={JSON.stringify(bank)}></script>
+</section>
+
+<style>
+  .kn__ask {
+    text-align: center; font-family: var(--font-display);
+    font-size: clamp(1.05rem, 0.95rem + 0.7vw, 1.35rem);
+    line-height: 1.3; margin-bottom: 1.2rem; color: var(--ink);
+    max-width: 40ch; margin-inline: auto;
+  }
+  /* Word answers need a different shape from single-glyph ones. */
+  .opts :global(.opt--word) {
+    font-family: var(--font-body); font-weight: 700;
+    font-size: clamp(0.95rem, 0.9rem + 0.3vw, 1.08rem);
+    min-width: 96px; padding: 0.8rem 1.1rem; text-align: center; line-height: 1.3;
+    color: var(--navy);
+  }
+</style>
+
+<script>
+  import { mountStageGame } from '../../scripts/stage-game';
+  import { sfxTap, shuffle } from '../../scripts/playful';
+
+  interface Q { ask: string; options: string[]; answer: string; why: string; text?: boolean }
+
+  // Every instance of this component on the page wires itself up.
+  document.querySelectorAll<HTMLElement>('.game.kn').forEach((root) => {
+    const id = root.id.replace(/^ch-/, '');
+    const askEl = root.querySelector<HTMLElement>('[data-ask]');
+    const optsEl = root.querySelector<HTMLElement>('[data-opts]');
+    const bank = JSON.parse(
+      root.querySelector<HTMLElement>('[data-bank]')?.textContent ?? '[]'
+    ) as Q[][];
+    if (!askEl || !optsEl || !bank.length) return;
+
+    mountStageGame({
+      root,
+      challengeId: id,
+      stages: bank.length,
+      hint: () => 'Read it twice before you choose. There is no rush.',
+      onStart: (stage, api) => {
+        const variants = bank[stage - 1] ?? [];
+        const q = variants[Math.floor(Math.random() * variants.length)];
+        if (!q) return;
+
+        askEl.textContent = q.ask;
+        optsEl.innerHTML = '';
+
+        shuffle(q.options).forEach((opt) => {
+          const b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'opt' + (q.text ? ' opt--word' : /^\d+$/.test(opt) ? ' opt--num' : '');
+          b.textContent = opt;
+          b.setAttribute('aria-label', `Choose ${opt}`);
+          b.addEventListener('click', () => {
+            sfxTap();
+            if (opt !== q.answer) {
+              b.classList.remove('is-wobbling');
+              void b.offsetWidth;
+              b.classList.add('is-wobbling');
+              api.nudge('Not that one — have another look.');
+              return;
+            }
+            b.classList.add('is-right');
+            optsEl.querySelectorAll('button').forEach((x) => {
+              (x as HTMLButtonElement).disabled = true;
+              if (x !== b) x.classList.add('is-out');
+            });
+            api.win(`Yes — ${q.why}.`);
+          });
+          optsEl.appendChild(b);
+        });
+      },
+    });
+  });
+</script>

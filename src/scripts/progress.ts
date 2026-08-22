@@ -76,15 +76,24 @@ export interface ChallengeDef {
   stages: number;
   /** Shown on the journey page once every stage is finished. */
   mastery: string;
+  /** Thinking skills, or things worth knowing. Used to group both pages. */
+  group: 'brain' | 'knowledge';
 }
 
+export const GROUPS = {
+  brain: { label: 'Brain challenges', blurb: 'How your child thinks — memory, logic, reasoning and number sense.' },
+  knowledge: { label: 'Things worth knowing', blurb: 'Letters and sounds, shapes, telling the time, and our own island.' },
+} as const;
+
 export const CHALLENGES: ChallengeDef[] = [
+  // ------------------------------------------------------------- thinking
   {
     id: 'sequence',
     name: 'Copy the Pattern',
     icon: '🎵',
     skill: 'Working memory',
     stages: 8,
+    group: 'brain',
     mastery: 'Can hold a sequence of eight steps in mind and repeat it back.',
   },
   {
@@ -93,6 +102,7 @@ export const CHALLENGES: ChallengeDef[] = [
     icon: '🔗',
     skill: 'Logic and sequencing',
     stages: 8,
+    group: 'brain',
     mastery: 'Can spot a repeating or growing rule and continue it.',
   },
   {
@@ -101,6 +111,7 @@ export const CHALLENGES: ChallengeDef[] = [
     icon: '🔍',
     skill: 'Sorting and reasoning',
     stages: 8,
+    group: 'brain',
     mastery: 'Can work out the rule a group shares, and find what breaks it.',
   },
   {
@@ -109,9 +120,51 @@ export const CHALLENGES: ChallengeDef[] = [
     icon: '🔟',
     skill: 'Number bonds',
     stages: 8,
+    group: 'brain',
     mastery: 'Knows the pairs that make ten without counting them out.',
   },
+
+  // ------------------------------------------------------------ knowledge
+  {
+    id: 'sounds',
+    name: 'First Sounds',
+    icon: '🔤',
+    skill: 'Letters and sounds',
+    stages: 8,
+    group: 'knowledge',
+    mastery: 'Hears the first, last and middle sounds in a word, and can clap its beats.',
+  },
+  {
+    id: 'shapes',
+    name: 'Shape Detective',
+    icon: '🔷',
+    skill: 'Shapes and geometry',
+    stages: 8,
+    group: 'knowledge',
+    mastery: 'Names flat and solid shapes, and can count their sides and corners.',
+  },
+  {
+    id: 'time',
+    name: 'Tell the Time',
+    icon: '🕰️',
+    skill: 'Reading a clock',
+    stages: 8,
+    group: 'knowledge',
+    mastery: 'Reads an analogue clock to the nearest five minutes.',
+  },
+  {
+    id: 'lanka',
+    name: 'My Sri Lanka',
+    icon: '🇱🇰',
+    skill: 'Our island',
+    stages: 8,
+    group: 'knowledge',
+    mastery: 'Knows our animals, cities, festivals and national symbols.',
+  },
 ];
+
+export const challengesIn = (group: 'brain' | 'knowledge') =>
+  CHALLENGES.filter((c) => c.group === group);
 
 export const challengeById = (id: string) => CHALLENGES.find((c) => c.id === id);
 

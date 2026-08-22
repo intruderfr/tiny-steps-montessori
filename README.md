@@ -28,6 +28,7 @@ Then open <http://localhost:4321>.
 | `npm run preview` | Serve the built site locally |
 | `npm run audit` | **SEO pre-flight over `dist/`** — run after every build |
 | `npm run images` | Regenerate the OG card and app icons |
+| `npm run code -- "CODE"` | Hash a new family access code for the challenges |
 
 ---
 
@@ -190,10 +191,43 @@ Two things worth knowing before editing them:
 Adding a free-play activity: create it in `src/components/games/`, import it in
 `src/pages/kids.astro`, and add it to the `games` array there for the picker.
 
-### Brain Challenges and the journey
+### Challenges and the journey
 
-`/kids/challenges` holds four challenges of eight stages each.
+`/kids/challenges` holds **eight** challenges of eight stages each — 64 stages,
+in two groups:
+
+| Group | Challenges |
+|---|---|
+| Brain | Copy the Pattern, What Comes Next?, Odd One Out, Make Ten |
+| Knowledge | First Sounds, Shape Detective, Tell the Time, My Sri Lanka |
+
 `/kids/progress` shows what a child can do so far.
+
+#### The family access gate — READ THIS
+
+Stages **1–3 of every challenge are free to everyone**. Stages **4–8 need a
+family code**, which the school gives to enrolled families.
+
+> **⚠️ The starter code is `TINYSTEPS-FAMILY` and it is written in the source
+> comments, so it is public. Change it before launch.**
+
+```bash
+npm run code -- "YOUR-NEW-CODE"
+```
+
+Paste the printed hash into `CODE_HASHES` in `src/scripts/access.ts` and
+rebuild. Only the hash ever reaches the repo or the shipped site, so nobody can
+read a working code out of the page source. You can keep several hashes in the
+array at once — handy for issuing a fresh code each intake while the old one
+still works.
+
+**This is a soft gate, and the site says so.** It is checked in the browser, so
+an adult with developer tools can bypass it. Real enforcement — revocable
+per-family codes, or knowing who used what — needs a server, and should be
+built as one. The gate exists so enrolled families get something real, not to
+defend a vault.
+
+Change the size of the free run with `FREE_STAGES` in `src/scripts/access.ts`.
 
 - **`src/scripts/progress.ts`** is the whole data layer. Everything lives in
   `localStorage` under `tiny-steps-journey-v1` — **no account, no server, no
@@ -205,8 +239,14 @@ Adding a free-play activity: create it in `src/components/games/`, import it in
   recording and status line are handled for it. Call `api.win()` when solved
   and `api.nudge()` when not — `nudge` costs the child nothing.
 - Adding a challenge: build the component, add it to `CHALLENGES` in
-  `progress.ts`, and import it into `/kids/challenges`. The journey page picks
-  it up automatically.
+  `progress.ts` (with its `group`), and import it into `/kids/challenges`. The
+  journey page and both pickers pick it up automatically.
+- **Question-and-options challenges need no component at all.** Add a bank to
+  `src/data/knowledge.ts`, then drop a `<KnowledgeChallenge id="..." />` on the
+  page — First Sounds, Shape Detective and My Sri Lanka all share that one
+  component. Every question is hand-written on purpose: a generated one can have
+  two defensible answers, and marking a child's good reasoning wrong teaches
+  them to stop reasoning.
 
 **What is deliberately absent**: score, timer, lives, streaks, daily rewards,
 coins and badges. Stages are sequenced difficulty, nothing ever re-locks, and

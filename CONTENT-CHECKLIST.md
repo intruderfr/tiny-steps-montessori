@@ -63,6 +63,7 @@ These are **not obviously placeholders to a reader.** They look like facts.
 
 | Where | What to do |
 |---|---|
+| `src/scripts/access.ts` | **The family access code is `TINYSTEPS-FAMILY`, and it is public** (it is written in the source comments). Run `npm run code -- "YOUR-CODE"` and replace the hash in `CODE_HASHES` before launch. |
 | `src/pages/admissions.astro` | Fee table is all **`LKR 00,000`**. Put in real numbers, or delete the table |
 | `src/pages/admissions.astro` | "last year's increase was **0%**" — set the real figure |
 | `src/pages/about.astro` | Team section is `[Name]` / `[Two sentences: …]` — add real staff and photos |
@@ -100,10 +101,22 @@ collected, there is no sign-up, and there are no adverts.
 The one thing to check: the memory game uses six of your photos, so it inherits
 the same **consent question** as the gallery.
 
+## 🟠 Verify — the Sri Lanka questions
+
+`src/data/knowledge.ts` includes a **My Sri Lanka** bank: national symbols,
+animals, cities, festivals and landmarks. These are standard reference facts,
+but a school publishing a factual error about its own country is worse than
+publishing nothing — **give them one read before launch.**
+
 ## 🟢 Brain Challenges & the journey — safe as written
 
 `/kids/challenges` and `/kids/progress` make no claims about your school and
 collect nothing. The whole progress record lives in the child's own browser.
+
+Stages 1–3 of all eight challenges are free to anyone; stages 4–8 need the
+family code. Two things to know: the gate is a **soft lock** checked in the
+browser (the site says so plainly), and you must **change the starter code**
+before launch — see the row above.
 
 One thing to decide: the journey page includes a **milestones** notebook where a
 parent can jot down what you told them at a parent meeting. It is private to

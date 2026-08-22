@@ -1,0 +1,199 @@
+---
+/**
+ * TELL THE TIME — reading an analogue clock, eight stages.
+ *
+ *   1–2  o'clock
+ *   3–4  half past
+ *   5–6  quarter past, then quarter to
+ *   7–8  five-minute intervals, then everything mixed
+ *
+ * The clock is drawn as SVG from the actual time, so the hands are always in
+ * the honest position — including the hour hand creeping between numbers as
+ * the minutes pass, which is the detail that makes "quarter to four" click.
+ *
+ * Digital time is easy and analogue is the one children struggle with, so this
+ * asks them to read the face and choose the words.
+ */
+---
+
+<section class="game" id="ch-time" style="--tint: var(--sky-soft); --ac-text: var(--sky-deep)">
+  <header class="game__head">
+    <span class="game__icon" aria-hidden="true">🕰️</span>
+    <div class="game__titles">
+      <p class="game__kicker">Telling the time · 8 stages</p>
+      <h2 class="game__title">Tell the Time</h2>
+      <p class="game__how">
+        The short hand says the hour. The long hand says the minutes. Read the
+        clock, then choose the words that match.
+      </p>
+    </div>
+  </header>
+
+  <div class="stages" data-stage-picker role="group" aria-label="Choose a stage"></div>
+
+  <div class="game__board tt__board">
+    <svg class="tt__clock" viewBox="0 0 200 200" role="img" id="ttClock" aria-label="A clock face">
+      <circle cx="100" cy="100" r="94" fill="var(--paper)" stroke="var(--navy)" stroke-width="6" />
+      {Array.from({ length: 12 }, (_, i) => {
+        const a = ((i + 1) * 30 - 90) * (Math.PI / 180);
+        return (
+          <text
+            x={100 + Math.cos(a) * 74}
+            y={100 + Math.sin(a) * 74 + 7}
+            text-anchor="middle"
+            font-family="Baloo 2, sans-serif"
+            font-size="19"
+            font-weight="700"
+            fill="var(--navy)"
+          >{i + 1}</text>
+        );
+      })}
+      {Array.from({ length: 60 }, (_, i) => (
+        <line
+          x1="100" y1="12" x2="100" y2={i % 5 === 0 ? 20 : 16}
+          stroke="var(--ink-3)" stroke-width={i % 5 === 0 ? 2.5 : 1}
+          transform={`rotate(${i * 6} 100 100)`}
+        />
+      ))}
+      {/* Minute hand first so the hour hand sits on top where they cross. */}
+      <line id="ttMin" x1="100" y1="100" x2="100" y2="28"
+            stroke="var(--teal-deep)" stroke-width="4.5" stroke-linecap="round" />
+      <line id="ttHour" x1="100" y1="100" x2="100" y2="52"
+            stroke="var(--red)" stroke-width="7" stroke-linecap="round" />
+      <circle cx="100" cy="100" r="7" fill="var(--navy)" />
+    </svg>
+
+    <div class="opts tt__opts" id="ttOpts" role="group" aria-label="Choose the time"></div>
+    <div data-board hidden></div>
+  </div>
+
+  <p class="game__hint" data-hint></p>
+  <p class="game__status" data-status role="status" aria-live="polite">What time does the clock say?</p>
+
+  <div class="game__actions">
+    <button class="btn btn--primary" type="button" data-next hidden></button>
+    <button class="btn btn--ghost btn--sm" type="button" data-replay>Try another one</button>
+  </div>
+
+  <p class="game__real">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2Z"/></svg>
+    <span>
+      <strong>Away from the screen:</strong> put a real clock with hands where
+      your child can see it, and say the time out loud at snack, at bath and at
+      bedtime. Analogue clocks are vanishing from homes, which is exactly why
+      children now find them hard.
+    </span>
+  </p>
+</section>
+
+<style>
+  .tt__board { display: grid; gap: 1.4rem; justify-items: center; }
+  .tt__clock { width: min(230px, 62vw); height: auto; filter: drop-shadow(var(--sh-sm)); }
+  #ttMin, #ttHour { transform-box: view-box; transform-origin: 100px 100px; transition: transform 0.5s var(--ease); }
+  .tt__opts { max-width: 460px; }
+  @media (prefers-reduced-motion: reduce) { #ttMin, #ttHour { transition: none; } }
+</style>
+
+<script>
+  import { mountStageGame } from '../../scripts/stage-game';
+  import { sfxTap, shuffle } from '../../scripts/playful';
+
+  const root = document.getElementById('ch-time');
+  if (root) {
+    const hourHand = root.querySelector<SVGLineElement>('#ttHour');
+    const minHand = root.querySelector<SVGLineElement>('#ttMin');
+    const clock = root.querySelector<SVGElement>('#ttClock');
+    const opts = root.querySelector<HTMLElement>('#ttOpts');
+
+    /** Words for a time, the way a child is taught to say it. */
+    const say = (h: number, m: number) => {
+      const next = h === 12 ? 1 : h + 1;
+      if (m === 0) return `${h} o'clock`;
+      if (m === 15) return `quarter past ${h}`;
+      if (m === 30) return `half past ${h}`;
+      if (m === 45) return `quarter to ${next}`;
+      if (m < 30) return `${m} minutes past ${h}`;
+      return `${60 - m} minutes to ${next}`;
+    };
+
+    /** Which minute values each stage draws from. */
+    const minutesFor = (stage: number): number[] => {
+      if (stage <= 2) return [0];
+      if (stage === 3) return [30];
+      if (stage === 4) return [0, 30];
+      if (stage === 5) return [15];
+      if (stage === 6) return [45];
+      if (stage === 7) return [5, 10, 20, 25, 35, 40, 50, 55];
+      return [0, 15, 30, 45, 5, 20, 40, 55];
+    };
+
+    const draw = (h: number, m: number) => {
+      // 6° per minute; the hour hand also creeps 0.5° per minute.
+      minHand?.style.setProperty('transform', `rotate(${m * 6}deg)`);
+      hourHand?.style.setProperty('transform', `rotate(${(h % 12) * 30 + m * 0.5}deg)`);
+      clock?.setAttribute('aria-label', `A clock showing ${say(h, m)}`);
+    };
+
+    mountStageGame({
+      root,
+      challengeId: 'time',
+      stages: 8,
+      hint: (s) =>
+        s <= 2
+          ? 'When the long hand points straight up, it is exactly o’clock.'
+          : s <= 4
+            ? 'When the long hand points straight down, it is half past.'
+            : s <= 6
+              ? 'Long hand right is quarter past. Long hand left is quarter to.'
+              : 'Count round the long hand in fives.',
+      onStart: (stage, api) => {
+        const mins = minutesFor(stage);
+        const m = mins[Math.floor(Math.random() * mins.length)];
+        const h = 1 + Math.floor(Math.random() * 12);
+        draw(h, m);
+
+        // Distractors are the mistakes children actually make: right minutes
+        // but the neighbouring hour, and past/to swapped over.
+        const wrongHour = h === 12 ? 1 : h + 1;
+        const otherHour = h === 1 ? 12 : h - 1;
+        const swapped = m === 0 ? 30 : m === 30 ? 0 : m === 15 ? 45 : m === 45 ? 15 : 60 - m;
+
+        const pool = [
+          say(wrongHour, m),
+          say(otherHour, m),
+          say(h, swapped),
+          say(wrongHour, swapped),
+        ].filter((t) => t !== say(h, m));
+
+        const choices = shuffle([say(h, m), ...shuffle([...new Set(pool)]).slice(0, 3)]);
+
+        if (!opts) return;
+        opts.innerHTML = '';
+        choices.forEach((label) => {
+          const b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'opt opt--word';
+          b.textContent = label;
+          b.setAttribute('aria-label', `Choose ${label}`);
+          b.addEventListener('click', () => {
+            sfxTap();
+            if (label !== say(h, m)) {
+              b.classList.remove('is-wobbling');
+              void b.offsetWidth;
+              b.classList.add('is-wobbling');
+              api.nudge('Not quite — check the short hand first, then the long one.');
+              return;
+            }
+            b.classList.add('is-right');
+            opts.querySelectorAll('button').forEach((x) => {
+              (x as HTMLButtonElement).disabled = true;
+              if (x !== b) x.classList.add('is-out');
+            });
+            api.win(`Yes — ${say(h, m)}.`);
+          });
+          opts.appendChild(b);
+        });
+      },
+    });
+  }
+</script>

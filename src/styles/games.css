@@ -301,3 +301,94 @@
   background: var(--navy-soft); font-family: var(--font-display);
   font-weight: 800; color: var(--navy); font-size: 1.6rem;
 }
+
+/* ==========================================================================
+   THE FAMILY GATE — stages 4+ for enrolled families.
+   ========================================================================== */
+
+/* Gated stages stay tappable (tapping is how a parent learns how to get in),
+   so they read as "there is more here" rather than "you failed". */
+.stagebtn.is-gated {
+  border-style: solid;
+  border-color: var(--yellow);
+  background: var(--yellow-soft);
+  color: var(--yellow-text);
+  opacity: 1;
+  cursor: pointer;
+}
+.stagebtn.is-gated::after {
+  content: '🔑';
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: 0.95rem;
+  background: color-mix(in srgb, var(--yellow-soft) 78%, transparent);
+  border-radius: 12px;
+}
+.stagebtn.is-gated:hover { transform: translateY(-3px); border-color: var(--yellow-deep); }
+
+/* The free/paid boundary, drawn into the picker itself. */
+.stages__split {
+  align-self: center;
+  font-size: var(--t-xs);
+  font-weight: 700;
+  color: var(--ink-3);
+  letter-spacing: 0.04em;
+  padding-inline: 0.3rem;
+  user-select: none;
+}
+
+/* ---------------------------------------------------------------- the wall */
+.gate {
+  border: none;
+  padding: 0;
+  max-width: min(560px, 92vw);
+  border-radius: var(--r-2xl);
+  background: var(--paper);
+  box-shadow: var(--sh-lg);
+  color: var(--ink);
+}
+.gate::backdrop { background: rgba(31, 32, 51, 0.62); backdrop-filter: blur(3px); }
+.gate__inner { padding: clamp(1.4rem, 1rem + 2.5vw, 2.4rem); }
+.gate__key {
+  width: 66px; height: 66px; border-radius: var(--r-lg);
+  background: var(--yellow-soft); display: grid; place-items: center;
+  font-size: 2rem; margin-bottom: 1rem;
+}
+.gate__h { font-family: var(--font-display); font-size: var(--t-xl); margin-bottom: 0.6rem; }
+.gate__p { font-size: var(--t-sm); color: var(--ink-2); line-height: 1.65; margin-bottom: 1rem; }
+.gate__p strong { color: var(--ink); }
+
+.gate__form { display: grid; gap: 0.6rem; margin-block: 1.2rem; }
+.gate__row { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.gate__input {
+  flex: 1 1 12rem; padding: 0.8rem 1rem; min-height: 48px;
+  border: 2px solid var(--line); border-radius: var(--r-md);
+  font-size: var(--t-base); font-family: var(--font-display); font-weight: 700;
+  letter-spacing: 0.06em; text-transform: uppercase; background: var(--paper);
+}
+.gate__input:focus { outline: none; border-color: var(--teal); box-shadow: 0 0 0 4px var(--teal-soft); }
+.gate__msg { font-size: var(--t-sm); font-weight: 600; min-height: 1.4rem; }
+.gate__msg.is-bad { color: var(--red-deep); }
+.gate__msg.is-good { color: var(--green-deep); }
+
+.gate__cta { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-top: 0.4rem; }
+.gate__close {
+  position: absolute; top: 0.9rem; right: 0.9rem;
+  width: 44px; height: 44px; border: none; border-radius: var(--r-full);
+  background: var(--surface-2); font-size: 1.5rem; line-height: 1; cursor: pointer;
+  color: var(--ink-2);
+}
+.gate__close:hover { background: var(--line); }
+
+/* A quiet strip telling enrolled families where to put their code. */
+.unlockbar {
+  display: flex; align-items: center; gap: 0.8rem; flex-wrap: wrap;
+  justify-content: center; text-align: center;
+  background: var(--yellow-soft); border: 2px solid var(--yellow);
+  border-radius: var(--r-xl); padding: 0.9rem 1.2rem;
+  font-size: var(--t-sm); color: var(--ink-2);
+}
+.unlockbar strong { color: var(--ink); }
+.unlockbar--on { background: var(--green-soft); border-color: var(--green); }

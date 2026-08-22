@@ -5,12 +5,29 @@ import MemorySequence from '../../components/games/MemorySequence.astro';
 import PatternFinder from '../../components/games/PatternFinder.astro';
 import OddOneOut from '../../components/games/OddOneOut.astro';
 import MakeTen from '../../components/games/MakeTen.astro';
+import KnowledgeChallenge from '../../components/games/KnowledgeChallenge.astro';
+import TellTheTime from '../../components/games/TellTheTime.astro';
 import { site, abs } from '../../data/site';
 import { faqSchema } from '../../data/schema';
-import { CHALLENGES } from '../../scripts/progress';
+import { CHALLENGES, GROUPS, challengesIn } from '../../scripts/progress';
+import { FREE_STAGES } from '../../scripts/access';
 import '../../styles/games.css';
 
+const totalStages = CHALLENGES.reduce((n, c) => n + c.stages, 0);
+
 const faqs = [
+  {
+    q: 'Which parts are free?',
+    a: `Stages 1 to ${FREE_STAGES} of all ${CHALLENGES.length} challenges are free for everybody, with no sign-up. That is ${CHALLENGES.length * FREE_STAGES} stages. The whole Kids Corner — sink or float, the tower, the memory game and counting — is free too, with no limit.`,
+  },
+  {
+    q: 'How do enrolled families unlock the rest?',
+    a: `Families enrolled at Tiny Steps are given a family code. Enter it once on this page and stages ${FREE_STAGES + 1} onwards open on that device and stay open. One code covers the whole family.`,
+  },
+  {
+    q: 'I have lost our family code.',
+    a: 'Ask us at the gate, call us, or send a WhatsApp message and we will send it again. It is the same code for the whole school year.',
+  },
   {
     q: 'How do the stages work?',
     a: 'Each challenge has eight stages that get harder. Stage 1 is always open; finishing it opens stage 2, and so on. Nothing ever re-locks, and any stage you have opened can be replayed as many times as you like.',
@@ -25,21 +42,17 @@ const faqs = [
   },
   {
     q: 'What ages are the challenges for?',
-    a: 'Roughly 4 to 8. The early stages of each challenge suit a four-year-old; the later stages of Make Ten and What Comes Next? will stretch a seven or eight-year-old.',
-  },
-  {
-    q: 'Can I delete everything?',
-    a: 'Yes, at any time, from the My Journey page. One button removes the badge, the stage record and the milestones from this device permanently.',
+    a: 'Roughly 4 to 8. The early stages suit a four-year-old; the later stages of Make Ten, Tell the Time and What Comes Next? will stretch a seven or eight-year-old.',
   },
 ];
 ---
 
 <Base
-  title="Brain Challenges for Kids"
-  description="Four free staged brain challenges for children aged 4–8: memory, patterns, reasoning and number bonds. Eight stages each, no score, no timer, nothing collected."
+  title="Brain Challenges & Learning Games"
+  description={`Eight staged challenges for children aged 4–8 — memory, logic, phonics, shapes, telling the time and Sri Lanka. Stages 1–${FREE_STAGES} free for everyone.`}
   crumbs={[
     { name: 'Kids Corner', href: '/kids' },
-    { name: 'Brain Challenges', href: '/kids/challenges' },
+    { name: 'Challenges', href: '/kids/challenges' },
   ]}
   schemaNodes={[
     faqSchema(faqs),
@@ -49,8 +62,7 @@ const faqs = [
       name: `${site.name} Brain Challenges`,
       applicationCategory: 'EducationalApplication',
       operatingSystem: 'Any browser',
-      description:
-        'Four staged brain challenges for children aged 4 to 8 — working memory, sequencing, reasoning and number bonds. Eight stages each.',
+      description: `${CHALLENGES.length} staged learning challenges for children aged 4 to 8, covering working memory, logic, reasoning, number bonds, phonics, shapes, telling the time and Sri Lankan general knowledge.`,
       url: abs('/kids/challenges'),
       isAccessibleForFree: true,
       offers: { '@type': 'Offer', price: '0', priceCurrency: 'LKR' },
@@ -61,11 +73,16 @@ const faqs = [
 >
   <header class="chead">
     <div class="wrap chead__inner">
-      <p class="eyebrow eyebrow--navy">Brain Challenges</p>
-      <h1 class="h1 chead__t">Eight stages. Take as long as you like.</h1>
+      <p class="eyebrow eyebrow--navy">Challenges</p>
+      <h1 class="h1 chead__t">Eight challenges. {totalStages} stages.</h1>
       <p class="lede chead__d">
-        Four challenges that get harder one step at a time. Nothing is timed,
-        nothing is scored, and you can go back to any stage as often as you want.
+        Four that build how your child <em>thinks</em>, and four that build what
+        they <em>know</em>. Nothing is timed, nothing is scored, and you can go
+        back to any stage as often as you want.
+      </p>
+      <p class="chead__free">
+        Stages 1–{FREE_STAGES} are free for everyone · stages {FREE_STAGES + 1}–8
+        are for enrolled families
       </p>
     </div>
   </header>
@@ -73,24 +90,80 @@ const faqs = [
   <div class="wrap chome">
     <ProfileCard />
 
-    <nav class="picker" aria-label="Jump to a challenge">
-      {CHALLENGES.map((c) => (
-        <a href={`#ch-${c.id}`} class="picker__item">
-          <span class="picker__icon" aria-hidden="true">{c.icon}</span>
-          <span class="picker__text">
-            <span class="picker__name">{c.name}</span>
-            <span class="picker__area">{c.skill}</span>
-          </span>
-        </a>
-      ))}
-    </nav>
-
-    <div class="cgames">
-      <MemorySequence />
-      <PatternFinder />
-      <OddOneOut />
-      <MakeTen />
+    {/* Enrolled families land here and put their code in straight away. */}
+    <div class="unlockbar" id="unlockBar">
+      <span id="unlockText">
+        <strong>Enrolled at Tiny Steps?</strong> Enter your family code to open
+        every stage.
+      </span>
+      <button class="btn btn--primary btn--sm" type="button" id="unlockBtn">Enter family code</button>
     </div>
+
+    {(['brain', 'knowledge'] as const).map((group) => (
+      <section class="cgroup">
+        <header class="cgroup__head">
+          <h2 class="cgroup__h">{GROUPS[group].label}</h2>
+          <p class="cgroup__blurb">{GROUPS[group].blurb}</p>
+        </header>
+
+        <nav class="picker" aria-label={`Jump to a ${GROUPS[group].label.toLowerCase()} challenge`}>
+          {challengesIn(group).map((c) => (
+            <a href={`#ch-${c.id}`} class="picker__item">
+              <span class="picker__icon" aria-hidden="true">{c.icon}</span>
+              <span class="picker__text">
+                <span class="picker__name">{c.name}</span>
+                <span class="picker__area">{c.skill}</span>
+              </span>
+            </a>
+          ))}
+        </nav>
+
+        <div class="cgames">
+          {group === 'brain' ? (
+            <>
+              <MemorySequence />
+              <PatternFinder />
+              <OddOneOut />
+              <MakeTen />
+            </>
+          ) : (
+            <>
+              <KnowledgeChallenge
+                id="sounds"
+                name="First Sounds"
+                icon="🔤"
+                kicker="Letters and sounds"
+                how="Say the picture's name in your head, then listen to the sound it starts with."
+                tint="var(--red-soft)"
+                accent="var(--red-deep)"
+                real="<strong>Away from the screen:</strong> play I-spy with sounds rather than letters — &ldquo;I spy something starting with mmm&rdquo;. Sounds come before letter names."
+              />
+              <KnowledgeChallenge
+                id="shapes"
+                name="Shape Detective"
+                icon="🔷"
+                kicker="Shapes and geometry"
+                how="Find the shape, then count its sides and corners. Later on, the solid ones turn up."
+                tint="var(--teal-soft)"
+                accent="var(--teal-deep)"
+                real="<strong>Away from the screen:</strong> hunt for shapes on the walk home — road signs, windows, wheels, tiles. Naming them in the wild beats naming them on a worksheet."
+              />
+              <TellTheTime />
+              <KnowledgeChallenge
+                id="lanka"
+                name="My Sri Lanka"
+                icon="🇱🇰"
+                kicker="Our island"
+                how="Our animals, our cities, our festivals and our national symbols."
+                tint="var(--yellow-soft)"
+                accent="var(--yellow-text)"
+                real="<strong>Away from the screen:</strong> put a map of Sri Lanka on the wall and mark the places your family has been. Children hold geography far better when it is their own."
+              />
+            </>
+          )}
+        </div>
+      </section>
+    ))}
   </div>
 
   {/* ------------------------------------------------------- note to parents */}
@@ -98,31 +171,29 @@ const faqs = [
     <div class="wrap wrap-narrow">
       <div class="parents__card">
         <p class="eyebrow">For Parents</p>
-        <h2 class="h2 parents__t">What "stages" mean here — and what they do not</h2>
+        <h2 class="h2 parents__t">What is free, what is not, and what we record</h2>
         <div class="prose parents__body">
           <p>
-            Stages are <strong>sequenced difficulty</strong>, which is how a
-            Montessori shelf already works: a child is handed the next material
-            once the last one is secure. They are not levels in the game sense.
+            <strong>Stages 1–{FREE_STAGES} of every challenge are free</strong>,
+            for anyone, with no sign-up — that is {CHALLENGES.length * FREE_STAGES} stages.
+            The whole <a href="/kids">Kids Corner</a> is free without limit. Stages
+            {' '}{FREE_STAGES + 1}–8 are one of the things that come with a place
+            at Tiny Steps.
           </p>
-          <p>Specifically, there is deliberately <strong>none</strong> of this:</p>
+          <p>
+            We should be plain about the mechanism: the family code is a
+            <strong> soft lock</strong>. It is checked in your browser, so a
+            determined adult with developer tools could get past it. We are not
+            pretending otherwise. It exists so that enrolled families get
+            something real, not to defend a vault.
+          </p>
+          <p>And these still hold, everywhere on the site:</p>
           <ul>
-            <li><strong>No score and no timer.</strong> Nothing measures speed or counts mistakes.</li>
-            <li><strong>No streaks or daily rewards.</strong> Come back in a month and nothing is lost or reset.</li>
-            <li><strong>No coins, gems, badges or unlockable cosmetics.</strong> Finishing a stage opens the next one, and that is all it does.</li>
-            <li><strong>Nothing re-locks, ever.</strong> A stage that has been opened stays open.</li>
+            <li><strong>No score and no timer.</strong> Nothing measures your child or hurries them.</li>
+            <li><strong>No streaks, coins or badges.</strong> Come back in a month and nothing is lost.</li>
+            <li><strong>Nothing re-locks.</strong> A stage you have opened stays open.</li>
+            <li><strong>Nothing leaves the device.</strong> No account, no server, no analytics on these pages. Delete it all in one tap from <a href="/kids/progress">My Journey</a>.</li>
           </ul>
-          <p>
-            The record exists so a child can see what they can now do, and so you
-            can see where they are getting stuck. It is a record of work, not a
-            leaderboard.
-          </p>
-          <p>
-            <strong>Everything stays on this device.</strong> No account, no
-            server, no analytics on these pages. We never see any of it, and you
-            can delete all of it in one tap from
-            <a href="/kids/progress">My Journey</a>.
-          </p>
         </div>
       </div>
     </div>
@@ -144,6 +215,49 @@ const faqs = [
       </p>
     </div>
   </section>
+
+  {/* ------------------------------------------------------------- the wall */}
+  <dialog class="gate" id="gate" aria-labelledby="gateH">
+    <button class="gate__close" type="button" id="gateClose" aria-label="Close">&times;</button>
+    <div class="gate__inner">
+      <div class="gate__key" aria-hidden="true">🔑</div>
+      <h2 class="gate__h" id="gateH">This stage is for enrolled families</h2>
+      <p class="gate__p">
+        Stages 1–{FREE_STAGES} are free for everyone. Stages {FREE_STAGES + 1}–8
+        of all {CHALLENGES.length} challenges — {CHALLENGES.length * (8 - FREE_STAGES)} more
+        stages — come with a place at Tiny Steps Montessori in Dehiwala.
+      </p>
+
+      <form class="gate__form" id="gateForm">
+        <label for="gateCode" class="gate__p" style="margin:0">
+          <strong>Already with us?</strong> Enter your family code:
+        </label>
+        <div class="gate__row">
+          <input
+            class="gate__input"
+            id="gateCode"
+            type="text"
+            autocomplete="off"
+            autocapitalize="characters"
+            spellcheck="false"
+            placeholder="FAMILY CODE"
+            aria-describedby="gateMsg"
+          />
+          <button class="btn btn--primary" type="submit">Unlock</button>
+        </div>
+        <p class="gate__msg" id="gateMsg" role="status" aria-live="polite"></p>
+      </form>
+
+      <p class="gate__p">
+        Not with us yet? Come and see the school on a weekday morning — the
+        classrooms will be running and the children will be in them.
+      </p>
+      <div class="gate__cta">
+        <a href="/contact#visit" class="btn btn--teal">Book a school visit</a>
+        <a href="/admissions" class="btn btn--ghost">Fees &amp; admissions</a>
+      </div>
+    </div>
+  </dialog>
 </Base>
 
 <style>
@@ -151,8 +265,17 @@ const faqs = [
   .chead__inner { text-align: center; max-width: 720px; }
   .chead__t { font-size: var(--t-3xl); margin-block: 0.8rem 1rem; }
   .chead__d { margin-inline: auto; }
+  .chead__free {
+    display: inline-block; margin-top: 1.1rem; font-size: var(--t-sm); font-weight: 600;
+    background: var(--surface-2); border-radius: var(--r-full); padding: 0.45rem 1.1rem; color: var(--ink-2);
+  }
 
   .chome { display: grid; gap: clamp(1.4rem, 1rem + 2vw, 2.4rem); padding-bottom: var(--section-y); }
+
+  .cgroup { display: grid; gap: 1.2rem; }
+  .cgroup__head { text-align: center; max-width: 60ch; margin-inline: auto; }
+  .cgroup__h { font-family: var(--font-display); font-size: var(--t-2xl); }
+  .cgroup__blurb { font-size: var(--t-sm); color: var(--ink-2); margin-top: 0.4rem; }
 
   .picker { display: flex; flex-wrap: wrap; gap: 0.7rem; justify-content: center; }
   .picker__item {
@@ -192,3 +315,65 @@ const faqs = [
   .faq__item[open] summary::after { transform: rotate(45deg); }
   .faq__item p { padding: 0 1.3rem 1.2rem; color: var(--ink-2); font-size: var(--t-sm); line-height: 1.7; }
 </style>
+
+<script>
+  import { GATE_EVENT } from '../../scripts/stage-game';
+  import { redeem, hasAccess, signOut, onAccessChange } from '../../scripts/access';
+  import { sfxYes, sfxNudge } from '../../scripts/playful';
+
+  const gate = document.getElementById('gate') as HTMLDialogElement | null;
+  const form = document.getElementById('gateForm') as HTMLFormElement | null;
+  const input = document.getElementById('gateCode') as HTMLInputElement | null;
+  const msg = document.getElementById('gateMsg');
+  const bar = document.getElementById('unlockBar');
+  const barText = document.getElementById('unlockText');
+  const barBtn = document.getElementById('unlockBtn');
+
+  const open = () => {
+    if (!gate?.open) gate?.showModal();
+    window.setTimeout(() => input?.focus(), 60);
+  };
+
+  // Raised by any challenge when a gated stage is tapped.
+  window.addEventListener(GATE_EVENT, open);
+  barBtn?.addEventListener('click', () => (hasAccess() ? signOut() : open()));
+  document.getElementById('gateClose')?.addEventListener('click', () => gate?.close());
+  gate?.addEventListener('click', (e) => {
+    if (e.target === gate) gate.close();
+  });
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!input || !msg) return;
+    msg.className = 'gate__msg';
+    msg.textContent = 'Checking…';
+
+    const ok = await redeem(input.value);
+    if (ok) {
+      sfxYes();
+      msg.className = 'gate__msg is-good';
+      msg.textContent = 'That is the one — every stage is open now.';
+      input.value = '';
+      window.setTimeout(() => gate?.close(), 1100);
+    } else {
+      sfxNudge();
+      msg.className = 'gate__msg is-bad';
+      msg.textContent = 'That code did not work. Check with us and try again.';
+    }
+  });
+
+  /** Reflect access state in the strip at the top of the page. */
+  const paintBar = () => {
+    const on = hasAccess();
+    bar?.classList.toggle('unlockbar--on', on);
+    if (barText) {
+      barText.innerHTML = on
+        ? '<strong>Family code accepted.</strong> Every stage is open on this device.'
+        : '<strong>Enrolled at Tiny Steps?</strong> Enter your family code to open every stage.';
+    }
+    if (barBtn) barBtn.textContent = on ? 'Sign out of this device' : 'Enter family code';
+  };
+
+  onAccessChange(paintBar);
+  paintBar();
+</script>

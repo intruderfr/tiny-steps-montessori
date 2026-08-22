@@ -7,6 +7,8 @@ import FindPairs from '../components/games/FindPairs.astro';
 import CountWithMe from '../components/games/CountWithMe.astro';
 import { site, abs } from '../data/site';
 import { faqSchema } from '../data/schema';
+import { CHALLENGES } from '../scripts/progress';
+import { FREE_STAGES } from '../scripts/access';
 import '../styles/games.css';
 
 const games = [
@@ -19,7 +21,7 @@ const games = [
 const faqs = [
   {
     q: 'Are these games free?',
-    a: 'Yes, completely. No sign-up, no account, no adverts, and nothing is collected about your child. You do not need to be enrolled at Tiny Steps to play.',
+    a: `Everything on this page is completely free with no limit and no sign-up. On the Challenges page, stages 1 to ${FREE_STAGES} of all ${CHALLENGES.length} challenges are free too; the later stages come with a place at Tiny Steps. Nothing is collected about your child anywhere.`,
   },
   {
     q: 'What ages are they for?',
@@ -71,8 +73,8 @@ const faqs = [
       </h1>
       <p class="lede khead__d">
         The same activities we do in the classroom, made small enough to fit on
-        a screen — plus four staged brain challenges. No score, no timer, and no
-        way to lose.
+        a screen — plus {CHALLENGES.length} staged challenges. No score, no
+        timer, and no way to lose.
       </p>
 
       <nav class="picker" aria-label="Choose an activity">
@@ -91,8 +93,8 @@ const faqs = [
         <a href="/kids/challenges" class="route route--challenge">
           <span class="route__icon" aria-hidden="true">🧠</span>
           <span class="route__body">
-            <span class="route__name">Brain Challenges</span>
-            <span class="route__desc">Four challenges, eight stages each. Memory, patterns, reasoning and numbers.</span>
+            <span class="route__name">Challenges</span>
+            <span class="route__desc">{CHALLENGES.length} challenges, eight stages each — memory, logic, phonics, shapes, the clock and Sri Lanka. Stages 1–{FREE_STAGES} free.</span>
           </span>
           <span class="route__go" aria-hidden="true">→</span>
         </a>
@@ -154,6 +156,11 @@ const faqs = [
             the last is secure. What we have kept out is the part that makes
             games sticky — there is no streak to break, nothing re-locks, and
             finishing a stage opens the next one and does nothing else.
+          </p>
+          <p>
+            The later stages of the challenges are for enrolled families. Stages
+            1–{FREE_STAGES} of every one are free for anybody, and everything on
+            this page always will be.
           </p>
           <p>
             Ten minutes here, then go and find a real bowl and eight real

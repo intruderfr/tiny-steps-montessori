@@ -1,7 +1,8 @@
 ---
 import Base from '../../layouts/Base.astro';
 import ProfileCard from '../../components/kids/ProfileCard.astro';
-import { CHALLENGES } from '../../scripts/progress';
+import { CHALLENGES, GROUPS, challengesIn } from '../../scripts/progress';
+import { FREE_STAGES } from '../../scripts/access';
 import '../../styles/games.css';
 ---
 
@@ -31,30 +32,39 @@ import '../../styles/games.css';
     {/* ---------------------------------------------------------- skill map */}
     <section class="panel">
       <header class="panel__head">
-        <h2 class="panel__h">Brain challenges</h2>
+        <h2 class="panel__h">Challenges</h2>
         <a href="/kids/challenges" class="btn btn--teal btn--sm">Go and play</a>
       </header>
 
-      <div class="skills" id="skillMap">
-        {CHALLENGES.map((c) => (
-          <article class="skill" data-challenge={c.id}>
-            <div class="skill__top">
-              <span class="skill__icon" aria-hidden="true">{c.icon}</span>
-              <div>
-                <h3 class="skill__name">{c.name}</h3>
-                <p class="skill__what">{c.skill}</p>
-              </div>
-              <p class="skill__count" data-count>0/{c.stages}</p>
-            </div>
-            <div class="skill__pips" data-pips aria-hidden="true">
-              {Array.from({ length: c.stages }, (_, i) => (
-                <span class="pip" data-pip={i + 1}></span>
-              ))}
-            </div>
-            <p class="skill__note" data-note>Not started yet.</p>
-          </article>
-        ))}
-      </div>
+      <p class="overall" id="overall"></p>
+
+      {(['brain', 'knowledge'] as const).map((g) => (
+        <div class="skillgroup">
+          <h3 class="skillgroup__h">{GROUPS[g].label}</h3>
+          <div class="skills">
+            {challengesIn(g).map((c) => (
+              <article class="skill" data-challenge={c.id}>
+                <div class="skill__top">
+                  <span class="skill__icon" aria-hidden="true">{c.icon}</span>
+                  <div>
+                    <h4 class="skill__name">{c.name}</h4>
+                    <p class="skill__what">{c.skill}</p>
+                  </div>
+                  <p class="skill__count" data-count>0/{c.stages}</p>
+                </div>
+                {/* The pips past the free run are marked, so a parent can see
+                    at a glance where the enrolled-only stages begin. */}
+                <div class="skill__pips" data-pips aria-hidden="true">
+                  {Array.from({ length: c.stages }, (_, i) => (
+                    <span class={`pip${i >= FREE_STAGES ? ' pip--gated' : ''}`} data-pip={i + 1}></span>
+                  ))}
+                </div>
+                <p class="skill__note" data-note>Not started yet.</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      ))}
     </section>
 
     {/* -------------------------------------------------------- milestones */}
@@ -173,6 +183,16 @@ import '../../styles/games.css';
   :global(.btn--danger:hover) { background: var(--red-deep); }
 
   /* ----------------------------------------------------------- skill map */
+  .overall {
+    font-size: var(--t-sm); color: var(--ink-2); margin-bottom: 1.4rem;
+    background: var(--surface-2); border-radius: var(--r-md); padding: 0.8rem 1rem;
+  }
+  .overall b { font-family: var(--font-display); color: var(--navy); font-size: 1.05rem; }
+  .skillgroup + .skillgroup { margin-top: 1.8rem; }
+  .skillgroup__h {
+    font-family: var(--font-display); font-size: 1.05rem; color: var(--ink-2);
+    text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 0.8rem;
+  }
   .skills { display: grid; gap: 0.9rem; }
   @media (min-width: 720px) { .skills { grid-template-columns: 1fr 1fr; } }
   .skill { background: var(--surface-2); border-radius: var(--r-lg); padding: 1.1rem 1.2rem; }
@@ -184,6 +204,10 @@ import '../../styles/games.css';
   .skill__pips { display: flex; gap: 0.28rem; margin-top: 0.9rem; }
   .pip { flex: 1; height: 9px; border-radius: 5px; background: var(--line); transition: background 0.3s; }
   .pip.is-on { background: var(--green); }
+  /* Stages past the free run, not yet reached — a hint of yellow shows a
+     parent where the enrolled-only part starts without shouting about it. */
+  .pip--gated { background: repeating-linear-gradient(45deg, var(--line) 0 3px, var(--yellow-soft) 3px 6px); }
+  .pip--gated.is-on { background: var(--green); }
   .skill__note { font-size: var(--t-xs); color: var(--ink-2); margin-top: 0.7rem; line-height: 1.5; }
 
   /* ---------------------------------------------------------- milestones */
@@ -240,6 +264,13 @@ import '../../styles/games.css';
   /* ------------------------------------------------------------ skill map */
   const paintSkills = () => {
     const s = summary();
+    const overall = document.getElementById('overall');
+    if (overall) {
+      overall.innerHTML = s.clearedStages === 0
+        ? 'Nothing finished yet — every challenge starts at stage 1.'
+        : `<b>${s.clearedStages}</b> of ${s.totalStages} stages finished across ${s.perChallenge.length} challenges` +
+          (s.mastered ? ` · <b>${s.mastered}</b> finished completely` : '');
+    }
     s.perChallenge.forEach((c) => {
       const card = document.querySelector<HTMLElement>(`.skill[data-challenge="${c.id}"]`);
       if (!card) return;

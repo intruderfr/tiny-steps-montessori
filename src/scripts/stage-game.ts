@@ -15,6 +15,14 @@
  */
 import { recordStage, bestStage, isUnlocked, isCleared, onChange } from './progress';
 import { sfxYes, sfxNudge, sfxDone, say, celebrate } from './playful';
+import { FREE_STAGES, stageAllowed, onAccessChange } from './access';
+
+/**
+ * Raised when a child taps a stage that needs a family code. The challenges
+ * page listens for it and opens the enrolment panel, so the wall lives in one
+ * place rather than being duplicated inside every challenge.
+ */
+export const GATE_EVENT = 'tiny:gate';
 
 export interface StageGameOptions {
   root: HTMLElement;
@@ -54,7 +62,9 @@ export function mountStageGame(opts: StageGameOptions) {
     if (!picker) return;
     picker.innerHTML = '';
     for (let s = 1; s <= stages; s++) {
-      const unlocked = isUnlocked(challengeId, s);
+      const earned = isUnlocked(challengeId, s);   // has the previous stage been done
+      const allowed = stageAllowed(s);             // free stage, or family code held
+      const unlocked = earned && allowed;
       const cleared = isCleared(challengeId, s);
       const b = document.createElement('button');
       b.type = 'button';
@@ -62,14 +72,19 @@ export function mountStageGame(opts: StageGameOptions) {
       b.dataset.stage = String(s);
       b.textContent = String(s);
       b.classList.toggle('is-cleared', cleared);
-      b.classList.toggle('is-locked', !unlocked);
+      b.classList.toggle('is-locked', !earned && allowed);
+      b.classList.toggle('is-gated', !allowed);
       b.classList.toggle('is-current', s === current);
-      b.disabled = !unlocked;
+      // A gated stage stays tappable: tapping it is how a parent finds out how
+      // to get in. A stage that simply has not been earned yet is disabled.
+      b.disabled = !earned && allowed;
       b.setAttribute(
         'aria-label',
-        unlocked
-          ? `Stage ${s}${cleared ? ', already finished' : ''}${s === current ? ', playing now' : ''}`
-          : `Stage ${s}, not open yet — finish stage ${s - 1} first`
+        !allowed
+          ? `Stage ${s}, for enrolled families — tap to find out how to unlock it`
+          : unlocked
+            ? `Stage ${s}${cleared ? ', already finished' : ''}${s === current ? ', playing now' : ''}`
+            : `Stage ${s}, not open yet — finish stage ${s - 1} first`
       );
       if (cleared) {
         const tick = document.createElement('span');
@@ -85,6 +100,12 @@ export function mountStageGame(opts: StageGameOptions) {
 
   /* ---------------------------------------------------------------- start */
   const start = (stage: number) => {
+    if (!stageAllowed(stage)) {
+      window.dispatchEvent(
+        new CustomEvent(GATE_EVENT, { detail: { challengeId, stage } })
+      );
+      return;
+    }
     if (!isUnlocked(challengeId, stage)) return;
     current = stage;
     solved = false;
@@ -115,10 +136,25 @@ export function mountStageGame(opts: StageGameOptions) {
       recordStage(challengeId, current);
 
       const last = current >= stages;
+      const nextGated = !last && !stageAllowed(current + 1);
+
       if (last) {
         sfxDone();
         celebrate(root);
         say(status, message ?? `That was the last stage — you have finished the whole challenge!`);
+      } else if (nextGated) {
+        // The free run ends here. Say so warmly, and make the next tap the
+        // thing that explains how to carry on.
+        sfxDone();
+        celebrate(root);
+        say(
+          status,
+          `${message ? message + ' ' : ''}That is stage ${FREE_STAGES} — the end of the free run. Stages ${FREE_STAGES + 1} to ${stages} are for enrolled families.`
+        );
+        if (nextBtn) {
+          nextBtn.hidden = false;
+          nextBtn.textContent = `Unlock stage ${current + 1} →`;
+        }
       } else {
         say(status, message ?? `Stage ${current} done. Stage ${current + 1} is open now.`);
         if (nextBtn) {
@@ -139,8 +175,13 @@ export function mountStageGame(opts: StageGameOptions) {
     buildPicker();
   });
 
-  // Resume where the child left off: the first stage they have not cleared.
-  const resumeAt = Math.min(bestStage(challengeId) + 1, stages);
+  // A code redeemed anywhere on the page opens the later stages everywhere.
+  onAccessChange(buildPicker);
+
+  // Resume where the child left off: the first stage they have not cleared,
+  // but never auto-open a gated one — that would fire the wall on page load.
+  let resumeAt = Math.min(bestStage(challengeId) + 1, stages);
+  if (!stageAllowed(resumeAt)) resumeAt = FREE_STAGES;
   start(Math.max(1, resumeAt));
 
   return { start, api };
