@@ -1,0 +1,332 @@
+---
+import Base from '../../layouts/Base.astro';
+import ProfileCard from '../../components/kids/ProfileCard.astro';
+import { CHALLENGES } from '../../scripts/progress';
+import '../../styles/games.css';
+---
+
+<Base
+  title="My Learning Journey"
+  description="A private, on-device record of your child's progress through the Tiny Steps brain challenges, plus a place to keep school milestones. Nothing is sent anywhere."
+  noindex
+  crumbs={[
+    { name: 'Kids Corner', href: '/kids' },
+    { name: 'My Journey', href: '/kids/progress' },
+  ]}
+>
+  <header class="jhead">
+    <div class="wrap jhead__inner">
+      <p class="eyebrow eyebrow--navy">My Journey</p>
+      <h1 class="h1 jhead__t">Everything you can do so far</h1>
+      <p class="lede jhead__d">
+        A record of the challenges, kept on this device only. No account, no
+        server — and one button below deletes the lot.
+      </p>
+    </div>
+  </header>
+
+  <div class="wrap jbody">
+    <ProfileCard />
+
+    {/* ---------------------------------------------------------- skill map */}
+    <section class="panel">
+      <header class="panel__head">
+        <h2 class="panel__h">Brain challenges</h2>
+        <a href="/kids/challenges" class="btn btn--teal btn--sm">Go and play</a>
+      </header>
+
+      <div class="skills" id="skillMap">
+        {CHALLENGES.map((c) => (
+          <article class="skill" data-challenge={c.id}>
+            <div class="skill__top">
+              <span class="skill__icon" aria-hidden="true">{c.icon}</span>
+              <div>
+                <h3 class="skill__name">{c.name}</h3>
+                <p class="skill__what">{c.skill}</p>
+              </div>
+              <p class="skill__count" data-count>0/{c.stages}</p>
+            </div>
+            <div class="skill__pips" data-pips aria-hidden="true">
+              {Array.from({ length: c.stages }, (_, i) => (
+                <span class="pip" data-pip={i + 1}></span>
+              ))}
+            </div>
+            <p class="skill__note" data-note>Not started yet.</p>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    {/* -------------------------------------------------------- milestones */}
+    <section class="panel">
+      <header class="panel__head">
+        <h2 class="panel__h">School &amp; home milestones</h2>
+      </header>
+
+      <p class="panel__intro">
+        A place to keep the things worth remembering — what your child's guide
+        told you at a parent meeting, the week they finally settled, the day they
+        tied their own laces. Type them here and they stay on this device.
+      </p>
+
+      <form class="mform" id="msForm">
+        <div class="mform__row">
+          <label class="mform__field">
+            <span>When</span>
+            <input type="date" id="msDate" required />
+          </label>
+          <label class="mform__field">
+            <span>Where</span>
+            <select id="msKind">
+              <option value="school">At school</option>
+              <option value="home">At home</option>
+            </select>
+          </label>
+        </div>
+        <label class="mform__field">
+          <span>What happened</span>
+          <input type="text" id="msText" maxlength="200" required
+                 placeholder="e.g. Settled at drop-off without crying for the first time" />
+        </label>
+        <button class="btn btn--primary" type="submit">Add to the journey</button>
+      </form>
+
+      <ol class="timeline" id="msList"></ol>
+      <p class="panel__empty" id="msEmpty">No milestones yet.</p>
+    </section>
+
+    {/* ------------------------------------------------- the official record */}
+    <section class="panel panel--note">
+      <h2 class="panel__h">Where your child's real school report comes from</h2>
+      <div class="prose panel__prose">
+        <p>
+          What is on this page is <strong>yours</strong> — a private note-keeper
+          that lives in this browser. It is deliberately <strong>not</strong> a
+          school records system, and the school cannot see it.
+        </p>
+        <p>
+          Your child's actual progress at Tiny Steps is a
+          <strong>written developmental observation each term</strong>, handed to
+          you by their guide, followed by a meeting to talk it through. That is
+          the record that matters, and it comes from the person who has been
+          watching your child work every day.
+        </p>
+        <p>
+          If you would like an online parent portal — termly reports, photos and
+          attendance in one login — that is a genuinely different piece of
+          software. It needs a server, proper accounts and real care with
+          children's data, and we would rather build it properly than approximate
+          it here. <a href="/contact">Tell us if you want it</a> and we will look
+          at it seriously.
+        </p>
+      </div>
+    </section>
+
+    {/* -------------------------------------------------------- your data */}
+    <section class="panel panel--data">
+      <h2 class="panel__h">Your data</h2>
+      <p class="panel__intro">
+        The badge, the stage record and the milestones above are stored in this
+        browser and nowhere else. There is no account, no server and no analytics
+        on these pages.
+      </p>
+      <div class="panel__actions">
+        <button class="btn btn--ghost" type="button" id="printBtn">Print this journey</button>
+        <button class="btn btn--danger" type="button" id="wipeBtn">Delete everything</button>
+      </div>
+      <p class="panel__warn" id="wipeConfirm" hidden>
+        This cannot be undone. Are you sure?
+        <button class="btn btn--danger btn--sm" type="button" id="wipeYes">Yes, delete it</button>
+        <button class="btn btn--ghost btn--sm" type="button" id="wipeNo">Keep it</button>
+      </p>
+    </section>
+  </div>
+</Base>
+
+<style>
+  .jhead { padding-block: clamp(1.6rem, 1rem + 3vw, 3rem) clamp(1rem, 1rem + 1.5vw, 1.8rem); }
+  .jhead__inner { text-align: center; max-width: 660px; }
+  .jhead__t { font-size: var(--t-3xl); margin-block: 0.8rem 1rem; }
+  .jhead__d { margin-inline: auto; }
+
+  .jbody { display: grid; gap: clamp(1.2rem, 1rem + 1.6vw, 2rem); padding-bottom: var(--section-y); }
+
+  .panel {
+    background: var(--paper); border: 1px solid var(--line);
+    border-radius: var(--r-2xl); padding: clamp(1.2rem, 1rem + 1.8vw, 2.2rem);
+  }
+  .panel__head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.2rem; }
+  .panel__h { font-family: var(--font-display); font-size: var(--t-xl); }
+  .panel__intro { font-size: var(--t-sm); color: var(--ink-2); line-height: 1.65; max-width: 62ch; margin-bottom: 1.2rem; }
+  .panel__prose { font-size: var(--t-sm); max-width: 66ch; }
+  .panel--note { background: var(--surface-2); border-color: var(--line); }
+  .panel--data { border-color: var(--line); }
+  .panel__actions { display: flex; gap: 0.7rem; flex-wrap: wrap; }
+  .panel__warn {
+    margin-top: 1rem; padding: 0.9rem 1.1rem; background: var(--red-soft);
+    border-radius: var(--r-md); font-size: var(--t-sm); font-weight: 600; color: var(--red-deep);
+    display: flex; align-items: center; gap: 0.7rem; flex-wrap: wrap;
+  }
+  .panel__empty { font-size: var(--t-sm); color: var(--ink-3); }
+
+  :global(.btn--danger) { background: var(--red); color: #fff; }
+  :global(.btn--danger:hover) { background: var(--red-deep); }
+
+  /* ----------------------------------------------------------- skill map */
+  .skills { display: grid; gap: 0.9rem; }
+  @media (min-width: 720px) { .skills { grid-template-columns: 1fr 1fr; } }
+  .skill { background: var(--surface-2); border-radius: var(--r-lg); padding: 1.1rem 1.2rem; }
+  .skill__top { display: flex; align-items: center; gap: 0.8rem; }
+  .skill__icon { font-size: 1.7rem; width: 46px; height: 46px; flex: none; display: grid; place-items: center; background: var(--paper); border-radius: var(--r-md); }
+  .skill__name { font-family: var(--font-display); font-size: 1.08rem; }
+  .skill__what { font-size: var(--t-xs); color: var(--ink-3); }
+  .skill__count { margin-left: auto; font-family: var(--font-display); font-weight: 800; color: var(--navy); }
+  .skill__pips { display: flex; gap: 0.28rem; margin-top: 0.9rem; }
+  .pip { flex: 1; height: 9px; border-radius: 5px; background: var(--line); transition: background 0.3s; }
+  .pip.is-on { background: var(--green); }
+  .skill__note { font-size: var(--t-xs); color: var(--ink-2); margin-top: 0.7rem; line-height: 1.5; }
+
+  /* ---------------------------------------------------------- milestones */
+  .mform { display: grid; gap: 0.8rem; margin-bottom: 1.6rem; max-width: 620px; }
+  .mform__row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; }
+  @media (max-width: 520px) { .mform__row { grid-template-columns: 1fr; } }
+  .mform__field { display: grid; gap: 0.3rem; font-size: var(--t-sm); font-weight: 600; }
+  .mform__field input, .mform__field select {
+    padding: 0.7rem 0.9rem; border: 2px solid var(--line); border-radius: var(--r-md);
+    font-size: var(--t-base); background: var(--paper); min-height: 44px;
+  }
+  .mform__field input:focus, .mform__field select:focus {
+    outline: none; border-color: var(--teal); box-shadow: 0 0 0 4px var(--teal-soft);
+  }
+  .mform button { justify-self: start; }
+
+  .timeline { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.6rem; }
+  .timeline:empty { display: none; }
+  .ms {
+    display: flex; gap: 0.9rem; align-items: flex-start;
+    background: var(--surface-2); border-radius: var(--r-md); padding: 0.85rem 1rem;
+  }
+  .ms__tag {
+    font-size: var(--t-xs); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;
+    padding: 0.15rem 0.55rem; border-radius: var(--r-full); flex: none;
+  }
+  .ms__tag--school { background: var(--teal-soft); color: var(--teal-deep); }
+  .ms__tag--home { background: var(--yellow-soft); color: var(--yellow-text); }
+  .ms__body { flex: 1; }
+  .ms__when { font-size: var(--t-xs); color: var(--ink-3); }
+  .ms__text { font-size: var(--t-sm); line-height: 1.55; margin-top: 0.15rem; }
+  .ms__del {
+    border: none; background: none; cursor: pointer; color: var(--ink-3);
+    font-size: 1.2rem; line-height: 1; padding: 0.3rem; border-radius: var(--r-sm);
+    min-width: 44px; min-height: 44px;
+  }
+  .ms__del:hover { color: var(--red); background: var(--red-soft); }
+
+  /* -------------------------------------------------------------- print */
+  @media print {
+    :global(.hdr), :global(.topbar), :global(.ftr), :global(.callbar),
+    :global(.crumbs), .panel--data, .mform, .ms__del, .panel__head .btn { display: none !important; }
+    .panel { border: 1px solid #ccc; break-inside: avoid; page-break-inside: avoid; }
+    :global(body) { background: #fff; }
+  }
+</style>
+
+<script>
+  import {
+    CHALLENGES, summary, onChange, load, addMilestone, removeMilestone, wipe,
+  } from '../../scripts/progress';
+  import { sfxTap } from '../../scripts/playful';
+
+  /* ------------------------------------------------------------ skill map */
+  const paintSkills = () => {
+    const s = summary();
+    s.perChallenge.forEach((c) => {
+      const card = document.querySelector<HTMLElement>(`.skill[data-challenge="${c.id}"]`);
+      if (!card) return;
+      card.querySelector('[data-count]')!.textContent = `${c.best}/${c.stages}`;
+      card.querySelectorAll<HTMLElement>('.pip').forEach((p, i) => {
+        p.classList.toggle('is-on', i < c.best);
+      });
+      const note = card.querySelector('[data-note]')!;
+      note.textContent = c.done
+        ? c.mastery
+        : c.best === 0
+          ? 'Not started yet.'
+          : `Stage ${c.best} finished. Stage ${c.best + 1} is open.`;
+    });
+  };
+
+  /* ----------------------------------------------------------- milestones */
+  const list = document.getElementById('msList')!;
+  const empty = document.getElementById('msEmpty')!;
+
+  const paintMilestones = () => {
+    const { milestones } = load();
+    list.innerHTML = '';
+    empty.hidden = milestones.length > 0;
+    milestones.forEach((m) => {
+      const li = document.createElement('li');
+      li.className = 'ms';
+      const when = new Date(m.date + 'T00:00:00');
+      li.innerHTML = `
+        <span class="ms__tag ms__tag--${m.kind}">${m.kind === 'school' ? 'School' : 'Home'}</span>
+        <span class="ms__body">
+          <span class="ms__when">${Number.isNaN(when.getTime()) ? m.date : when.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
+          <span class="ms__text"></span>
+        </span>`;
+      // textContent, never innerHTML — this string was typed by a person.
+      li.querySelector('.ms__text')!.textContent = m.text;
+      const del = document.createElement('button');
+      del.className = 'ms__del';
+      del.type = 'button';
+      del.textContent = '×';
+      del.setAttribute('aria-label', `Remove milestone: ${m.text.slice(0, 40)}`);
+      del.addEventListener('click', () => removeMilestone(m.id));
+      li.appendChild(del);
+      list.appendChild(li);
+    });
+  };
+
+  const form = document.getElementById('msForm') as HTMLFormElement;
+  const dateInput = document.getElementById('msDate') as HTMLInputElement;
+  const textInput = document.getElementById('msText') as HTMLInputElement;
+  const kindInput = document.getElementById('msKind') as HTMLSelectElement;
+
+  dateInput.value = new Date().toISOString().slice(0, 10);
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (!textInput.value.trim()) return;
+    addMilestone({
+      date: dateInput.value,
+      text: textInput.value,
+      kind: kindInput.value as 'school' | 'home',
+    });
+    sfxTap();
+    textInput.value = '';
+    textInput.focus();
+  });
+
+  /* ------------------------------------------------------------ your data */
+  document.getElementById('printBtn')?.addEventListener('click', () => window.print());
+
+  const confirmBox = document.getElementById('wipeConfirm')!;
+  document.getElementById('wipeBtn')?.addEventListener('click', () => {
+    confirmBox.hidden = false;
+    document.getElementById('wipeYes')?.focus();
+  });
+  document.getElementById('wipeNo')?.addEventListener('click', () => {
+    confirmBox.hidden = true;
+  });
+  document.getElementById('wipeYes')?.addEventListener('click', () => {
+    wipe();
+    confirmBox.hidden = true;
+  });
+
+  const paint = () => {
+    paintSkills();
+    paintMilestones();
+  };
+  onChange(paint);
+  paint();
+</script>

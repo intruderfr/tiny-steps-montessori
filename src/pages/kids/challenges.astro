@@ -1,0 +1,194 @@
+---
+import Base from '../../layouts/Base.astro';
+import ProfileCard from '../../components/kids/ProfileCard.astro';
+import MemorySequence from '../../components/games/MemorySequence.astro';
+import PatternFinder from '../../components/games/PatternFinder.astro';
+import OddOneOut from '../../components/games/OddOneOut.astro';
+import MakeTen from '../../components/games/MakeTen.astro';
+import { site, abs } from '../../data/site';
+import { faqSchema } from '../../data/schema';
+import { CHALLENGES } from '../../scripts/progress';
+import '../../styles/games.css';
+
+const faqs = [
+  {
+    q: 'How do the stages work?',
+    a: 'Each challenge has eight stages that get harder. Stage 1 is always open; finishing it opens stage 2, and so on. Nothing ever re-locks, and any stage you have opened can be replayed as many times as you like.',
+  },
+  {
+    q: 'Is my child being scored?',
+    a: 'No. There is no score, no timer, no lives and no way to fail. A wrong answer wobbles and the child tries again. The only thing recorded is which stages have been finished.',
+  },
+  {
+    q: 'Where is the progress stored?',
+    a: 'On your own device, in the browser, and nowhere else. There is no account and no server. We never see it, and it cannot follow your child to another device or another browser.',
+  },
+  {
+    q: 'What ages are the challenges for?',
+    a: 'Roughly 4 to 8. The early stages of each challenge suit a four-year-old; the later stages of Make Ten and What Comes Next? will stretch a seven or eight-year-old.',
+  },
+  {
+    q: 'Can I delete everything?',
+    a: 'Yes, at any time, from the My Journey page. One button removes the badge, the stage record and the milestones from this device permanently.',
+  },
+];
+---
+
+<Base
+  title="Brain Challenges for Kids"
+  description="Four free staged brain challenges for children aged 4–8: memory, patterns, reasoning and number bonds. Eight stages each, no score, no timer, nothing collected."
+  crumbs={[
+    { name: 'Kids Corner', href: '/kids' },
+    { name: 'Brain Challenges', href: '/kids/challenges' },
+  ]}
+  schemaNodes={[
+    faqSchema(faqs),
+    {
+      '@type': 'WebApplication',
+      '@id': abs('/kids/challenges#app'),
+      name: `${site.name} Brain Challenges`,
+      applicationCategory: 'EducationalApplication',
+      operatingSystem: 'Any browser',
+      description:
+        'Four staged brain challenges for children aged 4 to 8 — working memory, sequencing, reasoning and number bonds. Eight stages each.',
+      url: abs('/kids/challenges'),
+      isAccessibleForFree: true,
+      offers: { '@type': 'Offer', price: '0', priceCurrency: 'LKR' },
+      publisher: { '@id': abs('/#school') },
+      audience: { '@type': 'PeopleAudience', suggestedMinAge: 4, suggestedMaxAge: 8 },
+    },
+  ]}
+>
+  <header class="chead">
+    <div class="wrap chead__inner">
+      <p class="eyebrow eyebrow--navy">Brain Challenges</p>
+      <h1 class="h1 chead__t">Eight stages. Take as long as you like.</h1>
+      <p class="lede chead__d">
+        Four challenges that get harder one step at a time. Nothing is timed,
+        nothing is scored, and you can go back to any stage as often as you want.
+      </p>
+    </div>
+  </header>
+
+  <div class="wrap chome">
+    <ProfileCard />
+
+    <nav class="picker" aria-label="Jump to a challenge">
+      {CHALLENGES.map((c) => (
+        <a href={`#ch-${c.id}`} class="picker__item">
+          <span class="picker__icon" aria-hidden="true">{c.icon}</span>
+          <span class="picker__text">
+            <span class="picker__name">{c.name}</span>
+            <span class="picker__area">{c.skill}</span>
+          </span>
+        </a>
+      ))}
+    </nav>
+
+    <div class="cgames">
+      <MemorySequence />
+      <PatternFinder />
+      <OddOneOut />
+      <MakeTen />
+    </div>
+  </div>
+
+  {/* ------------------------------------------------------- note to parents */}
+  <section class="section parents">
+    <div class="wrap wrap-narrow">
+      <div class="parents__card">
+        <p class="eyebrow">For Parents</p>
+        <h2 class="h2 parents__t">What "stages" mean here — and what they do not</h2>
+        <div class="prose parents__body">
+          <p>
+            Stages are <strong>sequenced difficulty</strong>, which is how a
+            Montessori shelf already works: a child is handed the next material
+            once the last one is secure. They are not levels in the game sense.
+          </p>
+          <p>Specifically, there is deliberately <strong>none</strong> of this:</p>
+          <ul>
+            <li><strong>No score and no timer.</strong> Nothing measures speed or counts mistakes.</li>
+            <li><strong>No streaks or daily rewards.</strong> Come back in a month and nothing is lost or reset.</li>
+            <li><strong>No coins, gems, badges or unlockable cosmetics.</strong> Finishing a stage opens the next one, and that is all it does.</li>
+            <li><strong>Nothing re-locks, ever.</strong> A stage that has been opened stays open.</li>
+          </ul>
+          <p>
+            The record exists so a child can see what they can now do, and so you
+            can see where they are getting stuck. It is a record of work, not a
+            leaderboard.
+          </p>
+          <p>
+            <strong>Everything stays on this device.</strong> No account, no
+            server, no analytics on these pages. We never see any of it, and you
+            can delete all of it in one tap from
+            <a href="/kids/progress">My Journey</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-soft edge-top">
+    <div class="wrap wrap-narrow">
+      <h2 class="h2 center" style="margin-bottom:2rem">Questions about the challenges</h2>
+      <div class="faq">
+        {faqs.map((f) => (
+          <details class="faq__item" name="ch-faq">
+            <summary>{f.q}</summary>
+            <p>{f.a}</p>
+          </details>
+        ))}
+      </div>
+      <p class="center" style="margin-top:2rem">
+        <a href="/kids" class="btn btn--ghost">← Back to the Kids Corner</a>
+      </p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .chead { padding-block: clamp(1.6rem, 1rem + 3vw, 3rem) clamp(1.2rem, 1rem + 1.5vw, 2rem); }
+  .chead__inner { text-align: center; max-width: 720px; }
+  .chead__t { font-size: var(--t-3xl); margin-block: 0.8rem 1rem; }
+  .chead__d { margin-inline: auto; }
+
+  .chome { display: grid; gap: clamp(1.4rem, 1rem + 2vw, 2.4rem); padding-bottom: var(--section-y); }
+
+  .picker { display: flex; flex-wrap: wrap; gap: 0.7rem; justify-content: center; }
+  .picker__item {
+    display: flex; align-items: center; gap: 0.65rem; text-decoration: none;
+    background: var(--paper); border: 2px solid var(--line); border-radius: var(--r-full);
+    padding: 0.5rem 1.1rem 0.5rem 0.6rem;
+    transition: transform 0.22s var(--ease-bounce), border-color 0.2s, box-shadow 0.2s;
+  }
+  .picker__item:hover { transform: translateY(-3px); border-color: var(--yellow); box-shadow: var(--sh-md); }
+  .picker__icon { font-size: 1.5rem; width: 42px; height: 42px; display: grid; place-items: center; background: var(--surface-2); border-radius: var(--r-full); }
+  .picker__text { display: grid; text-align: left; line-height: 1.2; }
+  .picker__name { font-family: var(--font-display); font-weight: 700; font-size: 1rem; color: var(--ink); }
+  .picker__area { font-size: var(--t-xs); color: var(--ink-3); }
+
+  .cgames { display: grid; gap: clamp(1.5rem, 1rem + 2.5vw, 2.6rem); }
+
+  .parents { padding-top: 0; }
+  .parents__card {
+    background: var(--navy); color: #fff; border-radius: var(--r-2xl);
+    padding: clamp(1.6rem, 1rem + 3vw, 3rem);
+  }
+  .parents__card .eyebrow { background: rgba(255, 255, 255, 0.16); color: #fff; }
+  .parents__t { color: #fff; margin-block: 0.8rem 1.2rem; font-size: var(--t-2xl); }
+  .parents__body { color: rgba(255, 255, 255, 0.93); max-width: none; font-size: var(--t-base); }
+  .parents__body a { color: var(--yellow); }
+  .parents__body strong { color: #fff; }
+  .parents__body li::marker { color: var(--yellow); }
+
+  .faq { display: grid; gap: 0.75rem; }
+  .faq__item { background: var(--paper); border: 1px solid var(--line); border-radius: var(--r-md); overflow: hidden; }
+  .faq__item summary {
+    cursor: pointer; padding: 1.1rem 1.3rem; font-family: var(--font-display); font-weight: 700;
+    font-size: 1.05rem; list-style: none; display: flex; justify-content: space-between; gap: 1rem; align-items: center;
+  }
+  .faq__item summary::-webkit-details-marker { display: none; }
+  .faq__item summary::after { content: '+'; font-size: 1.5rem; color: var(--yellow-deep); flex: none; transition: transform 0.25s; }
+  .faq__item[open] summary::after { transform: rotate(45deg); }
+  .faq__item p { padding: 0 1.3rem 1.2rem; color: var(--ink-2); font-size: var(--t-sm); line-height: 1.7; }
+</style>

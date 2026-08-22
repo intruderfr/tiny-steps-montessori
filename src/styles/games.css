@@ -186,3 +186,118 @@
 @media (prefers-reduced-motion: reduce) {
   .piece, .burst i, .is-wobbling, .is-popping { animation: none !important; transition: none !important; }
 }
+
+/* ==========================================================================
+   BRAIN CHALLENGES — stage picker and shared challenge furniture.
+   ========================================================================== */
+
+.stages {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  justify-content: center;
+  margin-bottom: 1.2rem;
+}
+
+.stagebtn {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--r-md);
+  border: 3px solid var(--line);
+  background: var(--paper);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.05rem;
+  color: var(--ink-2);
+  cursor: pointer;
+  position: relative;
+  transition: transform 0.18s var(--ease-bounce), border-color 0.2s, background 0.2s;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+.stagebtn:hover:not(:disabled) { transform: translateY(-3px); border-color: var(--teal); }
+.stagebtn:focus-visible { outline: 4px solid var(--teal); outline-offset: 3px; }
+
+/* Finished. Green, but calm — this is a record, not a trophy. */
+.stagebtn.is-cleared { background: var(--green-soft); border-color: var(--green); color: var(--green-deep); }
+.stagebtn__tick {
+  position: absolute; top: -7px; right: -7px;
+  width: 20px; height: 20px; border-radius: 50%;
+  background: var(--green); color: #fff;
+  font-size: 0.7rem; line-height: 20px; text-align: center;
+  box-shadow: var(--sh-sm);
+}
+
+/* Playing now. */
+.stagebtn.is-current { border-color: var(--navy); background: var(--navy); color: #fff; }
+.stagebtn.is-current.is-cleared { background: var(--green-deep); border-color: var(--green-deep); color: #fff; }
+
+/* Not open yet — dimmed and padlocked rather than hidden, so a child can see
+   there is more to come. */
+.stagebtn.is-locked {
+  opacity: 0.4;
+  cursor: not-allowed;
+  border-style: dashed;
+}
+.stagebtn.is-locked::after {
+  content: '🔒';
+  position: absolute; inset: 0;
+  display: grid; place-items: center;
+  font-size: 0.9rem;
+  background: color-mix(in srgb, var(--paper) 72%, transparent);
+  border-radius: 12px;
+}
+
+.game__hint {
+  text-align: center;
+  font-size: var(--t-sm);
+  color: var(--ink-2);
+  margin-top: 0.8rem;
+  min-height: 1.4rem;
+}
+
+/* -------------------------------------------------------------- sequence */
+.pads { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.7rem; max-width: 320px; margin-inline: auto; }
+.pad {
+  aspect-ratio: 1; border: none; border-radius: var(--r-lg); cursor: pointer;
+  background: var(--pc); opacity: 0.62; box-shadow: var(--sh-sm);
+  transition: opacity 0.12s, transform 0.12s var(--ease-bounce);
+  -webkit-tap-highlight-color: transparent; touch-action: manipulation;
+  display: grid; place-items: center; font-size: 2rem;
+}
+.pad:focus-visible { outline: 4px solid var(--navy); outline-offset: 4px; }
+.pad.is-lit { opacity: 1; transform: scale(1.06); }
+.pads.is-watching .pad { cursor: default; }
+
+/* --------------------------------------------------------- option chips */
+/* Shared by What Comes Next?, Odd One Out and Make Ten. */
+.opts { display: flex; flex-wrap: wrap; gap: 0.6rem; justify-content: center; }
+.opt {
+  min-width: 68px; min-height: 68px; padding: 0.5rem 0.8rem;
+  border-radius: var(--r-lg); border: 3px solid var(--line); background: var(--paper);
+  font-size: clamp(1.6rem, 5vw, 2.1rem); line-height: 1; cursor: pointer;
+  display: grid; place-items: center; box-shadow: var(--sh-sm);
+  transition: transform 0.18s var(--ease-bounce), border-color 0.2s, opacity 0.25s;
+  -webkit-tap-highlight-color: transparent; touch-action: manipulation;
+}
+.opt:hover:not(:disabled) { transform: translateY(-4px); border-color: var(--teal); }
+.opt:focus-visible { outline: 4px solid var(--teal); outline-offset: 3px; }
+.opt.is-right { border-color: var(--green); background: var(--green-soft); }
+.opt.is-out { opacity: 0.3; }
+.opt--num { font-family: var(--font-display); font-weight: 800; color: var(--navy); }
+
+/* The row a child has to read and continue. */
+.strip {
+  display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; align-items: center;
+  margin-bottom: 1.2rem;
+}
+.strip__cell {
+  width: 62px; height: 62px; border-radius: var(--r-md);
+  background: var(--paper); border: 2px solid var(--line);
+  display: grid; place-items: center; font-size: 1.9rem; line-height: 1;
+}
+.strip__cell--gap {
+  border-style: dashed; border-color: var(--navy); border-width: 3px;
+  background: var(--navy-soft); font-family: var(--font-display);
+  font-weight: 800; color: var(--navy); font-size: 1.6rem;
+}

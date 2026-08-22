@@ -100,6 +100,18 @@ collected, there is no sign-up, and there are no adverts.
 The one thing to check: the memory game uses six of your photos, so it inherits
 the same **consent question** as the gallery.
 
+## 🟢 Brain Challenges & the journey — safe as written
+
+`/kids/challenges` and `/kids/progress` make no claims about your school and
+collect nothing. The whole progress record lives in the child's own browser.
+
+One thing to decide: the journey page includes a **milestones** notebook where a
+parent can jot down what you told them at a parent meeting. It is private to
+their device and you cannot see it. If you ever want a **real parent portal**
+— termly reports, photos, attendance behind a login — that needs a server and
+proper handling of children's data, and is a separate build. The page says so
+plainly and points parents at `/contact` if they want it.
+
 ## 🟢 Real content, safe as written
 
 The eight articles in `src/content/news/` are general parenting and Montessori

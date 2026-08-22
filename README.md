@@ -115,9 +115,9 @@ set `draft: false`.
   competitors ignore entirely.
 - **Published fees** — no competitor in Dehiwala does this. It wins
   "preschool fees Sri Lanka" and filters enquiries to families who accept the price.
-- **A free Kids Corner** at `/kids` — four playable Montessori activities.
-  Genuine dwell time, a reason for parents to return, and `WebApplication`
-  structured data.
+- **A free Kids Corner** at `/kids` — four Montessori activities, plus four
+  staged brain challenges at `/kids/challenges`. Genuine dwell time, a reason
+  for parents to return, and `WebApplication` structured data on both.
 - Sitemap, RSS, canonicals, Open Graph, `hreflang="en-LK"`, geo meta tags,
   `robots.txt` (AI crawlers explicitly allowed).
 - Guardrails: `npm run audit` fails the build on a missing canonical, a second
@@ -187,8 +187,31 @@ Two things worth knowing before editing them:
   with the Web Audio API, so there are no audio files and nothing to download.
   The preference is stored in `localStorage` under `tiny-sound`.
 
-Adding a game: create it in `src/components/games/`, import it in
+Adding a free-play activity: create it in `src/components/games/`, import it in
 `src/pages/kids.astro`, and add it to the `games` array there for the picker.
+
+### Brain Challenges and the journey
+
+`/kids/challenges` holds four challenges of eight stages each.
+`/kids/progress` shows what a child can do so far.
+
+- **`src/scripts/progress.ts`** is the whole data layer. Everything lives in
+  `localStorage` under `tiny-steps-journey-v1` — **no account, no server, no
+  analytics on these pages.** That is deliberate: holding children's names and
+  performance data on a server would need authentication, a lawful basis and a
+  retention policy. On-device means the school never holds any of it.
+- **`src/scripts/stage-game.ts`** is the shared engine. A challenge supplies
+  only its own board via `onStart(stage, api)`; the picker, unlock rules,
+  recording and status line are handled for it. Call `api.win()` when solved
+  and `api.nudge()` when not — `nudge` costs the child nothing.
+- Adding a challenge: build the component, add it to `CHALLENGES` in
+  `progress.ts`, and import it into `/kids/challenges`. The journey page picks
+  it up automatically.
+
+**What is deliberately absent**: score, timer, lives, streaks, daily rewards,
+coins and badges. Stages are sequenced difficulty, nothing ever re-locks, and
+finishing a stage opens the next one and does nothing else. If you add
+gamification, update the parents' note on `/kids` — it makes specific promises.
 
 ## Notes
 

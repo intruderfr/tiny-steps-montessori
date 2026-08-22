@@ -1,0 +1,204 @@
+---
+/**
+ * The child's badge, shown at the top of the Kids Corner pages.
+ *
+ * Rendered on the client because the journey lives in localStorage — there is
+ * no server copy to render from, by design. The markup below is the empty
+ * state; script fills it in if a badge already exists on this device.
+ *
+ * Setting a name is entirely optional. A child who just wants to play never has
+ * to type anything.
+ */
+import { AVATARS } from '../../scripts/progress';
+---
+
+<section class="badge" id="profileCard" aria-label="Your badge">
+  {/* ---------------------------------------------------- not made yet ---- */}
+  <div class="badge__new" id="badgeNew">
+    <div class="badge__intro">
+      <h2 class="badge__h">Make your badge</h2>
+      <p class="badge__p">
+        Pick an animal and, if you like, type your first name. It is saved on
+        this device only — nobody else can see it, and it is never sent anywhere.
+      </p>
+    </div>
+
+    <div class="badge__pick">
+      <p class="badge__label" id="avatarLabel">Choose an animal</p>
+      <div class="avatars" role="radiogroup" aria-labelledby="avatarLabel" id="avatarPick">
+        {AVATARS.map((a, i) => (
+          <button
+            class="avatar"
+            type="button"
+            role="radio"
+            aria-checked={i === 0 ? 'true' : 'false'}
+            data-avatar={a}
+            tabindex={i === 0 ? '0' : '-1'}
+          >
+            <span aria-hidden="true">{a}</span>
+          </button>
+        ))}
+      </div>
+
+      <label class="badge__field">
+        <span>First name <em>(optional)</em></span>
+        <input type="text" id="badgeName" maxlength="24" autocomplete="off" placeholder="e.g. Amaya" />
+      </label>
+
+      <button class="btn btn--primary" type="button" id="badgeSave">Save my badge</button>
+    </div>
+  </div>
+
+  {/* ------------------------------------------------------- made ---------- */}
+  <div class="badge__made" id="badgeMade" hidden>
+    <span class="badge__avatar" id="badgeAvatar" aria-hidden="true"></span>
+    <div class="badge__body">
+      <p class="badge__who" id="badgeWho"></p>
+      <p class="badge__stat" id="badgeStat"></p>
+      <div class="badge__bars" id="badgeBars"></div>
+    </div>
+    <div class="badge__actions">
+      <a href="/kids/progress" class="btn btn--teal btn--sm">My journey</a>
+      <button class="btn btn--ghost btn--sm" type="button" id="badgeEdit">Change badge</button>
+    </div>
+  </div>
+</section>
+
+<style>
+  .badge {
+    background: var(--paper); border: 2px solid var(--line); border-radius: var(--r-2xl);
+    padding: clamp(1.1rem, 1rem + 1.6vw, 1.9rem);
+  }
+
+  .badge__new { display: grid; gap: 1.2rem; }
+  @media (min-width: 760px) { .badge__new { grid-template-columns: 1fr 1.15fr; align-items: center; gap: 2rem; } }
+  .badge__h { font-family: var(--font-display); font-size: var(--t-xl); }
+  .badge__p { font-size: var(--t-sm); color: var(--ink-2); line-height: 1.6; margin-top: 0.5rem; }
+  .badge__label { font-size: var(--t-sm); font-weight: 700; margin-bottom: 0.5rem; }
+
+  .avatars { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1rem; }
+  .avatar {
+    width: 52px; height: 52px; font-size: 1.6rem; line-height: 1;
+    border: 3px solid var(--line); background: var(--surface-2); border-radius: var(--r-md);
+    cursor: pointer; display: grid; place-items: center;
+    transition: transform 0.16s var(--ease-bounce), border-color 0.2s;
+    -webkit-tap-highlight-color: transparent; touch-action: manipulation;
+  }
+  .avatar:hover { transform: translateY(-3px); }
+  .avatar[aria-checked='true'] { border-color: var(--navy); background: var(--navy-soft); transform: scale(1.06); }
+  .avatar:focus-visible { outline: 4px solid var(--teal); outline-offset: 3px; }
+
+  .badge__field { display: grid; gap: 0.35rem; margin-bottom: 1rem; font-size: var(--t-sm); font-weight: 600; }
+  .badge__field em { font-weight: 400; color: var(--ink-3); font-style: normal; }
+  .badge__field input {
+    padding: 0.75rem 1rem; border: 2px solid var(--line); border-radius: var(--r-md);
+    font-size: var(--t-base); background: var(--paper); min-height: 44px;
+  }
+  .badge__field input:focus { outline: none; border-color: var(--teal); box-shadow: 0 0 0 4px var(--teal-soft); }
+
+  /* ------------------------------------------------------------- made */
+  .badge__made { display: flex; align-items: center; gap: 1.1rem; flex-wrap: wrap; }
+  .badge__avatar {
+    width: 74px; height: 74px; flex: none; font-size: 2.4rem; line-height: 1;
+    display: grid; place-items: center; background: var(--yellow-soft);
+    border-radius: var(--r-lg); border: 3px solid var(--yellow);
+  }
+  .badge__body { flex: 1 1 15rem; }
+  .badge__who { font-family: var(--font-display); font-weight: 800; font-size: var(--t-lg); }
+  .badge__stat { font-size: var(--t-sm); color: var(--ink-2); margin-top: 0.15rem; }
+  .badge__bars { display: flex; gap: 0.4rem; margin-top: 0.7rem; flex-wrap: wrap; }
+  .badge__bar {
+    display: flex; align-items: center; gap: 0.35rem;
+    font-size: var(--t-xs); color: var(--ink-2);
+    background: var(--surface-2); border-radius: var(--r-full); padding: 0.2rem 0.6rem 0.2rem 0.3rem;
+  }
+  .badge__bar span[aria-hidden] { font-size: 1rem; }
+  .badge__bar b { font-family: var(--font-display); color: var(--navy); }
+  .badge__actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+</style>
+
+<script>
+  import { load, setIdentity, summary, onChange, hasProfile, AVATARS } from '../../scripts/progress';
+  import { sfxTap, sfxYes } from '../../scripts/playful';
+
+  const card = document.getElementById('profileCard');
+  if (card) {
+    const newBox = document.getElementById('badgeNew')!;
+    const madeBox = document.getElementById('badgeMade')!;
+    const pick = document.getElementById('avatarPick')!;
+    const nameInput = document.getElementById('badgeName') as HTMLInputElement;
+    const avatars = [...pick.querySelectorAll<HTMLButtonElement>('.avatar')];
+
+    let chosen = AVATARS[0];
+
+    const select = (btn: HTMLButtonElement) => {
+      chosen = btn.dataset.avatar ?? AVATARS[0];
+      avatars.forEach((a) => {
+        const on = a === btn;
+        a.setAttribute('aria-checked', String(on));
+        a.tabIndex = on ? 0 : -1;
+      });
+      sfxTap();
+    };
+
+    avatars.forEach((a) => a.addEventListener('click', () => select(a)));
+
+    // Radio groups are expected to move with the arrow keys, not Tab.
+    pick.addEventListener('keydown', (e) => {
+      const i = avatars.findIndex((a) => a === document.activeElement);
+      if (i < 0) return;
+      let next = -1;
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') next = (i + 1) % avatars.length;
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') next = (i - 1 + avatars.length) % avatars.length;
+      if (next < 0) return;
+      e.preventDefault();
+      select(avatars[next]);
+      avatars[next].focus();
+    });
+
+    const paint = () => {
+      const made = hasProfile();
+      newBox.hidden = made;
+      madeBox.hidden = !made;
+      if (!made) return;
+
+      const s = summary();
+      document.getElementById('badgeAvatar')!.textContent = s.avatar;
+      document.getElementById('badgeWho')!.textContent = s.name ? `${s.name}'s journey` : 'My journey';
+      document.getElementById('badgeStat')!.textContent =
+        s.clearedStages === 0
+          ? 'No stages finished yet — pick a challenge below.'
+          : `${s.clearedStages} of ${s.totalStages} stages finished` +
+            (s.mastered ? ` · ${s.mastered} challenge${s.mastered > 1 ? 's' : ''} complete` : '');
+
+      const bars = document.getElementById('badgeBars')!;
+      bars.innerHTML = '';
+      s.perChallenge.forEach((c) => {
+        const el = document.createElement('span');
+        el.className = 'badge__bar';
+        el.innerHTML = `<span aria-hidden="true">${c.icon}</span> <b>${c.best}</b>/${c.stages}`;
+        el.setAttribute('aria-label', `${c.name}: ${c.best} of ${c.stages} stages finished`);
+        bars.appendChild(el);
+      });
+    };
+
+    document.getElementById('badgeSave')?.addEventListener('click', () => {
+      setIdentity(nameInput.value, chosen);
+      sfxYes();
+      paint();
+    });
+
+    document.getElementById('badgeEdit')?.addEventListener('click', () => {
+      const j = load();
+      nameInput.value = j.name;
+      const match = avatars.find((a) => a.dataset.avatar === j.avatar);
+      if (match) select(match);
+      newBox.hidden = false;
+      madeBox.hidden = true;
+      nameInput.focus();
+    });
+
+    onChange(paint);
+    paint();
+  }
+</script>

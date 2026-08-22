@@ -86,6 +86,14 @@ export const sfxDone = () => {
   [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => tone(f, i * 0.11, 0.3, 0.1));
 };
 
+/**
+ * One pitch per pad in Copy the Pattern, so the sequence is carried by sound as
+ * well as by colour and animal. A major pentatonic set — any order of these
+ * sounds pleasant, which matters when a child is mashing them.
+ */
+const PAD_HZ = [392.0, 523.25, 659.25, 783.99]; // G4 C5 E5 G5
+export const tonePad = (i: number) => tone(PAD_HZ[i % PAD_HZ.length], 0, 0.34, 0.11);
+
 /** Falling glissando for something sinking. */
 export const sfxSink = () => {
   [520, 440, 370, 300].forEach((f, i) => tone(f, i * 0.07, 0.18, 0.08));

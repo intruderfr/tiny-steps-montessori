@@ -1,0 +1,157 @@
+---
+/**
+ * COPY THE PATTERN — working memory, eight stages.
+ *
+ * Stage n plays a sequence of n+1 steps; the child taps it back in order.
+ *
+ * Each pad carries an animal as well as a colour. Relying on colour alone would
+ * shut out a colour-blind child and give a screen reader nothing to announce —
+ * "the frog, then the fox" works for everybody.
+ *
+ * Getting it wrong replays the same sequence rather than ending anything. The
+ * child is trying to hold something in mind; being thrown back to the start
+ * would punish exactly the effort we want.
+ */
+const pads = [
+  { id: 0, animal: '🐸', name: 'frog', colour: 'var(--green)' },
+  { id: 1, animal: '🦊', name: 'fox', colour: 'var(--red)' },
+  { id: 2, animal: '🐬', name: 'dolphin', colour: 'var(--teal)' },
+  { id: 3, animal: '🐤', name: 'chick', colour: 'var(--yellow)' },
+];
+---
+
+<section class="game" id="ch-sequence" style="--tint: var(--navy-soft); --ac-text: var(--navy)">
+  <header class="game__head">
+    <span class="game__icon" aria-hidden="true">🎵</span>
+    <div class="game__titles">
+      <p class="game__kicker">Working memory · 8 stages</p>
+      <h2 class="game__title">Copy the Pattern</h2>
+      <p class="game__how">
+        Watch which animals light up, then tap them back in the same order. Each
+        stage adds one more to remember.
+      </p>
+    </div>
+  </header>
+
+  <div class="stages" data-stage-picker role="group" aria-label="Choose a stage"></div>
+
+  <div class="game__board">
+    <div class="pads" id="seqPads" data-board-host>
+      {pads.map((p) => (
+        <button
+          class="pad"
+          type="button"
+          data-pad={p.id}
+          style={`--pc:${p.colour}`}
+          aria-label={`The ${p.name}`}
+        >
+          <span aria-hidden="true">{p.animal}</span>
+        </button>
+      ))}
+    </div>
+    <div data-board hidden></div>
+  </div>
+
+  <p class="game__hint" data-hint></p>
+  <p class="game__status" data-status role="status" aria-live="polite">Press play to watch the pattern.</p>
+
+  <div class="game__actions">
+    <button class="btn btn--teal" type="button" id="seqPlay">▶ Watch it again</button>
+    <button class="btn btn--primary" type="button" data-next hidden></button>
+    <button class="btn btn--ghost btn--sm" type="button" data-replay>Start this stage again</button>
+  </div>
+
+  <p class="game__real">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2Z"/></svg>
+    <span>
+      <strong>Away from the screen:</strong> clap a rhythm and have your child
+      clap it back, adding one clap each time. Same skill, no device, and you can
+      play it in a queue.
+    </span>
+  </p>
+</section>
+
+<script>
+  import { mountStageGame } from '../../scripts/stage-game';
+  import { sfxTap, tonePad, reducedMotion } from '../../scripts/playful';
+
+  const root = document.getElementById('ch-sequence');
+  if (root) {
+    const padEls = [...root.querySelectorAll<HTMLButtonElement>('.pad')];
+    const padHost = root.querySelector<HTMLElement>('#seqPads');
+    const playBtn = root.querySelector<HTMLButtonElement>('#seqPlay');
+    const NAMES = ['frog', 'fox', 'dolphin', 'chick'];
+
+    let sequence: number[] = [];
+    let expect = 0;
+    let watching = false;
+    let api: import('../../scripts/stage-game').StageApi | null = null;
+
+    const light = (i: number, ms: number) =>
+      new Promise<void>((resolve) => {
+        const el = padEls[i];
+        el.classList.add('is-lit');
+        tonePad(i); // a pitch per pad — the sequence is audible as well as visible
+        window.setTimeout(() => {
+          el.classList.remove('is-lit');
+          window.setTimeout(resolve, Math.max(90, ms * 0.35));
+        }, ms);
+      });
+
+    const playSequence = async () => {
+      if (watching || !sequence.length) return;
+      watching = true;
+      expect = 0;
+      padHost?.classList.add('is-watching');
+      padEls.forEach((p) => (p.disabled = true));
+      api?.tell('Watch carefully…');
+
+      // Slow enough to follow; reduced motion gets a slower, calmer pace.
+      const step = reducedMotion() ? 700 : 520;
+      await new Promise((r) => window.setTimeout(r, 450));
+      for (const i of sequence) await light(i, step);
+
+      padEls.forEach((p) => (p.disabled = false));
+      padHost?.classList.remove('is-watching');
+      watching = false;
+      api?.tell('Now your turn — tap them in the same order.');
+    };
+
+    const tap = (i: number) => {
+      if (watching || !api) return;
+      sfxTap();
+      padEls[i].classList.add('is-lit');
+      window.setTimeout(() => padEls[i].classList.remove('is-lit'), 180);
+
+      if (sequence[expect] !== i) {
+        api.nudge(`That one was the ${NAMES[i]}. Watch the pattern once more.`);
+        window.setTimeout(playSequence, 900);
+        return;
+      }
+
+      expect++;
+      if (expect === sequence.length) {
+        padEls.forEach((p) => (p.disabled = true));
+        api.win();
+      }
+    };
+
+    padEls.forEach((p, i) => p.addEventListener('click', () => tap(i)));
+    playBtn?.addEventListener('click', playSequence);
+
+    mountStageGame({
+      root,
+      challengeId: 'sequence',
+      stages: 8,
+      hint: (s) => `Stage ${s}: ${s + 1} in a row to remember.`,
+      onStart: (stage, a) => {
+        api = a;
+        // Length grows by one per stage: stage 1 = 2 steps, stage 8 = 9.
+        sequence = Array.from({ length: stage + 1 }, () => Math.floor(Math.random() * 4));
+        expect = 0;
+        padEls.forEach((p) => (p.disabled = true));
+        window.setTimeout(playSequence, 350);
+      },
+    });
+  }
+</script>

@@ -1,0 +1,161 @@
+---
+/**
+ * ODD ONE OUT — sorting and reasoning, eight stages.
+ *
+ * Each stage is a hand-written set rather than something generated, because the
+ * whole value is in the *quality* of the category. A generated puzzle can
+ * accidentally have two defensible answers, and a child who picks the other
+ * good answer would be told they were wrong — which teaches them not to
+ * reason. Every set below has exactly one defensible odd one, and the reason is
+ * stated in words when they get it.
+ *
+ * The stages move from obvious physical categories to abstract properties.
+ */
+
+interface Puzzle { items: string[]; odd: string; why: string; ask: string }
+
+const STAGES: Puzzle[][] = [
+  // 1 — plainly different kind of thing
+  [
+    { items: ['🍎', '🍌', '🍇', '🚗'], odd: '🚗', why: 'the others are all fruit', ask: 'Which one is not a fruit?' },
+    { items: ['🐶', '🐱', '🐰', '👟'], odd: '👟', why: 'the others are all animals', ask: 'Which one is not an animal?' },
+  ],
+  // 2 — colour
+  [
+    { items: ['🍓', '🌹', '🚒', '🫐'], odd: '🫐', why: 'the others are all red', ask: 'Which one is a different colour?' },
+    { items: ['🍋', '🌻', '🧀', '🍆'], odd: '🍆', why: 'the others are all yellow', ask: 'Which one is a different colour?' },
+  ],
+  // 3 — where it belongs
+  [
+    { items: ['🐠', '🐙', '🦈', '🦁'], odd: '🦁', why: 'the others all live in the sea', ask: 'Which one does not live in the sea?' },
+    { items: ['🚗', '🚌', '🚲', '⛵'], odd: '⛵', why: 'the others all go on roads', ask: 'Which one does not go on a road?' },
+  ],
+  // 4 — can it fly
+  [
+    { items: ['🦅', '🦋', '🐝', '🐌'], odd: '🐌', why: 'the others can all fly', ask: 'Which one cannot fly?' },
+    { items: ['✈️', '🚁', '🚀', '🚜'], odd: '🚜', why: 'the others all fly', ask: 'Which one stays on the ground?' },
+  ],
+  // 5 — odd and even
+  [
+    { items: ['2', '4', '6', '7'], odd: '7', why: 'the others are all even numbers', ask: 'Which one is not even?' },
+    { items: ['3', '5', '9', '8'], odd: '8', why: 'the others are all odd numbers', ask: 'Which one is not odd?' },
+  ],
+  // 6 — number of sides
+  [
+    { items: ['🔺', '🔻', '⛰️', '🟦'], odd: '🟦', why: 'the others all have three sides', ask: 'Which one does not have three sides?' },
+    { items: ['🟥', '🟨', '🟩', '⚪'], odd: '⚪', why: 'the others all have four corners', ask: 'Which one has no corners?' },
+  ],
+  // 7 — living or not
+  [
+    { items: ['🌳', '🐛', '🌻', '🪨'], odd: '🪨', why: 'the others are all alive', ask: 'Which one is not alive?' },
+    { items: ['🐟', '🌱', '🐦', '⌚'], odd: '⌚', why: 'the others are all living things', ask: 'Which one is not living?' },
+  ],
+  // 8 — abstract property
+  [
+    { items: ['🥶', '🧊', '❄️', '🔥'], odd: '🔥', why: 'the others are all cold', ask: 'Which one is not cold?' },
+    { items: ['🎻', '🥁', '🎺', '🪑'], odd: '🪑', why: 'the others all make music', ask: 'Which one does not make music?' },
+  ],
+];
+---
+
+<section class="game" id="ch-oddone" style="--tint: var(--red-soft); --ac-text: var(--red-deep)">
+  <header class="game__head">
+    <span class="game__icon" aria-hidden="true">🔍</span>
+    <div class="game__titles">
+      <p class="game__kicker">Sorting and reasoning · 8 stages</p>
+      <h2 class="game__title">Odd One Out</h2>
+      <p class="game__how">
+        Three of these belong together and one does not. Work out what the three
+        have in common first — then the odd one is easy.
+      </p>
+    </div>
+  </header>
+
+  <div class="stages" data-stage-picker role="group" aria-label="Choose a stage"></div>
+
+  <div class="game__board">
+    <p class="odd__ask" id="oddAsk"></p>
+    <div class="opts" id="oddOpts" role="group" aria-label="Choose the odd one out"></div>
+    <div data-board hidden></div>
+  </div>
+
+  <p class="game__hint" data-hint></p>
+  <p class="game__status" data-status role="status" aria-live="polite">Which one does not belong?</p>
+
+  <div class="game__actions">
+    <button class="btn btn--primary" type="button" data-next hidden></button>
+    <button class="btn btn--ghost btn--sm" type="button" data-replay>Try another one</button>
+  </div>
+
+  <p class="game__real">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2Z"/></svg>
+    <span>
+      <strong>Away from the screen:</strong> put four things from the kitchen on
+      the table and ask which does not belong. Then ask them to make one for
+      <em>you</em> — inventing the category is harder, and better.
+    </span>
+  </p>
+
+  <script type="application/json" id="oddData" set:html={JSON.stringify(STAGES)}></script>
+</section>
+
+<style>
+  .odd__ask {
+    text-align: center; font-family: var(--font-display);
+    font-size: clamp(1.1rem, 1rem + 0.6vw, 1.35rem);
+    margin-bottom: 1.1rem; color: var(--ink);
+  }
+</style>
+
+<script>
+  import { mountStageGame } from '../../scripts/stage-game';
+  import { sfxTap, shuffle } from '../../scripts/playful';
+
+  const root = document.getElementById('ch-oddone');
+  if (root) {
+    const ask = root.querySelector<HTMLElement>('#oddAsk');
+    const opts = root.querySelector<HTMLElement>('#oddOpts');
+    const data = JSON.parse(
+      root.querySelector<HTMLElement>('#oddData')?.textContent ?? '[]'
+    ) as { items: string[]; odd: string; why: string; ask: string }[][];
+
+    mountStageGame({
+      root,
+      challengeId: 'oddone',
+      stages: 8,
+      hint: () => 'Say out loud what three of them have in common.',
+      onStart: (stage, api) => {
+        const pool = data[stage - 1] ?? [];
+        const p = pool[Math.floor(Math.random() * pool.length)];
+        if (!p || !ask || !opts) return;
+
+        ask.textContent = p.ask;
+        opts.innerHTML = '';
+        shuffle(p.items).forEach((item) => {
+          const b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'opt' + (/^\d+$/.test(item) ? ' opt--num' : '');
+          b.textContent = item;
+          b.setAttribute('aria-label', `Choose ${item}`);
+          b.addEventListener('click', () => {
+            sfxTap();
+            if (item !== p.odd) {
+              b.classList.remove('is-wobbling');
+              void b.offsetWidth;
+              b.classList.add('is-wobbling');
+              api.nudge('That one does belong. What do three of them share?');
+              return;
+            }
+            b.classList.add('is-right');
+            [...opts.querySelectorAll('button')].forEach((x) => {
+              (x as HTMLButtonElement).disabled = true;
+              if (x !== b) x.classList.add('is-out');
+            });
+            api.win(`Yes — ${p.why}.`);
+          });
+          opts.appendChild(b);
+        });
+      },
+    });
+  }
+</script>

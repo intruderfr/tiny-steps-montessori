@@ -1,0 +1,171 @@
+---
+/**
+ * MAKE TEN — number bonds, eight stages.
+ *
+ * Number bonds to ten are the single most useful fact set in early arithmetic:
+ * once they are automatic, every later addition and subtraction gets easier.
+ *
+ * The progression removes support rather than adding difficulty:
+ *   1–3  counters shown — the child can count the gap
+ *   4–6  numerals only — the bond has to be recalled
+ *   7–8  bonds to twenty, and three numbers instead of two
+ *
+ * That is the Montessori move from concrete to abstract, in miniature.
+ */
+---
+
+<section class="game" id="ch-maketen" style="--tint: var(--yellow-soft); --ac-text: var(--yellow-text)">
+  <header class="game__head">
+    <span class="game__icon" aria-hidden="true">🔟</span>
+    <div class="game__titles">
+      <p class="game__kicker">Number bonds · 8 stages</p>
+      <h2 class="game__title">Make Ten</h2>
+      <p class="game__how">
+        How many more do you need? The first stages show you counters to help.
+        Later on you will know it without looking.
+      </p>
+    </div>
+  </header>
+
+  <div class="stages" data-stage-picker role="group" aria-label="Choose a stage"></div>
+
+  <div class="game__board">
+    <p class="mt__sum" id="mtSum"></p>
+    <div class="mt__counters" id="mtCounters" aria-hidden="true"></div>
+    <div class="opts" id="mtOpts" role="group" aria-label="Choose the missing number"></div>
+    <div data-board hidden></div>
+  </div>
+
+  <p class="game__hint" data-hint></p>
+  <p class="game__status" data-status role="status" aria-live="polite">How many more are needed?</p>
+
+  <div class="game__actions">
+    <button class="btn btn--primary" type="button" data-next hidden></button>
+    <button class="btn btn--ghost btn--sm" type="button" data-replay>Try another one</button>
+  </div>
+
+  <p class="game__real">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2Z"/></svg>
+    <span>
+      <strong>Away from the screen:</strong> ten stones and a cloth. Cover some,
+      and ask how many are hidden. That one game builds every bond to ten, and
+      it is the version we use in the
+      <a href="/programmes/montessori">classroom</a>.
+    </span>
+  </p>
+</section>
+
+<style>
+  .mt__sum {
+    text-align: center; font-family: var(--font-display); font-weight: 800;
+    font-size: clamp(1.8rem, 1.4rem + 2.6vw, 2.8rem); color: var(--navy);
+    letter-spacing: 0.04em; margin-bottom: 0.9rem;
+  }
+  .mt__counters {
+    display: flex; flex-wrap: wrap; gap: 0.35rem; justify-content: center;
+    margin-bottom: 1.2rem; min-height: 0;
+  }
+  .mt__counters:empty { display: none; }
+  .mt__dot {
+    width: 30px; height: 30px; border-radius: 50%;
+    background: var(--yellow); box-shadow: var(--sh-sm);
+  }
+  .mt__dot--empty { background: transparent; border: 3px dashed var(--ink-3); box-shadow: none; }
+</style>
+
+<script>
+  import { mountStageGame } from '../../scripts/stage-game';
+  import { sfxTap, shuffle } from '../../scripts/playful';
+
+  const root = document.getElementById('ch-maketen');
+  if (root) {
+    const sumEl = root.querySelector<HTMLElement>('#mtSum');
+    const counters = root.querySelector<HTMLElement>('#mtCounters');
+    const opts = root.querySelector<HTMLElement>('#mtOpts');
+
+    const build = (stage: number) => {
+      // Stages 7–8 move up to twenty; everything before is bonds to ten.
+      const total = stage >= 7 ? 20 : 10;
+      const showCounters = stage <= 3;
+
+      if (stage === 8) {
+        // Three numbers: a + b + ? = 20
+        const a = 2 + Math.floor(Math.random() * 6);
+        const b = 2 + Math.floor(Math.random() * 6);
+        const answer = total - a - b;
+        return { text: `${a} + ${b} + ? = ${total}`, have: a + b, total, answer, showCounters: false };
+      }
+
+      const have = stage >= 7
+        ? 8 + Math.floor(Math.random() * 9)   // 8–16, so the answer stays small
+        : 1 + Math.floor(Math.random() * 9);  // 1–9
+      return { text: `${have} + ? = ${total}`, have, total, answer: total - have, showCounters };
+    };
+
+    mountStageGame({
+      root,
+      challengeId: 'maketen',
+      stages: 8,
+      hint: (s) =>
+        s <= 3
+          ? 'Count the empty circles — that is your answer.'
+          : s <= 6
+            ? 'No counters this time. What goes with that number to make ten?'
+            : 'Now we are making twenty.',
+      onStart: (stage, api) => {
+        const p = build(stage);
+        if (!sumEl || !counters || !opts) return;
+
+        sumEl.textContent = p.text;
+        sumEl.setAttribute('aria-label', p.text.replace('?', 'what'));
+
+        counters.innerHTML = '';
+        if (p.showCounters) {
+          for (let i = 0; i < p.total; i++) {
+            const d = document.createElement('span');
+            d.className = 'mt__dot' + (i >= p.have ? ' mt__dot--empty' : '');
+            counters.appendChild(d);
+          }
+        }
+
+        // Offer the answer plus near-misses — the off-by-ones are the mistakes
+        // a child actually makes, so they are the useful distractors.
+        const wrong = shuffle(
+          [p.answer - 1, p.answer + 1, p.answer + 2, p.answer - 2].filter(
+            (n) => n >= 0 && n <= p.total && n !== p.answer
+          )
+        ).slice(0, 3);
+
+        opts.innerHTML = '';
+        shuffle([p.answer, ...wrong]).forEach((n) => {
+          const b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'opt opt--num';
+          b.textContent = String(n);
+          b.setAttribute('aria-label', `Choose ${n}`);
+          b.addEventListener('click', () => {
+            sfxTap();
+            if (n !== p.answer) {
+              b.classList.remove('is-wobbling');
+              void b.offsetWidth;
+              b.classList.add('is-wobbling');
+              api.nudge(
+                p.showCounters
+                  ? 'Not quite — count the empty circles again.'
+                  : `Not quite. How far is ${p.have} from ${p.total}?`
+              );
+              return;
+            }
+            b.classList.add('is-right');
+            [...opts.querySelectorAll('button')].forEach((x) => {
+              (x as HTMLButtonElement).disabled = true;
+              if (x !== b) x.classList.add('is-out');
+            });
+            api.win(`Yes — ${p.text.replace('?', String(p.answer))}.`);
+          });
+          opts.appendChild(b);
+        });
+      },
+    });
+  }
+</script>

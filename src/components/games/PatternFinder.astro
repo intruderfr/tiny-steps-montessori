@@ -1,0 +1,177 @@
+---
+/**
+ * WHAT COMES NEXT? — logic and sequencing, eight stages.
+ *
+ * The progression is deliberate rather than "more of the same":
+ *   1–4  repeating rules of growing length (AB, AAB, ABC, ABBC)
+ *   5–8  growing rules, where the step has to be worked out, not just spotted
+ *
+ * That order matters. Recognising a repeat is a perceptual skill; continuing a
+ * growing sequence needs the child to hold a rule in mind and apply it, which
+ * is the beginning of algebra.
+ */
+---
+
+<section class="game" id="ch-pattern" style="--tint: var(--teal-soft); --ac-text: var(--teal-deep)">
+  <header class="game__head">
+    <span class="game__icon" aria-hidden="true">🔗</span>
+    <div class="game__titles">
+      <p class="game__kicker">Logic and sequencing · 8 stages</p>
+      <h2 class="game__title">What Comes Next?</h2>
+      <p class="game__how">
+        Read the row from left to right and work out the rule. Then choose what
+        belongs in the empty box.
+      </p>
+    </div>
+  </header>
+
+  <div class="stages" data-stage-picker role="group" aria-label="Choose a stage"></div>
+
+  <div class="game__board">
+    <div class="strip" id="patStrip" aria-label="The pattern so far"></div>
+    <div class="opts" id="patOpts" role="group" aria-label="Choose what comes next"></div>
+    <div data-board hidden></div>
+  </div>
+
+  <p class="game__hint" data-hint></p>
+  <p class="game__status" data-status role="status" aria-live="polite">Look at the row and find the rule.</p>
+
+  <div class="game__actions">
+    <button class="btn btn--primary" type="button" data-next hidden></button>
+    <button class="btn btn--ghost btn--sm" type="button" data-replay>Try another one</button>
+  </div>
+
+  <p class="game__real">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2Z"/></svg>
+    <span>
+      <strong>Away from the screen:</strong> lay out buttons, pasta or socks in a
+      repeating pattern and stop halfway. Ask "what comes next, and how do you
+      know?" — the second half of that question is the important one.
+    </span>
+  </p>
+</section>
+
+<script>
+  import { mountStageGame } from '../../scripts/stage-game';
+  import { sfxTap, shuffle } from '../../scripts/playful';
+
+  const root = document.getElementById('ch-pattern');
+  if (root) {
+    const strip = root.querySelector<HTMLElement>('#patStrip');
+    const opts = root.querySelector<HTMLElement>('#patOpts');
+
+    const SETS = [
+      ['🍎', '🍌', '🍇', '🍓'],
+      ['🔴', '🔵', '🟡', '🟢'],
+      ['⭐', '🌙', '☀️', '☁️'],
+      ['🐶', '🐱', '🐭', '🐰'],
+    ];
+
+    /** Build one puzzle for a stage: the visible cells, the answer, the choices. */
+    const makePuzzle = (stage: number) => {
+      const set = SETS[Math.floor(Math.random() * SETS.length)];
+      const pick = shuffle(set);
+
+      // ---- stages 1–4: repeating rules ----
+      const repeats: Record<number, string[]> = {
+        1: [pick[0], pick[1]],                       // A B
+        2: [pick[0], pick[0], pick[1]],              // A A B
+        3: [pick[0], pick[1], pick[2]],              // A B C
+        4: [pick[0], pick[1], pick[1], pick[2]],     // A B B C
+      };
+
+      if (stage <= 4) {
+        const unit = repeats[stage];
+        const cells: string[] = [];
+        // Show two full repeats plus a partial one, then the gap.
+        const total = unit.length * 2 + Math.floor(unit.length / 2) + 1;
+        for (let i = 0; i < total; i++) cells.push(unit[i % unit.length]);
+        const answer = cells.pop()!;
+        const wrong = set.filter((x) => x !== answer);
+        return {
+          cells,
+          answer,
+          options: shuffle([answer, ...shuffle(wrong).slice(0, 2)]),
+          numeric: false,
+          why: 'the pattern repeats',
+        };
+      }
+
+      // ---- stages 5–8: growing rules ----
+      const steps: Record<number, number> = { 5: 1, 6: 2, 7: 5, 8: 3 };
+      const step = steps[stage];
+      const start = stage === 8 ? 1 + Math.floor(Math.random() * 3) : step;
+      const seq = Array.from({ length: 5 }, (_, i) => start + i * step);
+      const answer = String(seq.pop());
+      const distractors = shuffle([
+        String(Number(answer) + step),
+        String(Number(answer) - 1),
+        String(Number(answer) + 1),
+      ]).slice(0, 2);
+      return {
+        cells: seq.map(String),
+        answer,
+        options: shuffle([answer, ...distractors]),
+        numeric: true,
+        why: `each one goes up by ${step}`,
+      };
+    };
+
+    mountStageGame({
+      root,
+      challengeId: 'pattern',
+      stages: 8,
+      hint: (s) =>
+        s <= 4
+          ? 'This row repeats. Find the part that keeps coming back.'
+          : 'This row grows. Work out how much it goes up by each time.',
+      onStart: (stage, api) => {
+        const p = makePuzzle(stage);
+        if (!strip || !opts) return;
+
+        strip.innerHTML = '';
+        p.cells.forEach((c) => {
+          const cell = document.createElement('span');
+          cell.className = 'strip__cell' + (p.numeric ? ' strip__cell--gap' : '');
+          if (p.numeric) cell.classList.remove('strip__cell--gap');
+          cell.textContent = c;
+          cell.setAttribute('role', 'listitem');
+          strip.appendChild(cell);
+        });
+        const gap = document.createElement('span');
+        gap.className = 'strip__cell strip__cell--gap';
+        gap.textContent = '?';
+        gap.setAttribute('aria-label', 'the missing one');
+        strip.appendChild(gap);
+
+        opts.innerHTML = '';
+        p.options.forEach((o) => {
+          const b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'opt' + (p.numeric ? ' opt--num' : '');
+          b.textContent = o;
+          b.setAttribute('aria-label', `Choose ${o}`);
+          b.addEventListener('click', () => {
+            sfxTap();
+            if (o !== p.answer) {
+              b.classList.remove('is-wobbling');
+              void b.offsetWidth;
+              b.classList.add('is-wobbling');
+              api.nudge('Not that one. Read the row again from the start.');
+              return;
+            }
+            b.classList.add('is-right');
+            gap.textContent = o;
+            gap.classList.remove('strip__cell--gap');
+            [...opts.querySelectorAll('button')].forEach((x) => {
+              (x as HTMLButtonElement).disabled = true;
+              if (x !== b) x.classList.add('is-out');
+            });
+            api.win(`Yes — ${p.why}.`);
+          });
+          opts.appendChild(b);
+        });
+      },
+    });
+  }
+</script>

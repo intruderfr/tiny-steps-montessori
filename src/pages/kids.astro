@@ -1,5 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
+import ProfileCard from '../components/kids/ProfileCard.astro';
 import SinkOrFloat from '../components/games/SinkOrFloat.astro';
 import BuildTower from '../components/games/BuildTower.astro';
 import FindPairs from '../components/games/FindPairs.astro';
@@ -66,11 +67,12 @@ const faqs = [
     <div class="wrap khead__inner">
       <p class="eyebrow eyebrow--red">Kids Corner</p>
       <h1 class="h1 khead__t">
-        Four things to <span class="squiggle">try</span> right now
+        Things to <span class="squiggle">try</span> right now
       </h1>
       <p class="lede khead__d">
-        These are the same activities we do in the classroom, made small enough
-        to fit on a screen. No score, no timer, and no way to lose.
+        The same activities we do in the classroom, made small enough to fit on
+        a screen — plus four staged brain challenges. No score, no timer, and no
+        way to lose.
       </p>
 
       <nav class="picker" aria-label="Choose an activity">
@@ -85,6 +87,25 @@ const faqs = [
         ))}
       </nav>
 
+      <div class="routes">
+        <a href="/kids/challenges" class="route route--challenge">
+          <span class="route__icon" aria-hidden="true">🧠</span>
+          <span class="route__body">
+            <span class="route__name">Brain Challenges</span>
+            <span class="route__desc">Four challenges, eight stages each. Memory, patterns, reasoning and numbers.</span>
+          </span>
+          <span class="route__go" aria-hidden="true">→</span>
+        </a>
+        <a href="/kids/progress" class="route route--journey">
+          <span class="route__icon" aria-hidden="true">🗺️</span>
+          <span class="route__body">
+            <span class="route__name">My Journey</span>
+            <span class="route__desc">See everything you can do so far. Kept on this device only.</span>
+          </span>
+          <span class="route__go" aria-hidden="true">→</span>
+        </a>
+      </div>
+
       <button class="sound" id="soundToggle" type="button" aria-pressed="false">
         <svg viewBox="0 0 24 24" aria-hidden="true" id="soundIcon">
           <path d="M3 9v6h4l5 5V4L7 9H3Zm13.5 3a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4Zm-2.5-9v2.1a7 7 0 0 1 0 13.8V21a9 9 0 0 0 0-18Z"/>
@@ -95,6 +116,8 @@ const faqs = [
   </header>
 
   <div class="wrap kgames">
+    <ProfileCard />
+
     <SinkOrFloat />
     <BuildTower />
     <FindPairs />
@@ -115,13 +138,23 @@ const faqs = [
             last rather than first, and that most "educational" apps are a quiz
             with animations attached.
           </p>
-          <p>We still think all of that. So this page is built to a few rules:</p>
+          <p>We still think all of that. So these pages are built to a few rules:</p>
           <ul>
-            <li><strong>Nothing is designed to keep your child here.</strong> No streaks, no daily rewards, no unlockables, no next level. Every activity finishes and stops.</li>
-            <li><strong>No score and no timer.</strong> Nothing measures your child or hurries them.</li>
+            <li><strong>No score and no timer.</strong> Nothing measures your child or hurries them, anywhere.</li>
+            <li><strong>Nothing is designed to keep your child here.</strong> No streaks, no daily rewards, no coins, no badges to collect. Every activity finishes and stops.</li>
             <li><strong>Every game points at the real version</strong>, because the real version is better. The bowl of water teaches more than our animation of one does.</li>
-            <li><strong>Nothing is collected.</strong> No account, no analytics on this page, no adverts, nothing stored about your child.</li>
+            <li><strong>Nothing leaves the device.</strong> No account, no server, no analytics on these pages, no adverts.</li>
           </ul>
+          <p>
+            One honest amendment. The
+            <a href="/kids/challenges">Brain Challenges</a> do have stages that
+            open one after another, which is closer to a "next level" than we
+            first wrote here. We think the distinction holds: a Montessori shelf
+            is already sequenced, and a child is handed the next material when
+            the last is secure. What we have kept out is the part that makes
+            games sticky — there is no streak to break, nothing re-locks, and
+            finishing a stage opens the next one and does nothing else.
+          </p>
           <p>
             Ten minutes here, then go and find a real bowl and eight real
             objects. That is the order we would put them in.
@@ -188,6 +221,27 @@ const faqs = [
   .picker__text { display: grid; text-align: left; line-height: 1.2; }
   .picker__name { font-family: var(--font-display); font-weight: 700; font-size: 1rem; color: var(--ink); }
   .picker__area { font-size: var(--t-xs); color: var(--ink-3); }
+
+  /* -------------------------------------------------------------- routes */
+  .routes { display: grid; gap: 0.8rem; margin-top: 1.8rem; text-align: left; }
+  @media (min-width: 700px) { .routes { grid-template-columns: 1fr 1fr; } }
+  .route {
+    display: flex; align-items: center; gap: 0.9rem; text-decoration: none;
+    background: var(--paper); border: 2px solid var(--line); border-radius: var(--r-xl);
+    padding: 1rem 1.2rem;
+    transition: transform 0.24s var(--ease-bounce), border-color 0.2s, box-shadow 0.2s;
+  }
+  .route:hover { transform: translateY(-4px); box-shadow: var(--sh-md); }
+  .route--challenge:hover { border-color: var(--navy); }
+  .route--journey:hover { border-color: var(--teal); }
+  .route__icon {
+    font-size: 1.8rem; width: 54px; height: 54px; flex: none;
+    display: grid; place-items: center; background: var(--surface-2); border-radius: var(--r-lg);
+  }
+  .route__body { display: grid; gap: 0.15rem; flex: 1; }
+  .route__name { font-family: var(--font-display); font-weight: 800; font-size: 1.1rem; color: var(--ink); }
+  .route__desc { font-size: var(--t-xs); color: var(--ink-2); line-height: 1.45; }
+  .route__go { font-size: 1.4rem; color: var(--ink-3); flex: none; }
 
   .sound { margin-top: 1.6rem; }
 
