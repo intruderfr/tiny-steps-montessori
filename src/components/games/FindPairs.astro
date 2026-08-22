@@ -88,8 +88,24 @@ const deck = [...cards, ...cards];
             </svg>
           </span>
           <span class="fp__face fp__face--front">
-            {/* alt is empty because the button's aria-label carries the description */}
-            <img src={c.src} alt="" width="260" height="260" loading="lazy" decoding="async" />
+            {/*
+              alt is empty because the button's aria-label carries the description.
+
+              loading="eager" is deliberate. The face is rotated 180deg with
+              backface-visibility:hidden, so the browser treats it as off-screen
+              and a lazy image would never start loading — flipping a card would
+              reveal a blank square. All six photos together are only ~74 KB, and
+              fetchpriority="low" keeps them out of the way of the rest of the page.
+            */}
+            <img
+              src={c.src}
+              alt=""
+              width="260"
+              height="260"
+              loading="eager"
+              fetchpriority="low"
+              decoding="async"
+            />
           </span>
         </button>
       ))}
