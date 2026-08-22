@@ -91,11 +91,16 @@ const deck = [...cards, ...cards];
             {/*
               alt is empty because the button's aria-label carries the description.
 
-              loading="eager" is deliberate. The face is rotated 180deg with
-              backface-visibility:hidden, so the browser treats it as off-screen
-              and a lazy image would never start loading — flipping a card would
-              reveal a blank square. All six photos together are only ~74 KB, and
-              fetchpriority="low" keeps them out of the way of the rest of the page.
+              loading="eager" is deliberate. This face is rotated 180deg with
+              backface-visibility:hidden, so whether a lazy image ever starts
+              loading depends on how a given browser decides an element is
+              "visible" — and if it guesses wrong, flipping a card reveals a
+              blank square and the game is broken.
+
+              Rather than depend on that heuristic, load them up front: all six
+              photos together are ~74 KB (the twelve cards share them), and
+              fetchpriority="low" keeps them from competing with the rest of
+              the page.
             */}
             <img
               src={c.src}
