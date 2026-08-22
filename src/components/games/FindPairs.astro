@@ -1,0 +1,242 @@
+---
+/**
+ * FIND THE PAIRS
+ *
+ * A memory game built from the school's own photographs, so a child playing at
+ * home is turning over pictures of their own classroom, their own trip, their
+ * own concert. That recognition is most of the appeal.
+ *
+ * No timer and no move counter — memory improves through repetition, and a
+ * clock only teaches a four-year-old to feel rushed.
+ */
+import { getImage } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import { photoBySlug } from '../../data/gallery';
+
+const files = import.meta.glob<{ default: ImageMetadata }>(
+  '/src/assets/photos/*.jpg',
+  { eager: true }
+);
+
+// Six visually distinct photos — similar-looking frames make the game unfair
+// rather than harder.
+const slugs = [
+  'farm-visit-holding-chick',
+  'science-sink-and-float',
+  'international-day-asia',
+  'upcycling-painting-tyres',
+  'art-fish-collage',
+  'nature-trip-muddy-child',
+];
+
+const cards = await Promise.all(
+  slugs.map(async (slug) => {
+    const img = files[`/src/assets/photos/${slug}.jpg`]?.default;
+    if (!img) throw new Error(`FindPairs: missing photo "${slug}"`);
+    const thumb = await getImage({
+      src: img,
+      width: 260,
+      height: 260,
+      fit: 'cover',
+      format: 'webp',
+      quality: 70,
+    });
+    return { slug, src: thumb.src, alt: photoBySlug(slug)?.alt ?? '' };
+  })
+);
+
+// Two of each, laid out in a fixed order here and shuffled on the client — the
+// source order must never be a hint.
+const deck = [...cards, ...cards];
+---
+
+<section class="game fp" id="find-pairs" style="--tint: var(--green-soft); --ac-text: var(--green-deep)">
+  <header class="game__head">
+    <span class="game__icon" aria-hidden="true">🃏</span>
+    <div class="game__titles">
+      <p class="game__kicker">Remembering</p>
+      <h2 class="game__title">Find the Pairs</h2>
+      <p class="game__how">
+        Every picture is really from our school. Turn over two cards. If they
+        match they stay; if not, remember where they were.
+      </p>
+    </div>
+  </header>
+
+  <div class="game__board">
+    <div class="fp__grid" id="fpGrid" role="group" aria-label="Twelve cards, face down">
+      {deck.map((c, i) => (
+        <button class="fp__card" type="button" data-slug={c.slug} data-i={i} aria-label="Face-down card">
+          <span class="fp__face fp__face--back" aria-hidden="true">
+            <svg viewBox="0 0 48 48">
+              <circle r="8.4" cx="24" cy="24" fill="var(--navy)" />
+              <g transform="translate(24 24) rotate(8)" fill="var(--red)">
+                <ellipse cx="0" cy="-10.6" rx="4.9" ry="6.4" />
+                <circle cx="4.3" cy="-17.6" r="2.05" /><circle cx="1.2" cy="-19.1" r="1.75" />
+                <circle cx="-1.7" cy="-18.5" r="1.5" /><circle cx="-4.1" cy="-16.9" r="1.25" />
+              </g>
+              <g transform="translate(24 24) rotate(128)" fill="var(--green)">
+                <ellipse cx="0" cy="-10.6" rx="4.9" ry="6.4" />
+                <circle cx="4.3" cy="-17.6" r="2.05" /><circle cx="1.2" cy="-19.1" r="1.75" />
+                <circle cx="-1.7" cy="-18.5" r="1.5" /><circle cx="-4.1" cy="-16.9" r="1.25" />
+              </g>
+              <g transform="translate(24 24) rotate(248)" fill="var(--yellow)">
+                <ellipse cx="0" cy="-10.6" rx="4.9" ry="6.4" />
+                <circle cx="4.3" cy="-17.6" r="2.05" /><circle cx="1.2" cy="-19.1" r="1.75" />
+                <circle cx="-1.7" cy="-18.5" r="1.5" /><circle cx="-4.1" cy="-16.9" r="1.25" />
+              </g>
+            </svg>
+          </span>
+          <span class="fp__face fp__face--front">
+            {/* alt is empty because the button's aria-label carries the description */}
+            <img src={c.src} alt="" width="260" height="260" loading="lazy" decoding="async" />
+          </span>
+        </button>
+      ))}
+    </div>
+  </div>
+
+  <p class="game__status" id="fpStatus" role="status" aria-live="polite">
+    Turn over any two cards to begin.
+  </p>
+
+  <div class="game__actions">
+    <button class="btn btn--ghost btn--sm" type="button" id="fpReset">Shuffle again</button>
+  </div>
+
+  <p class="game__real">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2Z"/></svg>
+    <span>
+      <strong>Make your own set.</strong> Print two copies of six family photos,
+      or use playing cards. Home-made pairs beat any app, because your child
+      helps make them. More pictures in our <a href="/gallery">gallery</a>.
+    </span>
+  </p>
+</section>
+
+<style>
+  .fp__grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: clamp(0.4rem, 1.6vw, 0.8rem); max-width: 520px; margin-inline: auto; }
+  @media (max-width: 420px) { .fp__grid { grid-template-columns: repeat(3, 1fr); } }
+
+  .fp__card {
+    position: relative; aspect-ratio: 1; border: none; padding: 0; background: none;
+    cursor: pointer; border-radius: var(--r-md); transform-style: preserve-3d;
+    transition: transform 0.42s var(--ease); -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+  .fp__card:focus-visible { outline: 4px solid var(--teal); outline-offset: 3px; }
+  .fp__card.is-up, .fp__card.is-matched { transform: rotateY(180deg); }
+  .fp__card.is-matched { cursor: default; }
+  .fp__card.is-matched .fp__face--front { box-shadow: 0 0 0 4px var(--green); }
+
+  .fp__face {
+    position: absolute; inset: 0; border-radius: var(--r-md); overflow: hidden;
+    backface-visibility: hidden; -webkit-backface-visibility: hidden;
+    display: grid; place-items: center; box-shadow: var(--sh-sm);
+  }
+  .fp__face--back { background: var(--paper); border: 3px solid var(--line); }
+  .fp__face--back svg { width: 62%; height: 62%; }
+  .fp__face--front { transform: rotateY(180deg); background: var(--surface-2); }
+  .fp__face--front img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .fp__card { transition: none; }
+  }
+</style>
+
+<script>
+  import { sfxTap, sfxYes, sfxNudge, sfxDone, shuffle, say, celebrate } from '../../scripts/playful';
+
+  const root = document.getElementById('find-pairs');
+  if (root) {
+    const grid = root.querySelector<HTMLElement>('#fpGrid');
+    const status = root.querySelector<HTMLElement>('#fpStatus');
+    const reset = root.querySelector<HTMLButtonElement>('#fpReset');
+    const cards = [...root.querySelectorAll<HTMLButtonElement>('.fp__card')];
+
+    let first: HTMLButtonElement | null = null;
+    let busy = false;
+    let found = 0;
+
+    const label = (c: HTMLButtonElement, up: boolean) => {
+      const img = c.querySelector('img');
+      c.setAttribute(
+        'aria-label',
+        up ? `Turned over: ${img?.getAttribute('data-alt') ?? c.dataset.slug?.replace(/-/g, ' ')}` : 'Face-down card'
+      );
+    };
+
+    const deal = () => {
+      first = null;
+      busy = false;
+      found = 0;
+      shuffle(cards).forEach((c) => {
+        c.classList.remove('is-up', 'is-matched');
+        c.disabled = false;
+        label(c, false);
+        grid?.appendChild(c);
+      });
+    };
+
+    const flip = (card: HTMLButtonElement) => {
+      if (busy || card.classList.contains('is-up') || card.classList.contains('is-matched')) return;
+
+      sfxTap();
+      card.classList.add('is-up');
+      label(card, true);
+
+      if (!first) {
+        first = card;
+        return;
+      }
+
+      // Second card of the turn.
+      if (first.dataset.slug === card.dataset.slug) {
+        sfxYes();
+        [first, card].forEach((c) => {
+          c.classList.add('is-matched');
+          c.disabled = true;
+        });
+        first = null;
+        found++;
+        if (found === cards.length / 2) {
+          window.setTimeout(() => {
+            sfxDone();
+            celebrate(root);
+            say(status, 'You found every pair! Shuffle and go again whenever you like.');
+          }, 420);
+        } else {
+          say(status, `That is a pair. ${cards.length / 2 - found} to go.`);
+        }
+      } else {
+        busy = true;
+        sfxNudge();
+        say(status, 'Not a pair — remember where they were.');
+        const a = first;
+        first = null;
+        window.setTimeout(() => {
+          [a, card].forEach((c) => {
+            c.classList.remove('is-up');
+            label(c, false);
+          });
+          busy = false;
+        }, 1000);
+      }
+    };
+
+    // Stash the alt text where the label helper can reach it.
+    cards.forEach((c) => {
+      const img = c.querySelector('img');
+      const slug = c.dataset.slug ?? '';
+      img?.setAttribute('data-alt', slug.replace(/-/g, ' '));
+      c.addEventListener('click', () => flip(c));
+    });
+
+    reset?.addEventListener('click', () => {
+      deal();
+      say(status, 'Shuffled. Turn over any two cards.');
+    });
+
+    deal();
+  }
+</script>

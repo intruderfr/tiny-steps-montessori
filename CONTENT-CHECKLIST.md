@@ -90,6 +90,16 @@ These were assumptions before; the photos confirm them:
 - **Celebrations** — International Day, Avurudu, Career Day, Cookery Day
 - **Trilingual environment** — Sinhala signage appears in the classroom photos
 
+## 🟢 Kids Corner — safe as written
+
+The four activities at `/kids` make no claims about your school. They are
+standard Montessori exercises (size ordering, one-to-one counting, sink and
+float) plus a memory game built from your own photographs. Nothing is
+collected, there is no sign-up, and there are no adverts.
+
+The one thing to check: the memory game uses six of your photos, so it inherits
+the same **consent question** as the gallery.
+
 ## 🟢 Real content, safe as written
 
 The eight articles in `src/content/news/` are general parenting and Montessori

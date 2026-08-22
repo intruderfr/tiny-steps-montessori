@@ -1,0 +1,201 @@
+---
+/**
+ * COUNT WITH ME
+ *
+ * Two things happen here, in the order a child actually learns them:
+ *
+ *   1. ONE-TO-ONE CORRESPONDENCE — touch each object exactly once and say the
+ *      next number. Children who can chant "one two three" often cannot yet do
+ *      this, and it is the part that matters. Each object can only be counted
+ *      once, so the touching is what produces the total.
+ *
+ *   2. MATCHING QUANTITY TO SYMBOL — only after counting does the numeral
+ *      appear. The digit is the last step, never the first.
+ */
+const numerals = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+---
+
+<section class="game cw" id="count-with-me" style="--tint: var(--yellow-soft); --ac-text: var(--yellow-text)">
+  <header class="game__head">
+    <span class="game__icon" aria-hidden="true">🐞</span>
+    <div class="game__titles">
+      <p class="game__kicker">Numbers</p>
+      <h2 class="game__title">Count With Me</h2>
+      <p class="game__how">
+        Touch each one and count out loud as you go — every object only counts
+        once. When you have touched them all, tap the number you landed on.
+      </p>
+    </div>
+  </header>
+
+  <div class="game__board">
+    <div class="cw__field" id="cwField" role="group" aria-label="Things to count"></div>
+
+    <p class="cw__tally" id="cwTally" aria-hidden="true">0</p>
+
+    <div class="cw__numbers" id="cwNumbers" role="group" aria-label="Choose the number" hidden>
+      {numerals.map((n) => (
+        <button class="piece cw__num" type="button" data-n={n} aria-label={`The number ${n}`}>{n}</button>
+      ))}
+    </div>
+  </div>
+
+  <p class="game__status" id="cwStatus" role="status" aria-live="polite">
+    Touch each one to count them.
+  </p>
+
+  <div class="game__actions">
+    <button class="btn btn--ghost btn--sm" type="button" id="cwReset">Give me new ones</button>
+  </div>
+
+  <p class="game__real">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2Z"/></svg>
+    <span>
+      <strong>Count real things.</strong> Buttons, stones, spoons on the table,
+      steps up to the door. Moving each object as you count it is what builds
+      the idea — see our
+      <a href="/news/practical-life-montessori-at-home">practical life ideas</a>.
+    </span>
+  </p>
+</section>
+
+<style>
+  .cw__field {
+    display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.5rem;
+    min-height: 150px; align-content: center; justify-items: center;
+    padding: 0.5rem;
+  }
+  @media (max-width: 420px) { .cw__field { grid-template-columns: repeat(4, 1fr); } }
+
+  /* Created in JavaScript, so it needs :global() to escape Astro scoping. */
+  .cw__field :global(.cw__thing) {
+    font-size: clamp(1.8rem, 7vw, 2.6rem); line-height: 1;
+    background: none; border: none; cursor: pointer; padding: 0.25rem;
+    border-radius: var(--r-md); position: relative;
+    transition: transform 0.2s var(--ease-bounce), opacity 0.2s;
+    -webkit-tap-highlight-color: transparent; touch-action: manipulation;
+    min-width: 56px; min-height: 56px;
+  }
+  .cw__field :global(.cw__thing:hover:not(:disabled)) { transform: scale(1.14); }
+  .cw__field :global(.cw__thing:focus-visible) { outline: 4px solid var(--teal); outline-offset: 2px; }
+  .cw__field :global(.cw__thing.is-counted) { opacity: 0.45; transform: scale(0.9); }
+  /* The number appears on the object itself, tying the count to the thing. */
+  .cw__field :global(.cw__thing.is-counted)::after {
+    content: attr(data-count);
+    position: absolute; top: -4px; right: -4px;
+    background: var(--green); color: #fff; font-family: var(--font-display);
+    font-size: 0.78rem; font-weight: 800; line-height: 1;
+    width: 1.55em; height: 1.55em; border-radius: 50%;
+    display: grid; place-items: center; box-shadow: var(--sh-sm);
+  }
+
+  .cw__tally {
+    text-align: center; font-family: var(--font-display); font-weight: 800;
+    font-size: clamp(2.4rem, 2rem + 3vw, 3.6rem); color: var(--yellow-text);
+    line-height: 1; margin-top: 0.4rem; transition: transform 0.2s var(--ease-bounce);
+  }
+  .cw__tally.is-bumped { transform: scale(1.22); }
+
+  .cw__numbers { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; margin-top: 1.1rem; }
+  .cw__numbers[hidden] { display: none; }
+  .cw__num {
+    width: 64px; height: 64px; font-family: var(--font-display);
+    font-weight: 800; font-size: 1.5rem; color: var(--navy);
+    border: 3px solid var(--line);
+  }
+  .cw__num:hover:not(:disabled) { border-color: var(--yellow); }
+</style>
+
+<script>
+  import { sfxTap, sfxYes, sfxNudge, sfxDone, say, celebrate, reducedMotion } from '../../scripts/playful';
+
+  const root = document.getElementById('count-with-me');
+  if (root) {
+    const field = root.querySelector<HTMLElement>('#cwField');
+    const tally = root.querySelector<HTMLElement>('#cwTally');
+    const numbers = root.querySelector<HTMLElement>('#cwNumbers');
+    const status = root.querySelector<HTMLElement>('#cwStatus');
+    const reset = root.querySelector<HTMLButtonElement>('#cwReset');
+    const numBtns = [...root.querySelectorAll<HTMLButtonElement>('.cw__num')];
+
+    const KINDS = [
+      { emoji: '🐞', one: 'ladybird', many: 'ladybirds' },
+      { emoji: '🐟', one: 'fish', many: 'fish' },
+      { emoji: '🍏', one: 'apple', many: 'apples' },
+      { emoji: '⭐', one: 'star', many: 'stars' },
+      { emoji: '🌸', one: 'flower', many: 'flowers' },
+      { emoji: '🐢', one: 'turtle', many: 'turtles' },
+    ];
+
+    let target = 0;
+    let counted = 0;
+    let kind = KINDS[0];
+
+    const deal = () => {
+      counted = 0;
+      target = 2 + Math.floor(Math.random() * 9); // 2–10; one alone is no fun
+      kind = KINDS[Math.floor(Math.random() * KINDS.length)];
+
+      if (field) field.innerHTML = '';
+      for (let i = 0; i < target; i++) {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'cw__thing';
+        b.textContent = kind.emoji;
+        b.setAttribute('aria-label', `A ${kind.one}, not counted yet`);
+        if (!reducedMotion()) b.style.animation = `pop-in 0.3s ${i * 0.05}s var(--ease-bounce)`;
+        b.addEventListener('click', () => count(b));
+        field?.appendChild(b);
+      }
+
+      if (tally) tally.textContent = '0';
+      numbers!.hidden = true;
+      numBtns.forEach((n) => {
+        n.disabled = false;
+        n.classList.remove('is-wobbling');
+      });
+      say(status, `Touch each ${kind.one} to count them.`);
+    };
+
+    const count = (b: HTMLButtonElement) => {
+      if (b.classList.contains('is-counted')) return;
+      counted++;
+      sfxTap();
+      b.classList.add('is-counted');
+      b.dataset.count = String(counted);
+      b.setAttribute('aria-label', `${kind.one} number ${counted}`);
+
+      if (tally) {
+        tally.textContent = String(counted);
+        tally.classList.add('is-bumped');
+        window.setTimeout(() => tally.classList.remove('is-bumped'), 200);
+      }
+
+      if (counted === target) {
+        numbers!.hidden = false;
+        say(status, `You counted ${target} ${kind.many}. Now tap the number ${target}.`);
+      }
+    };
+
+    const choose = (btn: HTMLButtonElement) => {
+      const n = Number(btn.dataset.n);
+      if (n !== target) {
+        sfxNudge();
+        btn.classList.remove('is-wobbling');
+        void btn.offsetWidth;
+        btn.classList.add('is-wobbling');
+        say(status, `Not quite — count them again if you like.`);
+        return;
+      }
+      sfxYes();
+      sfxDone();
+      celebrate(root);
+      numBtns.forEach((x) => (x.disabled = true));
+      say(status, `Yes — ${target} ${kind.many}. Tap "Give me new ones" for another go.`);
+    };
+
+    numBtns.forEach((b) => b.addEventListener('click', () => choose(b)));
+    reset?.addEventListener('click', deal);
+    deal();
+  }
+</script>

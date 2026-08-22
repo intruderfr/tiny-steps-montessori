@@ -1,0 +1,222 @@
+---
+/**
+ * SINK OR FLOAT
+ *
+ * The digital twin of the activity in the school photographs. The child picks
+ * an object, commits to a prediction, and then watches what the water actually
+ * does — which is the whole point. Predicting first is what separates an
+ * experiment from just dropping things in a bucket.
+ *
+ * A wrong prediction is treated as the interesting outcome, never as a mistake.
+ */
+
+const objects = [
+  { id: 'key',    emoji: '🔑', name: 'key',        sinks: true,  why: 'Metal is very heavy for its size.' },
+  { id: 'apple',  emoji: '🍎', name: 'apple',      sinks: false, why: 'An apple is mostly water and air inside.' },
+  { id: 'spoon',  emoji: '🥄', name: 'spoon',      sinks: true,  why: 'Metal again — heavy for how small it is.' },
+  { id: 'leaf',   emoji: '🍃', name: 'leaf',       sinks: false, why: 'Thin and light, so the water holds it up.' },
+  { id: 'sponge', emoji: '🧽', name: 'sponge',     sinks: false, why: 'It is full of tiny air holes.' },
+  { id: 'brick',  emoji: '🧱', name: 'brick',      sinks: true,  why: 'Packed solid, with no air inside.' },
+  { id: 'duck',   emoji: '🦆', name: 'rubber duck',sinks: false, why: 'It is hollow — full of air.' },
+  { id: 'grapes', emoji: '🍇', name: 'grapes',     sinks: true,  why: 'This one surprises almost everybody!' },
+];
+---
+
+<section class="game sof" id="sink-or-float" style="--tint: var(--sky-soft); --ac-text: var(--sky-deep)">
+  <header class="game__head">
+    <span class="game__icon" aria-hidden="true">🌊</span>
+    <div class="game__titles">
+      <p class="game__kicker">Science</p>
+      <h2 class="game__title">Sink or Float?</h2>
+      <p class="game__how">
+        Pick something from the shelf. Guess what it will do <em>before</em> you
+        drop it in — then watch the water and find out.
+      </p>
+    </div>
+  </header>
+
+  <div class="game__board sof__board">
+    <div class="sof__shelf" role="group" aria-label="Things to test">
+      {objects.map((o) => (
+        <button
+          class="piece sof__thing"
+          type="button"
+          data-id={o.id}
+          data-name={o.name}
+          data-sinks={String(o.sinks)}
+          data-why={o.why}
+          aria-label={`Test the ${o.name}`}
+        >
+          <span aria-hidden="true">{o.emoji}</span>
+        </button>
+      ))}
+    </div>
+
+    <div class="sof__tank" aria-hidden="true">
+      <div class="sof__water"></div>
+      <div class="sof__dropped" id="sofDropped"></div>
+    </div>
+  </div>
+
+  {/* Prediction buttons only appear once something is selected. */}
+  <div class="sof__predict" id="sofPredict" hidden>
+    <p class="sof__ask" id="sofAsk"></p>
+    <div class="game__actions">
+      <button class="btn btn--teal btn--lg" type="button" data-guess="sink">⬇ It will sink</button>
+      <button class="btn btn--primary btn--lg" type="button" data-guess="float">⬆ It will float</button>
+    </div>
+  </div>
+
+  <p class="game__status" id="sofStatus" role="status" aria-live="polite">
+    Choose something from the shelf to test.
+  </p>
+
+  <div class="game__actions">
+    <button class="btn btn--ghost btn--sm" type="button" id="sofReset">Start again</button>
+  </div>
+
+  <p class="game__real">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2Z"/></svg>
+    <span>
+      <strong>Now do the real one.</strong> A washing-up bowl of water and eight
+      things from around the house. Guess out loud first, every time — that is
+      the science part. We do this in
+      <a href="/programmes/stem">STEM Club</a>.
+    </span>
+  </p>
+</section>
+
+<style>
+  .sof__board { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(1rem, 3vw, 2rem); align-items: center; }
+  @media (max-width: 720px) { .sof__board { grid-template-columns: 1fr; } }
+
+  .sof__shelf { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.7rem; }
+  @media (max-width: 380px) { .sof__shelf { grid-template-columns: repeat(3, 1fr); } }
+  .sof__thing { aspect-ratio: 1; font-size: clamp(1.7rem, 6vw, 2.3rem); }
+  .sof__thing.is-selected { border-color: var(--teal); transform: translateY(-4px) scale(1.06); }
+
+  .sof__tank {
+    position: relative; aspect-ratio: 1 / 0.92; border-radius: var(--r-lg);
+    background: linear-gradient(#eaf6fc 0%, #eaf6fc 22%, #bfe4f4 22%, #7cc7e6 100%);
+    border: 4px solid #fff; box-shadow: inset 0 4px 14px rgba(43, 42, 95, 0.16);
+    overflow: hidden;
+  }
+  /* Waterline shimmer */
+  .sof__water {
+    position: absolute; left: 0; right: 0; top: 22%; height: 6px;
+    background: rgba(255, 255, 255, 0.75); filter: blur(1px);
+  }
+  .sof__dropped { position: absolute; inset: 0; }
+  /* The dropped objects are created in JavaScript, so they never carry Astro's
+     scoping attribute — without :global() these rules would not match them and
+     the pieces would render unpositioned. */
+  .sof__dropped :global(span) {
+    position: absolute; font-size: clamp(1.5rem, 5vw, 2rem); line-height: 1;
+    transition: top 1.1s cubic-bezier(0.4, 0.05, 0.5, 1), transform 1.1s ease;
+  }
+  /* Floaters bob gently at the waterline. */
+  @keyframes bob { 0%, 100% { transform: translateY(0) rotate(-4deg); } 50% { transform: translateY(-5px) rotate(4deg); } }
+  .sof__dropped :global(span.is-floating) { animation: bob 2.8s ease-in-out infinite 1.1s; }
+
+  .sof__predict { margin-top: 1.2rem; text-align: center; }
+  .sof__predict[hidden] { display: none; }
+  .sof__ask { font-family: var(--font-display); font-size: clamp(1.1rem, 1rem + 0.7vw, 1.4rem); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sof__dropped :global(span) { transition: none; }
+    .sof__dropped :global(span.is-floating) { animation: none; }
+  }
+</style>
+
+<script>
+  import { sfxTap, sfxSink, sfxFloat, sfxDone, say, celebrate } from '../../scripts/playful';
+
+  const root = document.getElementById('sink-or-float');
+  if (root) {
+    const things = [...root.querySelectorAll<HTMLButtonElement>('.sof__thing')];
+    const tank = root.querySelector<HTMLElement>('#sofDropped');
+    const predict = root.querySelector<HTMLElement>('#sofPredict');
+    const ask = root.querySelector<HTMLElement>('#sofAsk');
+    const status = root.querySelector<HTMLElement>('#sofStatus');
+    const reset = root.querySelector<HTMLButtonElement>('#sofReset');
+
+    let selected: HTMLButtonElement | null = null;
+    let tested = 0;
+
+    const select = (btn: HTMLButtonElement) => {
+      if (btn.disabled) return;
+      sfxTap();
+      selected = btn;
+      things.forEach((t) => t.classList.toggle('is-selected', t === btn));
+      if (ask) ask.textContent = `Will the ${btn.dataset.name} sink or float?`;
+      predict!.hidden = false;
+      say(status, `You picked the ${btn.dataset.name}. Will it sink or float?`);
+    };
+
+    const drop = (guess: 'sink' | 'float') => {
+      if (!selected || !tank) return;
+      const { name, why } = selected.dataset;
+      const sinks = selected.dataset.sinks === 'true';
+      const right = (guess === 'sink') === sinks;
+
+      // Drop a copy into the tank, starting above the waterline.
+      const piece = document.createElement('span');
+      piece.textContent = selected.querySelector('span')?.textContent ?? '';
+      piece.style.left = `${12 + Math.random() * 64}%`;
+      piece.style.top = '-14%';
+      tank.appendChild(piece);
+
+      // Force a reflow so the browser registers the start position, then set
+      // the end position — that is what makes the CSS transition run.
+      // requestAnimationFrame would be the usual choice, but it does not fire
+      // in a backgrounded or non-compositing tab, which would leave the object
+      // stranded above the water.
+      void piece.offsetWidth;
+      if (sinks) {
+        piece.style.top = `${72 + Math.random() * 10}%`;
+      } else {
+        piece.style.top = '14%';
+        piece.classList.add('is-floating');
+      }
+
+      sinks ? sfxSink() : sfxFloat();
+
+      selected.disabled = true;
+      selected.classList.remove('is-selected');
+      selected.classList.add('is-done');
+      selected = null;
+      predict!.hidden = true;
+      tested++;
+
+      const outcome = `The ${name} ${sinks ? 'sank' : 'floated'}. ${why}`;
+      const verdict = right ? 'You guessed it.' : 'Not what you guessed — good, that is the interesting kind!';
+      if (status) status.textContent = `${outcome} ${verdict}`;
+
+      if (tested === things.length) {
+        window.setTimeout(() => {
+          sfxDone();
+          celebrate(root);
+          if (status) status.textContent = 'You tested all eight! Now go and try it with a real bowl of water.';
+        }, 1200);
+      }
+    };
+
+    things.forEach((t) => t.addEventListener('click', () => select(t)));
+
+    root.querySelectorAll<HTMLButtonElement>('[data-guess]').forEach((b) =>
+      b.addEventListener('click', () => drop(b.dataset.guess as 'sink' | 'float'))
+    );
+
+    reset?.addEventListener('click', () => {
+      tested = 0;
+      selected = null;
+      if (tank) tank.innerHTML = '';
+      predict!.hidden = true;
+      things.forEach((t) => {
+        t.disabled = false;
+        t.classList.remove('is-done', 'is-selected');
+      });
+      say(status, 'Everything is back on the shelf. Choose something to test.');
+    });
+  }
+</script>

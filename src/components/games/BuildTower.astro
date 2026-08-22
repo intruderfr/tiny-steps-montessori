@@ -1,0 +1,179 @@
+---
+/**
+ * BUILD THE TOWER
+ *
+ * A screen version of the Pink Tower: order five cubes largest to smallest.
+ *
+ * The control of error is the tower itself. Tapping the wrong cube does not
+ * remove it, deduct anything or scold — the cube simply wobbles and stays where
+ * it is, so the child looks again and compares. Comparing is the actual skill
+ * the material teaches.
+ */
+
+// Largest first; the tray gets shuffled on the client so the markup order is
+// never a hint for anyone reading the DOM.
+// True cubes, as in the real Pink Tower. The smallest is 48px so that even the
+// last one clears the 44px minimum tap target — a 28px block is unusable for a
+// three-year-old, and this activity is mostly used on a phone.
+const cubes = [
+  { size: 5, w: 120, colour: 'var(--red)' },
+  { size: 4, w: 98, colour: 'var(--yellow)' },
+  { size: 3, w: 78, colour: 'var(--green)' },
+  { size: 2, w: 60, colour: 'var(--teal)' },
+  { size: 1, w: 48, colour: 'var(--navy)' },
+];
+---
+
+<section class="game tw" id="build-tower" style="--tint: var(--red-soft); --ac-text: var(--red-deep)">
+  <header class="game__head">
+    <span class="game__icon" aria-hidden="true">🧱</span>
+    <div class="game__titles">
+      <p class="game__kicker">Looking closely</p>
+      <h2 class="game__title">Build the Tower</h2>
+      <p class="game__how">
+        Start with the <strong>biggest</strong> cube and work down to the
+        smallest. If one does not belong yet, it will wobble — look again and
+        compare.
+      </p>
+    </div>
+  </header>
+
+  <div class="game__board tw__board">
+    <div class="tw__stack" id="twStack" aria-live="off">
+      <div class="tw__ground" aria-hidden="true"></div>
+    </div>
+
+    <div class="tw__tray" id="twTray" role="group" aria-label="Cubes to choose from">
+      {cubes.map((c) => (
+        <button
+          class="piece tw__cube"
+          type="button"
+          data-size={c.size}
+          style={`--w:${c.w}px; --c:${c.colour}`}
+          aria-label={`Cube number ${c.size} of 5 by size, where 5 is the biggest`}
+        >
+          <span class="tw__num" aria-hidden="true">{c.size}</span>
+        </button>
+      ))}
+    </div>
+  </div>
+
+  <p class="game__status" id="twStatus" role="status" aria-live="polite">
+    Find the biggest cube and tap it.
+  </p>
+
+  <div class="game__actions">
+    <button class="btn btn--ghost btn--sm" type="button" id="twReset">Knock it down</button>
+  </div>
+
+  <p class="game__real">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2Z"/></svg>
+    <span>
+      <strong>The real one is better.</strong> Stacking cups, nesting boxes or
+      wooden blocks do the same job and add weight, balance and the satisfying
+      crash. Ordering by size is the foundation of our
+      <a href="/programmes/montessori">sensorial work</a>.
+    </span>
+  </p>
+</section>
+
+<style>
+  .tw__board { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(1rem, 3vw, 2rem); align-items: end; }
+  @media (max-width: 720px) { .tw__board { grid-template-columns: 1fr; align-items: stretch; } }
+
+  .tw__stack {
+    display: flex; flex-direction: column-reverse; align-items: center; justify-content: flex-start;
+    min-height: 420px; position: relative; padding-bottom: 8px;
+  }
+  .tw__ground { position: absolute; bottom: 0; left: 6%; right: 6%; height: 8px; border-radius: 4px; background: var(--line); }
+
+  .tw__stack .tw__cube {
+    position: relative; border-radius: 10px; box-shadow: var(--sh-sm);
+    animation: drop-in 0.4s var(--ease-bounce);
+  }
+  @keyframes drop-in { from { transform: translateY(-40px); opacity: 0; } to { transform: none; opacity: 1; } }
+
+  .tw__tray {
+    display: flex; flex-wrap: wrap; gap: 0.7rem; align-items: flex-end; justify-content: center;
+    padding: 1rem 0.6rem 0.6rem; border-radius: var(--r-lg);
+    background: var(--paper); border: 2px dashed var(--line); min-height: 120px;
+  }
+
+  .tw__cube {
+    width: var(--w); height: var(--w); min-width: 0; min-height: 0;
+    background: var(--c); border: none; border-radius: 10px;
+    display: grid; place-items: center;
+  }
+  .tw__num {
+    font-family: var(--font-display); font-weight: 800; color: #fff;
+    font-size: clamp(0.85rem, 2.4vw, 1.15rem); text-shadow: 0 1px 3px rgba(0,0,0,0.28);
+  }
+  .tw__cube[data-size='4'] .tw__num { color: var(--navy); text-shadow: none; }
+  .tw__cube.is-placed { pointer-events: none; }
+</style>
+
+<script>
+  import { sfxTap, sfxYes, sfxNudge, sfxDone, shuffle, say, celebrate } from '../../scripts/playful';
+
+  const root = document.getElementById('build-tower');
+  if (root) {
+    const tray = root.querySelector<HTMLElement>('#twTray');
+    const stack = root.querySelector<HTMLElement>('#twStack');
+    const status = root.querySelector<HTMLElement>('#twStatus');
+    const reset = root.querySelector<HTMLButtonElement>('#twReset');
+    const all = [...root.querySelectorAll<HTMLButtonElement>('.tw__cube')];
+
+    // Next size we are waiting for: 5, then 4, down to 1.
+    let want = 5;
+
+    const scatter = () => {
+      if (!tray) return;
+      shuffle(all).forEach((c) => tray.appendChild(c));
+    };
+
+    const place = (cube: HTMLButtonElement) => {
+      const size = Number(cube.dataset.size);
+
+      if (size !== want) {
+        sfxNudge();
+        cube.classList.remove('is-wobbling');
+        void cube.offsetWidth; // restart the animation
+        cube.classList.add('is-wobbling');
+        say(status, `Not that one yet. Look for a bigger cube.`);
+        return;
+      }
+
+      sfxTap();
+      sfxYes();
+      cube.classList.add('is-placed');
+      cube.setAttribute('aria-disabled', 'true');
+      cube.disabled = true;
+      // column-reverse means appending puts it visually on top of the stack.
+      stack?.appendChild(cube);
+      want--;
+
+      if (want === 0) {
+        sfxDone();
+        celebrate(root);
+        say(status, 'Your tower is finished — biggest at the bottom, smallest on top!');
+      } else {
+        say(status, `That fits. Now find the next biggest.`);
+      }
+    };
+
+    all.forEach((c) => c.addEventListener('click', () => place(c)));
+
+    reset?.addEventListener('click', () => {
+      want = 5;
+      all.forEach((c) => {
+        c.disabled = false;
+        c.removeAttribute('aria-disabled');
+        c.classList.remove('is-placed', 'is-wobbling');
+      });
+      scatter();
+      say(status, 'All knocked down. Find the biggest cube and start again.');
+    });
+
+    scatter();
+  }
+</script>

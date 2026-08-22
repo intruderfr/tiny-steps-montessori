@@ -1,0 +1,250 @@
+---
+import Base from '../layouts/Base.astro';
+import SinkOrFloat from '../components/games/SinkOrFloat.astro';
+import BuildTower from '../components/games/BuildTower.astro';
+import FindPairs from '../components/games/FindPairs.astro';
+import CountWithMe from '../components/games/CountWithMe.astro';
+import { site, abs } from '../data/site';
+import { faqSchema } from '../data/schema';
+import '../styles/games.css';
+
+const games = [
+  { id: 'sink-or-float', icon: '🌊', name: 'Sink or Float?', area: 'Science' },
+  { id: 'build-tower', icon: '🧱', name: 'Build the Tower', area: 'Looking closely' },
+  { id: 'find-pairs', icon: '🃏', name: 'Find the Pairs', area: 'Remembering' },
+  { id: 'count-with-me', icon: '🐞', name: 'Count With Me', area: 'Numbers' },
+];
+
+const faqs = [
+  {
+    q: 'Are these games free?',
+    a: 'Yes, completely. No sign-up, no account, no adverts, and nothing is collected about your child. You do not need to be enrolled at Tiny Steps to play.',
+  },
+  {
+    q: 'What ages are they for?',
+    a: 'Roughly 3 to 7. Counting and Find the Pairs suit younger children; Sink or Float works well up to about eight, especially if an adult asks "why do you think that?" before each guess.',
+  },
+  {
+    q: 'Is there a score or a timer?',
+    a: 'No. There is deliberately no score, no timer, no stars and no way to lose. In Montessori the material itself shows the child whether something fits — a wrong choice simply wobbles and they try again.',
+  },
+  {
+    q: 'Do the games work on a phone?',
+    a: 'Yes. Everything is tap-based and sized for small hands. They also work with a keyboard and with a screen reader.',
+  },
+];
+---
+
+<Base
+  title="Kids Corner — Free Montessori Games"
+  description="Four free Montessori activities children can play in the browser: sink or float, build the tower, find the pairs and counting. No score, no timer, no sign-up."
+  crumbs={[{ name: 'Kids Corner', href: '/kids' }]}
+  schemaNodes={[
+    faqSchema(faqs),
+    {
+      '@type': 'WebApplication',
+      '@id': abs('/kids#app'),
+      name: `${site.name} Kids Corner`,
+      applicationCategory: 'GameApplication',
+      operatingSystem: 'Any browser',
+      description:
+        'Four free Montessori-style activities for children aged 3 to 7: sink or float, size ordering, a memory game and counting.',
+      url: abs('/kids'),
+      isAccessibleForFree: true,
+      offers: { '@type': 'Offer', price: '0', priceCurrency: 'LKR' },
+      publisher: { '@id': abs('/#school') },
+      audience: { '@type': 'PeopleAudience', suggestedMinAge: 3, suggestedMaxAge: 7 },
+    },
+  ]}
+>
+  <header class="khead">
+    <div class="khead__shapes" aria-hidden="true">
+      <span class="kshape kshape--1 drift"></span>
+      <span class="kshape kshape--2 float"></span>
+      <span class="kshape kshape--3 drift"></span>
+    </div>
+    <div class="wrap khead__inner">
+      <p class="eyebrow eyebrow--red">Kids Corner</p>
+      <h1 class="h1 khead__t">
+        Four things to <span class="squiggle">try</span> right now
+      </h1>
+      <p class="lede khead__d">
+        These are the same activities we do in the classroom, made small enough
+        to fit on a screen. No score, no timer, and no way to lose.
+      </p>
+
+      <nav class="picker" aria-label="Choose an activity">
+        {games.map((g) => (
+          <a href={`#${g.id}`} class="picker__item">
+            <span class="picker__icon" aria-hidden="true">{g.icon}</span>
+            <span class="picker__text">
+              <span class="picker__name">{g.name}</span>
+              <span class="picker__area">{g.area}</span>
+            </span>
+          </a>
+        ))}
+      </nav>
+
+      <button class="sound" id="soundToggle" type="button" aria-pressed="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true" id="soundIcon">
+          <path d="M3 9v6h4l5 5V4L7 9H3Zm13.5 3a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4Zm-2.5-9v2.1a7 7 0 0 1 0 13.8V21a9 9 0 0 0 0-18Z"/>
+        </svg>
+        <span id="soundLabel">Sound is on</span>
+      </button>
+    </div>
+  </header>
+
+  <div class="wrap kgames">
+    <SinkOrFloat />
+    <BuildTower />
+    <FindPairs />
+    <CountWithMe />
+  </div>
+
+  {/* ------------------------------------------------------- note to parents */}
+  <section class="section parents">
+    <div class="wrap wrap-narrow">
+      <div class="parents__card">
+        <p class="eyebrow">For Parents</p>
+        <h2 class="h2 parents__t">A word about screens, from a Montessori school</h2>
+        <div class="prose parents__body">
+          <p>
+            We will be straight with you, because it would be odd not to be. We
+            have <a href="/news/stem-activities-at-home-under-8s">written elsewhere</a>
+            that under-eights learn through their hands, that screens should come
+            last rather than first, and that most "educational" apps are a quiz
+            with animations attached.
+          </p>
+          <p>We still think all of that. So this page is built to a few rules:</p>
+          <ul>
+            <li><strong>Nothing is designed to keep your child here.</strong> No streaks, no daily rewards, no unlockables, no next level. Every activity finishes and stops.</li>
+            <li><strong>No score and no timer.</strong> Nothing measures your child or hurries them.</li>
+            <li><strong>Every game points at the real version</strong>, because the real version is better. The bowl of water teaches more than our animation of one does.</li>
+            <li><strong>Nothing is collected.</strong> No account, no analytics on this page, no adverts, nothing stored about your child.</li>
+          </ul>
+          <p>
+            Ten minutes here, then go and find a real bowl and eight real
+            objects. That is the order we would put them in.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* ------------------------------------------------------------------ FAQ */}
+  <section class="section bg-soft edge-top">
+    <div class="wrap wrap-narrow">
+      <h2 class="h2 center" style="margin-bottom:2rem">Questions about the Kids Corner</h2>
+      <div class="faq">
+        {faqs.map((f) => (
+          <details class="faq__item" name="kids-faq">
+            <summary>{f.q}</summary>
+            <p>{f.a}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="cta">
+    <div class="wrap cta__inner">
+      <h2 class="h2">Come and do the real versions</h2>
+      <p class="cta__d">
+        Every activity here started life on a shelf in our classroom in Dehiwala.
+        Come and see them being used.
+      </p>
+      <div class="cta__btns">
+        <a href="/contact#visit" class="btn btn--primary btn--lg">Book a visit</a>
+        <a href="/programmes" class="btn btn--white btn--lg">See our programmes</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .khead { position: relative; overflow: hidden; padding-block: clamp(1.8rem, 1rem + 3vw, 3.2rem) clamp(1.5rem, 1rem + 2vw, 2.5rem); }
+  .khead__inner { text-align: center; max-width: 760px; }
+  .khead__t { font-size: var(--t-3xl); margin-block: 0.8rem 1rem; }
+  .khead__d { margin-inline: auto; }
+  .khead .eyebrow { margin-bottom: 0.5rem; }
+
+  .khead__shapes { position: absolute; inset: 0; pointer-events: none; z-index: -1; }
+  .kshape { position: absolute; border-radius: 50%; display: block; }
+  .kshape--1 { width: 150px; height: 150px; background: var(--yellow-soft); top: -8%; left: 2%; }
+  .kshape--2 { width: 90px; height: 90px; background: var(--teal-soft); top: 55%; right: 5%; }
+  .kshape--3 { width: 120px; height: 120px; background: var(--red-soft); bottom: -14%; left: 40%; opacity: 0.7; }
+  @media (max-width: 700px) { .kshape--3 { display: none; } }
+
+  /* ------------------------------------------------------------- picker */
+  .picker { display: flex; flex-wrap: wrap; gap: 0.7rem; justify-content: center; margin-top: 1.8rem; }
+  .picker__item {
+    display: flex; align-items: center; gap: 0.65rem; text-decoration: none;
+    background: var(--paper); border: 2px solid var(--line); border-radius: var(--r-full);
+    padding: 0.5rem 1.1rem 0.5rem 0.6rem;
+    transition: transform 0.22s var(--ease-bounce), border-color 0.2s, box-shadow 0.2s;
+  }
+  .picker__item:hover { transform: translateY(-3px); border-color: var(--yellow); box-shadow: var(--sh-md); }
+  .picker__icon { font-size: 1.5rem; width: 42px; height: 42px; display: grid; place-items: center; background: var(--surface-2); border-radius: var(--r-full); }
+  .picker__text { display: grid; text-align: left; line-height: 1.2; }
+  .picker__name { font-family: var(--font-display); font-weight: 700; font-size: 1rem; color: var(--ink); }
+  .picker__area { font-size: var(--t-xs); color: var(--ink-3); }
+
+  .sound { margin-top: 1.6rem; }
+
+  /* -------------------------------------------------------------- games */
+  .kgames { display: grid; gap: clamp(1.5rem, 1rem + 2.5vw, 2.6rem); padding-bottom: var(--section-y); }
+
+  /* ------------------------------------------------------------ parents */
+  .parents { padding-top: 0; }
+  .parents__card {
+    background: var(--navy); color: #fff; border-radius: var(--r-2xl);
+    padding: clamp(1.6rem, 1rem + 3vw, 3rem);
+  }
+  .parents__card .eyebrow { background: rgba(255, 255, 255, 0.16); color: #fff; }
+  .parents__t { color: #fff; margin-block: 0.8rem 1.2rem; font-size: var(--t-2xl); }
+  .parents__body { color: rgba(255, 255, 255, 0.93); max-width: none; font-size: var(--t-base); }
+  .parents__body a { color: var(--yellow); }
+  .parents__body strong { color: #fff; }
+  .parents__body li::marker { color: var(--yellow); }
+
+  /* ---------------------------------------------------------------- faq */
+  .faq { display: grid; gap: 0.75rem; }
+  .faq__item { background: var(--paper); border: 1px solid var(--line); border-radius: var(--r-md); overflow: hidden; }
+  .faq__item summary {
+    cursor: pointer; padding: 1.1rem 1.3rem; font-family: var(--font-display); font-weight: 700;
+    font-size: 1.05rem; list-style: none; display: flex; justify-content: space-between; gap: 1rem; align-items: center;
+  }
+  .faq__item summary::-webkit-details-marker { display: none; }
+  .faq__item summary::after { content: '+'; font-size: 1.5rem; color: var(--yellow-deep); flex: none; transition: transform 0.25s; }
+  .faq__item[open] summary::after { transform: rotate(45deg); }
+  .faq__item p { padding: 0 1.3rem 1.2rem; color: var(--ink-2); font-size: var(--t-sm); line-height: 1.7; }
+
+  .cta { background: linear-gradient(140deg, var(--yellow) 0%, #f9d95e 55%, var(--red) 130%); padding-block: clamp(3rem, 2rem + 5vw, 5rem); }
+  .cta__inner { text-align: center; max-width: 640px; }
+  .cta__d { font-size: var(--t-lg); color: rgba(43, 42, 95, 0.85); margin-block: 0.9rem 1.8rem; }
+  .cta__btns { display: flex; flex-wrap: wrap; gap: 0.9rem; justify-content: center; }
+</style>
+
+<script>
+  import { isMuted, setMuted, sfxTap } from '../scripts/playful';
+
+  const btn = document.getElementById('soundToggle');
+  const label = document.getElementById('soundLabel');
+
+  const paint = () => {
+    const off = isMuted();
+    btn?.setAttribute('aria-pressed', String(off));
+    if (label) label.textContent = off ? 'Sound is off' : 'Sound is on';
+  };
+
+  btn?.addEventListener('click', () => {
+    const nowOff = !isMuted();
+    setMuted(nowOff);
+    paint();
+    // Play a confirmation only when turning sound back ON, which also satisfies
+    // the browser rule that audio must follow a user gesture.
+    if (!nowOff) sfxTap();
+  });
+
+  paint();
+</script>

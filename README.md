@@ -43,8 +43,11 @@ src/
 │   ├── news/            ← Articles. One markdown file each.
 │   └── programmes/      ← One markdown file per programme
 ├── components/          ← Header, Footer, BaseHead (all <head> tags), Logo
+│   └── games/           ← The four Kids Corner activities, one file each
 ├── layouts/Base.astro   ← Page shell: head, header, breadcrumbs, footer
 ├── pages/               ← Routes. File path = URL.
+├── scripts/playful.ts   ← Shared game helpers: synthesised sound, shuffle,
+│                           screen-reader announcements, confetti
 └── styles/global.css    ← Design tokens and shared classes
 ```
 
@@ -108,10 +111,13 @@ set `draft: false`.
   each with its own genuinely different route notes, landmarks and angle. This
   matters: eight near-identical pages would be classified as doorway pages and
   could drag the whole domain down.
-- **Nine articles, ~28,000 words** targeting the research-phase searches
+- **Nine articles, ~30,000 words** targeting the research-phase searches
   competitors ignore entirely.
 - **Published fees** — no competitor in Dehiwala does this. It wins
   "preschool fees Sri Lanka" and filters enquiries to families who accept the price.
+- **A free Kids Corner** at `/kids` — four playable Montessori activities.
+  Genuine dwell time, a reason for parents to return, and `WebApplication`
+  structured data.
 - Sitemap, RSS, canonicals, Open Graph, `hreflang="en-LK"`, geo meta tags,
   `robots.txt` (AI crawlers explicitly allowed).
 - Guardrails: `npm run audit` fails the build on a missing canonical, a second
@@ -160,12 +166,38 @@ set `SITE_URL` in the workflow; `BASE_PATH` then becomes unnecessary.
 
 ---
 
+## The Kids Corner
+
+`/kids` holds four activities children can play in the browser. Two rules shape
+all of them, taken from how the classroom actually works:
+
+1. **Control of error.** No score, no timer, no stars, no way to lose. A wrong
+   choice wobbles and the child tries again — the material corrects them, not
+   an adult and not a number.
+2. **Every game points at the real version**, because the real version is
+   better. A bowl of water teaches more than an animation of one.
+
+Two things worth knowing before editing them:
+
+- **Dynamically created elements need `:global()`.** Astro scopes component CSS
+  with a `data-astro-cid-*` attribute, and elements built in JavaScript never
+  carry it. Any rule targeting a JS-created node must be wrapped, or it will
+  silently not apply.
+- **Sound is synthesised, not loaded.** `src/scripts/playful.ts` builds tones
+  with the Web Audio API, so there are no audio files and nothing to download.
+  The preference is stored in `localStorage` under `tiny-sound`.
+
+Adding a game: create it in `src/components/games/`, import it in
+`src/pages/kids.astro`, and add it to the `games` array there for the picker.
+
 ## Notes
 
-- **No build-time image optimisation is wired up yet** because there are no
-  photographs. When you add them, put them in `src/assets/` and use Astro's
-  `<Image />` component so they are resized and converted to WebP automatically.
+- **Photographs** live in `src/assets/photos/` with their alt text in
+  `src/data/gallery.ts`. Astro generates responsive WebP variants at build time.
+  To add more, drop them in that folder and add an entry to `gallery.ts`, or
+  re-run `node scripts/import-photos.mjs <folder>` to re-import from a phone
+  export.
 - **Fonts** load from Google Fonts. Self-hosting them would shave ~100ms — worth
   doing before launch, not urgent.
-- The site ships **about 3 KB of JavaScript**: a scroll-reveal observer, the
+- The site ships **about 3 KB of JavaScript** on the pages parents read: a scroll-reveal observer, the
   mobile menu, and the news category filter. Everything works without it.
